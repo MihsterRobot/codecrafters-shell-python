@@ -2,7 +2,7 @@ import sys
 
 
 def echo(cmd):
-    return cmd.strip("echo")
+    return cmd.split("echo")
 
 
 def main():
