@@ -6,9 +6,15 @@ def echo(cmd):
 
 
 def main():
-    while True:
+    exit = False
+
+    while not exit:
         sys.stdout.write("$ ")
         command = input()
+
+        exit = True if command == "exit" else False
+        if exit: 
+            break
 
         if "echo" not in command:
             print(f"{command}: command not found")
