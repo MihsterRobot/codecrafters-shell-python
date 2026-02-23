@@ -16,12 +16,14 @@ def main():
     while not exit:
         sys.stdout.write("$ ")
         command = input()
-
+        
         exit = True if command == "exit" else False
         if exit: 
             break
+
+        types = ["echo", "type type", "exit"]
         
-        if "invalid_command" in command: 
+        if command not in types: 
             print(f"{command}: not found")
         else:
             print(type(command))
