@@ -20,10 +20,10 @@ def main():
         exit = True if command == "exit" else False
         if exit: 
             break
-
-        types = ["echo", "type type", "exit"]
         
-        if command not in types: 
+        cmd = command.removeprefix("type ")
+
+        if "echo" or "type" or "exit" not in cmd: 
             print(f"{command}: not found")
         else:
             print(type(command))
