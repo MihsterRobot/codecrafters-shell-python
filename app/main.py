@@ -1,16 +1,23 @@
 import sys
 
 
+def echo(cmd):
+    return cmd.strip("echo")
+
+
 def main():
+    commands = {"exit": "exit", "echo": echo}
+
     while True:
         sys.stdout.write("$ ")
         command = input()
 
-        if command == "exit": 
+        result = commands.get(command)
+        if result == "exit": 
             break
         
-        print(command)
-        
+        print(result)
+
         # print(f"{command}: command not found")
 
 
