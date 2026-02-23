@@ -1,12 +1,6 @@
 import sys
 
 
-# def echo(cmd): 
-#     print(cmd)
-
-def echo(cmd):
-    return cmd
-
 def main():
     while True:
         sys.stdout.write("$ ")
@@ -15,8 +9,8 @@ def main():
         if command == "exit": 
             break
         
-        print(echo(command))
-
+        print(command)
+        
         # print(f"{command}: command not found")
 
 
