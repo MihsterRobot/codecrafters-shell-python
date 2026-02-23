@@ -12,8 +12,8 @@ def main():
 
         if "echo" not in command:
             print(f"{command}: command not found")
-
-        print(echo(command))
+        else:
+            print(echo(command))
 
 
 if __name__ == "__main__":
