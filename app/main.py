@@ -13,7 +13,7 @@ def main():
         if command == "exit": 
             break
         
-        echo(command)
+        print(command)
 
         # print(f"{command}: command not found")
 
