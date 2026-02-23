@@ -17,7 +17,7 @@ def main():
         handler = commands.get(command)
         if handler == "exit" or handler == None: 
             break
-        
+        print("This is the user's command " + command)
         # Run echo() 
         result = handler(command)
         print(result)
