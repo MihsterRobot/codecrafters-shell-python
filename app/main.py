@@ -6,7 +6,7 @@ def main():
         sys.stdout.write("$ ")
         command = input()
 
-        print(command.removeprefix("echo"))
+        print(command.removeprefix("echo "))
 
 
 if __name__ == "__main__":
