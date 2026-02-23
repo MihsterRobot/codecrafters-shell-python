@@ -1,9 +1,11 @@
 import sys
 
 
-def echo(cmd): 
-    print(cmd)
+# def echo(cmd): 
+#     print(cmd)
 
+def echo(cmd):
+    return cmd
 
 def main():
     while True:
@@ -13,7 +15,7 @@ def main():
         if command == "exit": 
             break
         
-        print(command)
+        print(echo(command))
 
         # print(f"{command}: command not found")
 
