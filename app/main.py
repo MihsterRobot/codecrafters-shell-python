@@ -23,7 +23,7 @@ def main():
         
         cmd = command.removeprefix("type ")
 
-        if "echo" or "type" or "exit" not in cmd: 
+        if cmd != "echo" or "type" or "exit": 
             print(f"{command}: not found")
         else:
             print(type(command))
