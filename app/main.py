@@ -2,6 +2,7 @@ import sys
 import os
 
 EXIT = object()
+path_value = os.environ["PATH"]
 
 
 def run_echo(cmd): 
@@ -11,9 +12,21 @@ def run_echo(cmd):
 def run_type(cmd): 
     if cmd in ("echo", "type", "exit"): 
         return f"{cmd} is a shell builtin", None
-    else: 
-        return f"{cmd}: not found", None
-        os.access(path, os.X_OK)
+    
+    dirs = path_value.split(":")
+    filename = cmd
+    
+    for dir in dirs: 
+        # Join directory path with filename
+        full_path = os.path.join(dir, filename)
+
+        # If file exists
+        if os.path.isfile(full_path):
+            if os.access(filename, os.X_OK):
+                return f"{filename} is {dir}", None
+    
+    return f"{cmd}: not found", None
+        
 
 
 def run_exit(cmd):
