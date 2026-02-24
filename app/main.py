@@ -2,7 +2,8 @@ import sys
 
 
 def run_echo(cmd): 
-    return cmd.removeprefix("echo ")
+    cmd = cmd.removeprefix("echo ")
+    return cmd 
 
 
 def run_type(cmd): 
@@ -30,16 +31,19 @@ def main():
         if exit: 
             break
 
-        # Get the command by splitting user input into a list of words and grabbing the first one
-        first_word = command.split()[0]
-        # If the command is invalid, it won't be in COMMMANDS, so None is returned when attempting to print command below
-        cmd = COMMANDS.get(first_word) if first_word in COMMANDS else command
+        # Get the command by grabbing the first word
+        cmd = command.split()[0]
 
-        # Identify invalid input by checking if cmd is a string (opposed to a function)
-        if type(cmd) == str: 
+        # No command entered, only invalid input
+        if cmd not in COMMANDS: 
             print(f"{cmd}: not found")
-        else: 
-            print(cmd(command))
+            continue
+
+        # Grab the command's handler
+        handler = COMMANDS.get(cmd) 
+        result = handler(cmd)
+        print(result)
+
 
 
 if __name__ == "__main__":
