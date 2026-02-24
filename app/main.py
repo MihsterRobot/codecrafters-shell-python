@@ -16,10 +16,8 @@ def run_type(cmd):
     # Extract PATH
     path_value = os.environ["PATH"]
 
-    # Isolate directories
+    # Extract a list of directories
     dirs = path_value.split(":")
-    print(dirs)
-
     filename = cmd
 
     # Iterate through each directory in the path
