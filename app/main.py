@@ -13,7 +13,7 @@ def run_type(cmd):
 
 
 def exit():
-    break
+    sys.exit(0)
 
 
 COMMANDS = {"echo": run_echo, "type": run_type, "exit": exit}
