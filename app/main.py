@@ -29,6 +29,10 @@ def main():
         exit = True if command == "exit" else False
         if exit: 
             break
+
+        if command not in ("echo", "type"): 
+            print(f"{command}: not found")    
+            break
         
         # Get the command by splitting user input into list of words and grabbing the first one
         first_word = command.split()[0]
