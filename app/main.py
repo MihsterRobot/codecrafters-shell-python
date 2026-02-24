@@ -8,7 +8,7 @@ def echo(cmd):
 def type(cmd): 
     cmd = cmd.removeprefix("type ")
 
-    if ("echo", "type", "exit") in cmd: 
+    if cmd in ("echo", "type", "exit"): 
         return f"{cmd} is a shell builtin"
     else: 
         return f"{cmd}: not found"
