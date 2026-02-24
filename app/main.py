@@ -34,6 +34,8 @@ def main():
         # Get the command by splitting user input into list of words and grabbing the first one
         first_word = command.split()[0]
         cmd = COMMANDS.get(first_word)
+        if cmd is None: 
+            print(f"{cmd}: not found")
         print(cmd(command))
         
         # if "echo" not in command:
