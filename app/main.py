@@ -1,11 +1,11 @@
 import sys
 
 
-def echo(cmd): 
+def run_echo(cmd): 
     return cmd.removeprefix("echo ")
 
 
-def type(cmd): 
+def run_type(cmd): 
     cmd = cmd.removeprefix("type ")
 
     if cmd in ("echo", "type", "exit"): 
@@ -14,7 +14,7 @@ def type(cmd):
         return f"{cmd}: not found"
 
 
-COMMANDS = {"echo": echo, "type": type}
+COMMANDS = {"echo": run_echo, "type": run_type}
 
 
 def main():
@@ -35,7 +35,8 @@ def main():
         # If the command is invalid, it won't be in COMMMANDS, so None is returned when attempting to print command below
         cmd = COMMANDS.get(first_word) if first_word in COMMANDS else command
 
-        if cmd not in COMMANDS: 
+        # Identify invalid input by checking if cmd is a string (opposed to a function)
+        if type(cmd) == str: 
             print(f"{cmd}: not found")
             break
 
