@@ -1,19 +1,21 @@
 import sys
 
+EXIT = object()
+
 
 def run_echo(cmd): 
-    return cmd
+    return cmd, None
 
 
 def run_type(cmd): 
     if cmd in ("echo", "type", "exit"): 
-        return f"{cmd} is a shell builtin"
+        return f"{cmd} is a shell builtin", None
     else: 
-        return f"{cmd}: not found"
+        return f"{cmd}: not found", None
 
 
 def run_exit(cmd):
-    return "EXIT"
+    return None, EXIT
 
 
 COMMANDS = {"echo": run_echo, "type": run_type, "exit": run_exit}
@@ -34,19 +36,17 @@ def main():
             print(f"{cmd}: not found")
             continue
 
-        # Grab the command's handler
-        handler = COMMANDS.get(cmd) 
-
-        # Grab the command's arguments 
+        # Grab the command's handler and arguments
+        handler = COMMANDS[cmd] 
         command_args = command.removeprefix(cmd + " ")
 
-        # Execute the command and store the return value
-        result = handler(command_args)
+        output, signal = handler(command_args)
 
-        if result == "EXIT":
+        if signal is EXIT:
             break
-        else: 
-            print(result)
+
+        if output is not None: 
+            print(output)
 
 
 if __name__ == "__main__":
