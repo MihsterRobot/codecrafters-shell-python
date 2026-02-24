@@ -41,9 +41,9 @@ def main():
 
         # Grab the command's handler
         handler = COMMANDS.get(cmd) 
-        result = handler(cmd)
-        print(result)
 
+        result = handler(command)
+        print(result)
 
 
 if __name__ == "__main__":
