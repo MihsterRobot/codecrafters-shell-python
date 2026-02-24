@@ -38,9 +38,8 @@ def main():
         # Identify invalid input by checking if cmd is a string (opposed to a function)
         if type(cmd) == str: 
             print(f"{cmd}: not found")
-            break
-
-        print(cmd(command))
+        else: 
+            print(cmd(command))
 
 
 if __name__ == "__main__":
