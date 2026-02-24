@@ -18,7 +18,7 @@ def run_type(cmd):
 
     # Isolate directories
     dirs = path_value.split(":")
-    print("dirs: " + dirs)
+    print(dirs)
 
     filename = cmd
 
