@@ -30,9 +30,6 @@ def main():
         if exit: 
             break
 
-        if "_" in command: 
-            print(f"{command}: not found")    
-            break
         
         # Get the command by splitting user input into list of words and grabbing the first one
         first_word = command.split()[0]
