@@ -12,11 +12,11 @@ def run_type(cmd):
         print(f"{cmd}: not found")
 
 
-def exit():
+def run_exit(cmd):
     sys.exit(0)
 
 
-COMMANDS = {"echo": run_echo, "type": run_type, "exit": exit}
+COMMANDS = {"echo": run_echo, "type": run_type, "exit": run_exit}
 
 
 def main():
