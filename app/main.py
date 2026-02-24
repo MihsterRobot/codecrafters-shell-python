@@ -6,14 +6,23 @@ def echo(cmd):
 
 
 def type(cmd): 
-    if "echo" or "type type" or "exit" in cmd: 
-        return f"{cmd.removeprefix("type ")} is a shell builtin"
+    cmd = cmd.removeprefix("type ")
+
+    if ("echo", "type", "exit") in cmd: 
+        return f"{cmd} is a shell builtin"
+    else: 
+        return f"{cmd}: not found"
+
+
+COMMANDS = {"echo": echo, "type": type}
 
 
 def main():
     exit = False
 
+    # Continue looping until user inputs "exit"
     while not exit:
+        # Display command prompt and read user input
         sys.stdout.write("$ ")
         command = input()
         
@@ -21,14 +30,9 @@ def main():
         if exit: 
             break
         
-        cmd = command.removeprefix("type ")
-
-        if cmd not in ("echo", "type", "exit"): 
-            print(f"{cmd}: not found")
-        else:
-            print(type(command))
-
-
+        cmd = COMMANDS.get(command)
+        print(cmd(command))
+        
         # if "echo" not in command:
         #     print(f"{command}: command not found")
         # else:
