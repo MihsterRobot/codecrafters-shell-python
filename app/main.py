@@ -12,22 +12,20 @@ def run_type(cmd):
         print(f"{cmd}: not found")
 
 
-COMMANDS = {"echo": run_echo, "type": run_type}
+def exit():
+    break
+
+
+COMMANDS = {"echo": run_echo, "type": run_type, "exit": exit}
 
 
 def main():
-    exit = False
-
     # Continue looping until user inputs "exit"
     while not exit:
         # Display command prompt and read user input
         sys.stdout.write("$ ")
         command = input()
         
-        exit = True if command == "exit" else False
-        if exit: 
-            break
-
         # Get the command by grabbing the first word
         cmd = command.split()[0]
 
@@ -39,7 +37,10 @@ def main():
         # Grab the command's handler
         handler = COMMANDS.get(cmd) 
 
-        # Grab the command's arguments
+        if cmd == "exit":
+            handler()
+
+        # Grab the command's arguments 
         command_args = command.removeprefix(cmd + " ")
 
         # Execute the command
