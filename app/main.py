@@ -9,23 +9,17 @@ def run_echo(cmd):
 
 
 def run_type(cmd): 
-    # Check if the command is a builtin 
     if cmd in ("echo", "type", "exit"): 
         return f"{cmd} is a shell builtin", None
     
-    # Extract PATH
+    
     path_value = os.environ["PATH"]
-
-    # Extract a list of directories
     dirs = path_value.split(":")
     filename = cmd
 
-    # Iterate through each directory in the path
     for dir in dirs: 
-        # Join directory path with filename
         full_path = os.path.join(dir, filename)
 
-        # If file exists
         if os.path.isfile(full_path):
             if os.access(full_path, os.X_OK):
                 return f"{filename} is {full_path}", None
@@ -45,15 +39,15 @@ def main():
         sys.stdout.write("$ ")
         command = input()
         
-        # Get the command by grabbing the first word
+        # Extract the command name (first token) from the user's input
         cmd = command.split()[0]
 
-        # No command entered, only invalid input
+        # Command name isn't a builtin or registered handler
         if cmd not in COMMANDS: 
             print(f"{cmd}: not found")
             continue
 
-        # Grab the command's handler and arguments
+        # Retrieve the command's handler and isolate the raw argument string
         handler = COMMANDS[cmd] 
         command_args = command.removeprefix(cmd + " ")
 
