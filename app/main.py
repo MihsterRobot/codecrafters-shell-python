@@ -40,7 +40,7 @@ def main():
         handler = COMMANDS.get(cmd) 
 
         # Grab the command's arguments
-        command_args = command.split(cmd + " ")
+        command_args = command.removeprefix(cmd + " ")
 
         # Execute the command
         handler(command_args)
