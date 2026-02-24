@@ -33,9 +33,9 @@ def main():
         # Get the command by splitting user input into a list of words and grabbing the first one
         first_word = command.split()[0]
         # If the command is invalid, it won't be in COMMMANDS, so None is returned when attempting to print command below
-        cmd = COMMANDS.get(first_word)
+        cmd = COMMANDS.get(first_word) if first_word in COMMANDS else command
 
-        if cmd is None: 
+        if cmd not in COMMANDS: 
             print(f"{cmd}: not found")
             break
 
