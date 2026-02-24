@@ -1,4 +1,5 @@
 import sys
+import os
 
 EXIT = object()
 
@@ -12,6 +13,7 @@ def run_type(cmd):
         return f"{cmd} is a shell builtin", None
     else: 
         return f"{cmd}: not found", None
+        os.access(path, os.X_OK)
 
 
 def run_exit(cmd):
