@@ -30,18 +30,16 @@ def main():
         if exit: 
             break
 
-        
-        # Get the command by splitting user input into list of words and grabbing the first one
+        # Get the command by splitting user input into a list of words and grabbing the first one
         first_word = command.split()[0]
+        # If the command is invalid, it won't be in COMMMANDS, so None is returned when attempting to print command below
         cmd = COMMANDS.get(first_word)
+
         if cmd is None: 
             print(f"{cmd}: not found")
+            break
+
         print(cmd(command))
-        
-        # if "echo" not in command:
-        #     print(f"{command}: command not found")
-        # else:
-        #     print(echo(command))
 
 
 if __name__ == "__main__":
