@@ -1,15 +1,70 @@
-# These are the commands a user can enter: "type","echo", and "exit"
+These are the commands a user can enter: "type","echo", and "exit"
 
-# Examples of invalid inputs: 
-# type "invalid_input"
-# echo "invalid_input"
-# "invalid_input"
+Examples of invalid inputs –
+- type "invalid_input"
+- "invalid_input"
 
 In this program, so far, all invalid inputs include underscores.
 
+Logic –
 1. Identify what command the user wants to run by grabbing the first word 
-2. If there's no command and only an invalid input, print "not found"
+2. If there's no command and only invalid input, print "not found"
 3. If the command is valid but followed by invalid input, print "not found"
 4. Otherwise, use the dict to grab the associated command, then print the result
+
+
+Earlier version –
+```
+import sys
+
+
+def run_echo(cmd): 
+    return cmd.removeprefix("echo ")
+
+
+def run_type(cmd): 
+    cmd = cmd.removeprefix("type ")
+
+    if cmd in ("echo", "type", "exit"): 
+        return f"{cmd} is a shell builtin"
+    else: 
+        return f"{cmd}: not found"
+
+
+COMMANDS = {"echo": run_echo, "type": run_type}
+
+
+def main():
+    exit = False
+
+    # Continue looping until user inputs "exit"
+    while not exit:
+        # Display command prompt and read user input
+        sys.stdout.write("$ ")
+        command = input()
+        
+        exit = True if command == "exit" else False
+        if exit: 
+            break
+
+        # Get the command by splitting user input into a list of words and grabbing the first one
+        first_word = command.split()[0]
+        # No command entered, only invalid input
+        if first_word not in COMMANDS: 
+
+        # If the command is invalid, it won't be in COMMMANDS, so None is returned when attempting to print command below
+        cmd = COMMANDS.get(first_word) if first_word in COMMANDS else command
+
+        # Identify invalid input by checking if cmd is a string (opposed to a function)
+        if type(cmd) == str: 
+            print(f"{cmd}: not found")
+        else: 
+            print(cmd(command))
+
+
+if __name__ == "__main__":
+    main()
+
+```
 
 

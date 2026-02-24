@@ -2,17 +2,14 @@ import sys
 
 
 def run_echo(cmd): 
-    cmd = cmd.removeprefix("echo ")
-    return cmd 
+    print(cmd)
 
 
 def run_type(cmd): 
-    cmd = cmd.removeprefix("type ")
-
     if cmd in ("echo", "type", "exit"): 
-        return f"{cmd} is a shell builtin"
+        print(f"{cmd} is a shell builtin")
     else: 
-        return f"{cmd}: not found"
+        print(f"{cmd}: not found")
 
 
 COMMANDS = {"echo": run_echo, "type": run_type}
@@ -42,8 +39,11 @@ def main():
         # Grab the command's handler
         handler = COMMANDS.get(cmd) 
 
-        result = handler(command)
-        print(result)
+        # Grab the command's arguments
+        command_args = command.split(cmd + " ")
+
+        # Execute the command
+        handler(command_args)
 
 
 if __name__ == "__main__":
