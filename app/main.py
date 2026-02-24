@@ -22,9 +22,7 @@ COMMANDS = {"echo": run_echo, "type": run_type, "exit": run_exit}
 
 
 def main():
-    # Continue looping until user inputs "exit"
     while True:
-        # Display command prompt and read user input
         sys.stdout.write("$ ")
         command = input()
         
