@@ -37,9 +37,6 @@ def main():
         # Grab the command's handler
         handler = COMMANDS.get(cmd) 
 
-        if cmd == "exit":
-            handler()
-
         # Grab the command's arguments 
         command_args = command.removeprefix(cmd + " ")
 
