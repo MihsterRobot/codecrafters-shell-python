@@ -31,7 +31,8 @@ def main():
             break
         
         # Get the command by splitting user input into list of words and grabbing the first one
-        cmd = COMMANDS.get(command.split()[0])
+        first_word = command.split()[0]
+        cmd = COMMANDS.get(first_word)
         print(cmd(command))
         
         # if "echo" not in command:
