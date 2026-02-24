@@ -30,7 +30,7 @@ def main():
         if exit: 
             break
 
-        if command not in ("echo", "type"): 
+        if "_" in command: 
             print(f"{command}: not found")    
             break
         
