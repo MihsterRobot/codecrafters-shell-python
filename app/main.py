@@ -15,15 +15,15 @@ def run_type(cmd):
     
     dirs = path_value.split(":")
     filename = cmd
-    
+
     for dir in dirs: 
         # Join directory path with filename
         full_path = os.path.join(dir, filename)
 
         # If file exists
         if os.path.isfile(full_path):
-            if os.access(filename, os.X_OK):
-                return f"{filename} is {dir}", None
+            if os.access(full_path, os.X_OK):
+                return f"{full_path} is {dir}", None
     
     return f"{cmd}: not found", None
         
