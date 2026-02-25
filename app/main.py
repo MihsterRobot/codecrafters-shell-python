@@ -26,9 +26,9 @@ def main():
                 print(output)
         
         path = c.find_executable(command_name)
-        command_args = command[1:]
-
+        
         if path is not None: 
+            command_args = command[1:]
             print(c.run_external_program(path, command_args))
         else: 
             print(f"{command_name}: not found")
