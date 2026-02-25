@@ -1,6 +1,6 @@
 import sys
 
-from . import commands
+from . import commands as c
 from commands import COMMANDS, EXIT
 
 
