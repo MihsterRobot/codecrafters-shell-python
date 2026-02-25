@@ -5,8 +5,7 @@ from .commands import COMMANDS, EXIT
 
 def main():
     while True:
-        sys.stdout.write("$ ")
-        command = input()
+        command = sys.stdout.write("$ ").input()
         
         # Extract the command name (first token) from the user's input
         cmd = command.split()[0]
