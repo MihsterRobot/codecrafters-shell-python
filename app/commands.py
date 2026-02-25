@@ -46,7 +46,7 @@ def run_external_program(path, args):
     result = subprocess.run([path] + args, capture_output=True, text=True)
     return result.stdout if result.returncode == 0 else result.stderr
 
-0
+
 def run_exit(cmd):
     return None, EXIT
 
