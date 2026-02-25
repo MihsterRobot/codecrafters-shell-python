@@ -33,6 +33,7 @@ def main():
             print(c.run_external_program(path, command_args))
             continue
         
+        print("Runs past if")
         print(f"{command_name}: not found")
 
 
