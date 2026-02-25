@@ -24,6 +24,8 @@ def main():
 
             if output is not None: 
                 print(output)
+
+            continue
         
         path = c.find_executable(command_name)
         
