@@ -14,7 +14,8 @@ def main():
         if command_name in COMMANDS: 
             # Retrieve the command's handler and isolate the raw argument string
             handler = COMMANDS[command_name] 
-            command_args = command[1:]
+            command_args = command[1] if len(command) > 1 else ""
+
 
             output, signal = handler(command_args)
 
