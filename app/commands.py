@@ -34,7 +34,7 @@ def find_executable(program_name):
         full_path = os.path.join(dir, program_name)
         
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-            return program_name
+            return full_path
         
     return None
 
