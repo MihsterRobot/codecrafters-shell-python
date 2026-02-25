@@ -12,7 +12,6 @@ def run_type(cmd):
     if cmd in ("echo", "type", "exit"): 
         return f"{cmd} is a shell builtin", None
     
-    
     path_value = os.environ["PATH"]
     dirs = path_value.split(":")
     filename = cmd
@@ -23,9 +22,27 @@ def run_type(cmd):
         if os.path.isfile(full_path):
             if os.access(full_path, os.X_OK):
                 return f"{filename} is {full_path}", None
-    
+
     return f"{filename}: not found", None
+
+
+def find_executable(program_name): 
+    path_value = os.environ["PATH"]
+    dirs = path_value.split(":")
+   
+    for dir in dirs:
+        full_path = os.path.join(dir, program_name)
         
+        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+            return full_path
+        
+    return None
+
+
+def run_external_program(path, args): 
+    result = subprocess.run(path, args)
+    return result.stdout if result.returncode == 0 else result.stderr
+
 
 def run_exit(cmd):
     return None, EXIT
