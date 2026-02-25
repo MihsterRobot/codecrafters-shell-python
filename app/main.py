@@ -31,7 +31,7 @@ def main():
         
         if path is not None: 
             command_args = command[1:]
-            print(c.run_external_program(path, command_args))
+            c.run_external_program(path, command_args)
             continue
         
         print(f"{command_name}: not found")
