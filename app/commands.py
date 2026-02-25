@@ -43,7 +43,7 @@ def find_executable(program_name):
 
 
 def run_external_program(path, args): 
-    result = subprocess.run([path, args], capture_output=True, text=True)
+    result = subprocess.run([path] + args, capture_output=True, text=True)
     return result.stdout if result.returncode == 0 else result.stderr
 
 0
