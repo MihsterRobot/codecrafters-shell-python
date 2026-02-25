@@ -27,14 +27,17 @@ def run_type(cmd):
 
 
 def find_executable(program_name): 
+    # Grab the PATH environment variable and then split it into a list of directories
     path_value = os.environ["PATH"]
     dirs = path_value.split(":")
    
     for dir in dirs:
+        # Generate a full path by appending the program name to the end of the directory
         full_path = os.path.join(dir, program_name)
         
+        # If the path points to an executable file, return the 
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-            return program_name
+            return full_path
         
     return None
 
@@ -43,7 +46,7 @@ def run_external_program(path, args):
     result = subprocess.run([path] + args, capture_output=True, text=True)
     return result.stdout if result.returncode == 0 else result.stderr
 
-
+0
 def run_exit(cmd):
     return None, EXIT
 
