@@ -4,7 +4,6 @@ from . import commands as c
 from .commands import COMMANDS, EXIT
 
 
-
 def main():
     while True:
         command = input("$ ").split()
