@@ -1,6 +1,6 @@
 import sys
 
-from . commands import COMMANDS, EXIT
+from .commands import COMMANDS, EXIT
 
 
 def main():

@@ -27,10 +27,6 @@ def run_type(cmd):
     return f"{filename}: not found", None
         
 
-# def run_execute(cmd): 
-
-
-
 def run_exit(cmd):
     return None, EXIT
 
