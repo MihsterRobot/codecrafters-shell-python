@@ -6,7 +6,7 @@ from .commands import COMMANDS, EXIT
 
 def main():
     while True:
-        sys.stdin.write("$ ")
+        sys.stdout.write("$ ")
         command = input().split()
 
         # command = input("$ ").split()
