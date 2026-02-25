@@ -27,7 +27,7 @@ def run_type(cmd):
 
 
 def find_executable(program_name): 
-    # Grab the PATH environment variable and then split it into a list of directories
+    # Split PATH into the directories the shell uses to look for executables
     path_value = os.environ["PATH"]
     dirs = path_value.split(":")
    

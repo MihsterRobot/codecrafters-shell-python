@@ -28,6 +28,7 @@ def main():
             continue
         
         path = c.find_executable(command_name)
+        print("path" + path)
         
         if path is not None: 
             command_args = command[1:]
