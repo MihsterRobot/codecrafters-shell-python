@@ -31,7 +31,6 @@ def main():
         if path is not None: 
             command_args = command[1:]
             print(c.run_external_program(path, command_args), end="")
-            # print("This line executed after the run_executable print statement")
             continue
         
         print(f"{command_name}: not found")
