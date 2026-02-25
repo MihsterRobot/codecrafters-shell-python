@@ -1,6 +1,6 @@
 import sys
 
-from .commands import COMMANDS, EXIT
+from . commands import COMMANDS, EXIT
 
 
 def main():
@@ -14,7 +14,7 @@ def main():
         if command_name in COMMANDS: 
             # Retrieve the command's handler and isolate the raw argument string
             handler = COMMANDS[command_name] 
-            command_args = command.removeprefix(command_name)
+            command_args = command.remove(command_name)
 
             output, signal = handler(command_args)
 
