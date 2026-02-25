@@ -35,9 +35,9 @@ def find_executable(program_name):
         # Generate a full path by appending the program name to the end of the directory
         full_path = os.path.join(dir, program_name)
         
-        # If the path points to an executable file, return the 
+        # If the path points to an executable file, return the program name
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-            return full_path
+            return program_name
         
     return None
 
