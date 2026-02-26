@@ -48,7 +48,7 @@ def run_external_program(path, args):
 
 
 def run_pwd(args): 
-    return os.getcwd()
+    return os.getcwd(), None
 
 
 def run_exit(args):
