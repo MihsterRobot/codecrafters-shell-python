@@ -9,7 +9,7 @@ def run_echo(args):
 
 
 def run_type(args): 
-    if args in ("echo", "type", "exit"): 
+    if args in ("echo", "type", "pwd", "exit"): 
         return f"{args} is a shell builtin", None
     
     path_env = os.environ["PATH"]
