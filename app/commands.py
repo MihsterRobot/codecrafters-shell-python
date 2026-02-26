@@ -47,8 +47,12 @@ def run_external_program(path, args):
     return result.stdout if result.returncode == 0 else result.stderr
 
 
+def run_pwd(args): 
+    return os.getcwd()
+
+
 def run_exit(args):
     return None, EXIT
 
 
-COMMANDS = {"echo": run_echo, "type": run_type, "exit": run_exit}
+COMMANDS = {"echo": run_echo, "type": run_type, "pwd": run_pwd, "exit": run_exit}
