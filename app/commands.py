@@ -4,20 +4,21 @@ import subprocess
 EXIT = object()
 
 
-def run_echo(cmd): 
-    return cmd, None
+def run_echo(args): 
+    return args, None
 
 
-def run_type(cmd): 
-    if cmd in ("echo", "type", "exit"): 
-        return f"{cmd} is a shell builtin", None
+def run_type(args): 
+    if args in ("echo", "type", "exit"): 
+        return f"{args} is a shell builtin", None
     
-    path_value = os.environ["PATH"]
-    dirs = path_value.split(":")
-    filename = cmd
+    path_env = os.environ["PATH"]
+    dirs = path_env.split(":")
+    filename = args
 
-    for dir in dirs: 
-        full_path = os.path.join(dir, filename)
+    for directory in dirs: 
+        # Construct the path to the program within this directory
+        full_path = os.path.join(directory, filename)
         
         if os.path.isfile(full_path):
             if os.access(full_path, os.X_OK):
@@ -28,12 +29,11 @@ def run_type(cmd):
 
 def find_executable(program_name): 
     # Split PATH into the directories the shell uses to look for executables
-    path_value = os.environ["PATH"]
-    dirs = path_value.split(":")
+    path_env = os.environ["PATH"]
+    dirs = path_env.split(":")
    
-    for dir in dirs:
-        # Generate a full path by appending the program name to the end of the directory
-        full_path = os.path.join(dir, program_name)
+    for directory in dirs:
+        full_path = os.path.join(directory, program_name)
         
         # If the path points to an executable file, return the program name
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
@@ -47,7 +47,7 @@ def run_external_program(path, args):
     return result.stdout if result.returncode == 0 else result.stderr
 
 
-def run_exit(cmd):
+def run_exit(args):
     return None, EXIT
 
 
