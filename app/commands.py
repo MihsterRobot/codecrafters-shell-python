@@ -20,9 +20,8 @@ def run_type(args):
         # Construct the path to the program within this directory
         full_path = os.path.join(directory, filename)
         
-        if os.path.isfile(full_path):
-            if os.access(full_path, os.X_OK):
-                return f"{filename} is {full_path}", None
+        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+            return f"{filename} is {full_path}", None
 
     return f"{filename}: not found", None
 
@@ -52,14 +51,18 @@ def run_pwd(args):
 
 
 def run_cd(args):
-    cwd = os.getcwd()
+    path_env = os.environ["PATH"]
+    dirs = path_env.split(":")
+    dest_path = args
+   
+    for directory in dirs:
+        # Change the current directory to the destination path if it exists
+        if dest_path in directory: 
+            os.chdir(dest_path)
     
-    if args in cwd: 
-        os.chdir(args)
-
     return None, None
-
-
+        
+        
 def run_exit(args):
     return None, EXIT
 
