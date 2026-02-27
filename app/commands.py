@@ -1,31 +1,32 @@
 import os
+import re
 import subprocess
 
 EXIT = object()
+TOKEN_RE = re.compile(r"'[^']*'[^\t']+")
 
 
 def run_echo(raw_args): 
+    args = parse_echo_args(raw_args)
+    return " ".join(args), None
+
+
+def parse_echo_args(raw): 
+    tokens = TOKEN_RE.findall(raw)
     args = []
     current = []
-    in_quotes = False
 
-    for char in raw_args: 
-        if char == "'": 
-            in_quotes = not in_quotes
-            continue
+    for tok in tokens: 
+        if tok.startswith("'") and tok.endswith("'"):
+            current.append(tok[1:-1]) 
+        else:
+            current.append(tok)
 
-        if char.isspace() and not in_quotes:
-            if current: 
-                args.append("".join(current))
-                current = []
-            else: 
-                current.append(char)
-        
-        if current: 
-            args.append("".join(current))
-
-        return " ".join(args), None
-
+    if current: 
+        args.append("".join(current))
+    
+    return args
+    
 
 def run_type(args): 
     if args in ("echo", "type", "pwd", "exit"): 
@@ -65,10 +66,6 @@ def run_external_program(path, args):
     return result.stdout if result.returncode == 0 else result.stderr
 
 
-def run_pwd(args): 
-    return os.getcwd(), None
-
-
 def run_cd(args):
     destination_path = args
 
@@ -84,6 +81,10 @@ def run_cd(args):
         return f"{destination_path}: No such file or directory", None
     
         
+def run_pwd(args): 
+    return os.getcwd(), None
+
+
 def run_exit(args):
     return None, EXIT
 

@@ -8,16 +8,14 @@ def main():
     while True:
         line = input("$ ")
         
-        if " " in line:
+        if " " in line: 
             command_name, raw_args = line.split(" ", 1)
-        else:
+        else: 
             command_name, raw_args = line, ""
         
         if command_name in COMMANDS: 
-            # Retrieve the command's handler and isolate the raw argument string
             handler = COMMANDS[command_name] 
-            # Combine all tokens after the command name back into a single argument string
-            
+        
             output, signal = handler(raw_args)
 
             if signal is EXIT:
