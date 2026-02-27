@@ -5,6 +5,18 @@ EXIT = object()
 
 
 def run_echo(args): 
+    # Remove single quotes from the string while preserving whitespace ('hello world' → hello world)
+    # If the string has multiple whitspace and no quotes, collapse the whitespace into one 
+    # Concantenate adjacent quoted strings into one string ('tim''pig' → timpig )
+    # Empty single quotes are ignored (hello''world → helloworld)
+
+    if "'" not in args: 
+        return " ".join(args), None
+    
+
+
+
+
     return args, None
 
 
