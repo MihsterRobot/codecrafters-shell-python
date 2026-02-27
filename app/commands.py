@@ -52,6 +52,11 @@ def run_pwd(args):
 
 def run_cd(args):
     destination_path = args
+
+    home_path = os.environ["HOME"]
+    if destination_path == "~":
+        os.chdir(home_path)
+        return None, None
    
     if os.path.isdir(destination_path):
         os.chdir(destination_path)
