@@ -16,7 +16,8 @@ def main():
             handler = COMMANDS[command_name] 
             # Combine all tokens after the command name back into a single argument string
             command_args = " ".join(command[1:])
-            print(command_args)
+
+            # print(command_args) Debugging
 
             output, signal = handler(command_args)
 

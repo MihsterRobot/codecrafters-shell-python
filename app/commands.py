@@ -53,12 +53,13 @@ def run_pwd(args):
 def run_cd(args):
     path_env = os.environ["PATH"]
     dirs = path_env.split(":")
-    dest_path = args
+    destination_path = args
    
     for directory in dirs:
         # Change the current directory to the destination path if it exists
-        if dest_path in directory: 
-            os.chdir(dest_path)
+        if destination_path in directory: 
+            os.chdir(destination_path)
+            break
     
     return None, None
         
