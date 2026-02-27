@@ -48,11 +48,21 @@ def run_external_program(path, args):
 
 
 def run_pwd(args): 
-    return os.getcwd(), None
+    cwd = os.getcwd()
+    
+    if args in cwd: 
+        os.getcwd()
+    return None, None
+
+
+def run_cd(args):
+
+
+    os.ch_dir(args)
 
 
 def run_exit(args):
     return None, EXIT
 
 
-COMMANDS = {"echo": run_echo, "type": run_type, "pwd": run_pwd, "exit": run_exit}
+COMMANDS = {"echo": run_echo, "type": run_type, "pwd": run_pwd, "cd": run_cd, "exit": run_exit}
