@@ -55,11 +55,17 @@ def run_cd(args):
     dirs = path_env.split(":")
     destination_path = args
    
-    for directory in dirs:
-        # If the destination path exists, make it the working directory
-        if destination_path == directory: 
-            os.chdir(destination_path)
-            break
+    if destination_path in path_env: 
+        os.chdir(destination_path)
+    
+    return None, None
+
+
+    # for directory in dirs:
+    #     # If the destination path exists, make it the working directory
+    #     if destination_path in directory: 
+    #         os.chdir(destination_path)
+    #         break
     
     return None, None
         
