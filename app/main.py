@@ -6,20 +6,19 @@ from .commands import COMMANDS, EXIT
 
 def main():
     while True:
-        command = input("$ ").split()
+        line = input("$ ")
         
-        # Extract the command name (first token) from the user's input
-        command_name = command[0]
+        if " " in line:
+            command_name, raw_args = line.split(" ", 1)
+        else:
+            command_name, raw_args = line, ""
         
         if command_name in COMMANDS: 
             # Retrieve the command's handler and isolate the raw argument string
             handler = COMMANDS[command_name] 
             # Combine all tokens after the command name back into a single argument string
-            command_args = " ".join(command[1:])
-
-            # print(command_args) Debugging
-
-            output, signal = handler(command_args)
+            
+            output, signal = handler(raw_args)
 
             if signal is EXIT:
                 break
