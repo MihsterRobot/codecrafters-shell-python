@@ -55,7 +55,7 @@ def run_cd(args):
     cwd = os.getcwd()
     
     if args in cwd: 
-        os.ch_dir(args)
+        os.chdir(args)
 
     return None, None
 
