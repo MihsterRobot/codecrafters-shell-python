@@ -56,8 +56,8 @@ def run_cd(args):
     destination_path = args
    
     for directory in dirs:
-        # Change the current directory to the destination path if it exists
-        if destination_path in directory: 
+        # If the destination path exists, make it the working directory
+        if destination_path == directory: 
             os.chdir(destination_path)
             break
     
