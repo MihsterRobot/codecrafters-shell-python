@@ -51,24 +51,14 @@ def run_pwd(args):
 
 
 def run_cd(args):
-    path_env = os.environ["PATH"]
-    dirs = path_env.split(":")
     destination_path = args
    
-    if destination_path in path_env: 
+    if os.path.isdir(destination_path):
         os.chdir(destination_path)
+        return None, None
+    else: 
+        return f"{destination_path}: No such file or directory"
     
-    return None, None
-
-
-    # for directory in dirs:
-    #     # If the destination path exists, make it the working directory
-    #     if destination_path in directory: 
-    #         os.chdir(destination_path)
-    #         break
-    
-    return None, None
-        
         
 def run_exit(args):
     return None, EXIT
