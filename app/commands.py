@@ -57,7 +57,7 @@ def run_cd(args):
         os.chdir(destination_path)
         return None, None
     else: 
-        return f"{destination_path}: No such file or directory"
+        return f"{destination_path}: No such file or directory", None
     
         
 def run_exit(args):
