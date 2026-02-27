@@ -4,20 +4,27 @@ import subprocess
 EXIT = object()
 
 
-def run_echo(args): 
-    # Remove single quotes from the string while preserving whitespace ('hello world' → hello world)
-    # If the string has multiple whitspace and no quotes, collapse the whitespace into one 
-    # Concantenate adjacent quoted strings into one string ('tim''pig' → timpig )
-    # Empty single quotes are ignored (hello''world → helloworld)
+def run_echo(raw_args): 
+    args = []
+    current = []
+    in_quotes = False
 
-    if "'" not in args: 
+    for char in raw_args: 
+        if char == "'": 
+            in_quotes = not in_quotes
+            continue
+
+        if char.isspace() and not in_quotes:
+            if current: 
+                args.append("".join(current))
+                current = []
+            else: 
+                current.append(char)
+        
+        if current: 
+            args.append("".join(current))
+
         return " ".join(args), None
-    
-
-
-
-
-    return args, None
 
 
 def run_type(args): 
