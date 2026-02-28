@@ -20,7 +20,7 @@ def run_echo(args):
     #     new_str = args.replace("'","")
     #     return new_str, None
     
-    if not args.startswith("'") and not args.endswith("'"):
+    if args.startswith("'") and not args.endswith("'") or not args.startswith("'") and args.endswith("'"):
         # Collapse whitespace
         if "'" not in args:
             spaces = 0
