@@ -6,13 +6,20 @@ from .commands import COMMANDS, EXIT
 
 def main():
     while True:
-        command = input("$ ").split()
+        line = input("$ ")
 
-        command_name = command[0]
+        command_name = []
+
+        for char in line: 
+            if char == " ": 
+                break
+            command_name.append(char)
+
+        command_name = "".join(command_name)
 
         if command_name in COMMANDS: 
             handler = COMMANDS[command_name] 
-            command_args = command.replace(command_name + " ", "")
+            command_args = line.replace(command_name + " ", "")
             # command_args = "".join(command[1:])
 
             output, signal = handler(command_args)
