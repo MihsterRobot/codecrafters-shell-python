@@ -15,10 +15,6 @@ def run_echo(args):
         if " " in args: 
             new_str = args[1:len(args)-1]
             return new_str, None
-
-    # if "''" in args:
-    #     new_str = args.replace("'","")
-    #     return new_str, None
     
     if not args.startswith("'") and not args.endswith("'"):
         if "'" not in args:

@@ -34,10 +34,10 @@ def main():
             continue
         
         path = c.find_executable(command_name)
-        # print("path =", path)
+        print("path =", path)
         
         if path is not None: 
-            # print("command args =", command_args)
+            print("command args =", command_args)
             print(c.run_external_program(path, command_args), end="")
             continue
         
