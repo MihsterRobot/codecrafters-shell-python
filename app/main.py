@@ -7,7 +7,6 @@ from .commands import COMMANDS, EXIT
 def main():
     while True:
         line = input("$ ")
-        print("input: ", line)
 
         command_name = []
 
