@@ -16,12 +16,12 @@ def main():
             command_name.append(char)
 
         command_name = "".join(command_name)
-        print("commmand name after "".join():", command_name)
+        # print("commmand name after "".join():", command_name) 
 
         if command_name in COMMANDS: 
             handler = COMMANDS[command_name] 
             command_args = line.replace(command_name + " ", "")
-            print("command arguments:", command_args)
+            # print("command arguments:", command_args)
 
             output, signal = handler(command_args)
 
