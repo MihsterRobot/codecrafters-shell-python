@@ -16,11 +16,12 @@ def main():
             command_name.append(char)
 
         command_name = "".join(command_name)
+        command_args = line.replace(command_name + " ", "")
         # print("commmand name after "".join():", command_name) 
 
         if command_name in COMMANDS: 
             handler = COMMANDS[command_name] 
-            command_args = line.replace(command_name + " ", "")
+            # command_args = line.replace(command_name + " ", "")
 
             output, signal = handler(command_args)
 
@@ -36,7 +37,7 @@ def main():
         # print("path =", path)
         
         if path is not None: 
-            command_args = line[1:]
+            # command_args = line[1:]
             print("command args =", command_args)
             print(c.run_external_program(path, command_args), end="")
             continue
