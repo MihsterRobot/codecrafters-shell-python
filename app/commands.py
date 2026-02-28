@@ -21,9 +21,10 @@ def run_echo(args):
     spaces = 0
     for char in args: 
         if char == " ": 
-            ++spaces
+            spaces += 1
+
         if spaces > 1: 
-            new_str = " ".join(new_str.split())
+            new_str = " ".join(args.split())
             return new_str, None
     
     return args, None
