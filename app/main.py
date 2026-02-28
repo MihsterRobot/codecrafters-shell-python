@@ -11,10 +11,9 @@ def main():
         command_name = command[0]
 
         if command_name in COMMANDS: 
-            # Retrieve the command's handler and isolate the raw argument string
             handler = COMMANDS[command_name] 
-            # Combine all tokens after the command name back into a single argument string
-            command_args = "".join(command[1:])
+            command_args = command.replace(command_name + " ", "")
+            # command_args = "".join(command[1:])
 
             output, signal = handler(command_args)
 
