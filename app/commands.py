@@ -11,21 +11,25 @@ def run_echo(args):
             return new_str, None
         
         if "''" in args: 
-            new_str = args.replace("''", "")
+            new_str = args.replace("'", "")
             return new_str, None
 
     if "''" in args:
         new_str = args.replace("''","")
         return new_str, None
+    
+    if not args.startswith("'") and not args.endswith("'"):
+        if "'" not in args:
+            spaces = 0
+            for char in args: 
+                if char == " ": 
+                    spaces += 1
 
-    spaces = 0
-    for char in args: 
-        if char == " ": 
-            spaces += 1
-
-        if spaces > 1: 
-            new_str = " ".join(args.split())
-            return new_str, None
+                if spaces > 1: 
+                    new_str = " ".join(args.split())
+                    return new_str, None
+                
+        
     
     return args, None
 
