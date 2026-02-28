@@ -29,8 +29,6 @@ def run_echo(args):
                     new_str = " ".join(args.split())
                     return new_str, None
                 
-        
-    
     return args, None
 
     
