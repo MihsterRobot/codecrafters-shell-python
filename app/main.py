@@ -10,20 +10,19 @@ def main():
         print("input: ", input)
 
         command_name = []
-        print("command name: ", command_name)
-        
+
         for char in line: 
             if char == " ": 
                 break
             command_name.append(char)
 
         command_name = "".join(command_name)
-        print("commmand name after "".join()", command_name)
+        print("commmand name after "".join():", command_name)
 
         if command_name in COMMANDS: 
             handler = COMMANDS[command_name] 
             command_args = line.replace(command_name + " ", "")
-            # command_args = "".join(command[1:])
+            print("command arguements:", command_args)
 
             output, signal = handler(command_args)
 
