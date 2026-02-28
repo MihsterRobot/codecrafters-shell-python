@@ -7,15 +7,18 @@ from .commands import COMMANDS, EXIT
 def main():
     while True:
         line = input("$ ")
+        print("input: ", input)
 
         command_name = []
-
+        print("command name: ", command_name)
+        
         for char in line: 
             if char == " ": 
                 break
             command_name.append(char)
 
         command_name = "".join(command_name)
+        print("commmand name after "".join()", command_name)
 
         if command_name in COMMANDS: 
             handler = COMMANDS[command_name] 
