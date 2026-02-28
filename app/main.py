@@ -37,8 +37,7 @@ def main():
         # print("path =", path)
         
         if path is not None: 
-            # command_args = line[1:]
-            print("command args =", command_args)
+            # print("command args =", command_args)
             print(c.run_external_program(path, command_args), end="")
             continue
         
