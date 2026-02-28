@@ -31,9 +31,9 @@ def run_echo(args):
                 if spaces > 1: 
                     new_str = " ".join(args.split())
                     return new_str, None
-        else: 
-            new_str = args.replace("'", "")
-            return new_str, None
+        
+        new_str = args.replace("'", "")
+        return new_str, None
                 
     return args, None
 
