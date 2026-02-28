@@ -35,7 +35,7 @@ def main():
         path = c.find_executable(command_name)
         
         if path is not None: 
-            command_args = command[1:]
+            command_args = line[1:]
             print(c.run_external_program(path, command_args), end="")
             continue
         
