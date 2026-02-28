@@ -33,7 +33,7 @@ def main():
             continue
         
         path = c.find_executable(command_name)
-        print("path =", path)
+        # print("path =", path)
         
         if path is not None: 
             command_args = line[1:]
