@@ -5,7 +5,7 @@ EXIT = object()
 
 
 def run_echo(args): 
-    if args.startswith("'") and args.endswith("'"):
+    if args.startswith("'") or args.endswith("'"):
         # Preserve the whitspace
         if " " in args: 
             new_str = args[1:len(args)-1]
@@ -16,9 +16,9 @@ def run_echo(args):
             new_str = args.replace("'", "")
             return new_str, None
 
-    if "''" in args:
-        new_str = args.replace("'","")
-        return new_str, None
+    # if "''" in args:
+    #     new_str = args.replace("'","")
+    #     return new_str, None
     
     if not args.startswith("'") and not args.endswith("'"):
         if "'" not in args:
