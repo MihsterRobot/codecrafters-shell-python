@@ -6,14 +6,14 @@ EXIT = object()
 
 def run_echo(args): 
     if args.startswith("'") or args.endswith("'"):
-        # Preserve the whitspace
-        if " " in args: 
-            new_str = args[1:len(args)-1]
-            return new_str, None
-        
         # If two consecutive single quotes exist, remove all single quotes
         if "''" in args: 
             new_str = args.replace("'", "")
+            return new_str, None
+
+        # Preserve the whitspace
+        if " " in args: 
+            new_str = args[1:len(args)-1]
             return new_str, None
 
     # if "''" in args:
