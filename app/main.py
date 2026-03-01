@@ -12,7 +12,7 @@ def main():
         if " " in line:
             command_name, raw_args = line.split(" ", 1)
         else:
-            command_name, raw_args = line, "
+            command_name, raw_args = line, ""
         
         if command_name in COMMANDS: 
             handler = COMMANDS[command_name] 
