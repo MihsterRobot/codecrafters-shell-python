@@ -1,4 +1,5 @@
 import sys
+import shlex
 
 from . import commands as c
 from .commands import COMMANDS, EXIT
@@ -8,22 +9,14 @@ def main():
     while True:
         line = input("$ ")
 
-        command_name = []
-
-        for char in line: 
-            if char == " ": 
-                break
-            command_name.append(char)
-
-        command_name = "".join(command_name)
-        command_args = line.replace(command_name + " ", "")
-        # print("commmand name after "".join():", command_name) 
-
+        if " " in line:
+            command_name, raw_args = line.split(" ", 1)
+        else:
+            command_name, raw_args = line, "
+        
         if command_name in COMMANDS: 
             handler = COMMANDS[command_name] 
-            # command_args = line.replace(command_name + " ", "")
-
-            output, signal = handler(command_args)
+            output, signal = handler(raw_args)
 
             if signal is EXIT:
                 break
@@ -34,11 +27,12 @@ def main():
             continue
         
         path = c.find_executable(command_name)
-        print("path =", path)
         
         if path is not None: 
-            print("command args =", command_args)
-            print(c.run_external_program(path, command_args), end="")
+            arg_list = shlex.split(raw_args)
+
+            print(c.run_external_program(path, raw_args), end="")
+
             continue
         
         print(f"{command_name}: not found")
