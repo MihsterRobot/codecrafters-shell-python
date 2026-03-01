@@ -31,7 +31,7 @@ def main():
         if path is not None: 
             arg_list = shlex.split(raw_args)
 
-            print(c.run_external_program(path, raw_args), end="")
+            print(c.run_external_program(path, arg_list), end="")
 
             continue
         
