@@ -24,7 +24,7 @@ def run_echo(args):
                 if char == " ": 
                     spaces += 1
 
-                if spaces > 1: 
+                if spaces > 1 and '"' not in args: 
                     new_str = " ".join(args.split())
                     return new_str, None
         
