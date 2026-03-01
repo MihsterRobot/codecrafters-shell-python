@@ -29,7 +29,7 @@ def run_echo(args):
                     return new_str, None
         
         # Remove all double quotes
-        new_str = new_str.replace('"', "")
+        new_str = args.replace('"', "")
         return new_str, None
             
     return args, None
