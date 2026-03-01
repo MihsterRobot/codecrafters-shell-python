@@ -17,6 +17,7 @@ def run_echo(args):
             return new_str, None
     
     if not args.startswith("'") and not args.endswith("'"):
+        # Collapse multiple whitespaces into one
         if "'" not in args:
             spaces = 0
             for char in args: 
@@ -26,7 +27,11 @@ def run_echo(args):
                 if spaces > 1: 
                     new_str = " ".join(args.split())
                     return new_str, None
-                
+        
+        # Remove all double quotes
+        new_str = new_str.replace('"', "")
+        return new_str, None
+            
     return args, None
 
     
