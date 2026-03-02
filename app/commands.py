@@ -3,7 +3,7 @@ import re
 import subprocess
 
 EXIT = object()
-TOKEN_RE = re.compile(r'"[^"]*"|\'[^\']*\'[^ \t\'"]+'))
+TOKEN_RE = re.compile(r'"[^"]*"|\'[^\']*\'[^ \t\'"]+')
 
 
 def run_echo(args): 
