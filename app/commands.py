@@ -32,18 +32,18 @@ def parse_echo_args(raw):
         else:
             piece = tok
 
-    # Add segment to current argument
-    current.append(piece)
+        # Add segment to current argument
+        current.append(piece)
 
-    # Determine if next token is separated by whitespace
-    if i + 1 < len(tokens):
-        end_of_tok = positions[i] + len(tok)
-        start_of_next = positions[i+1]
+        # Determine if next token is separated by whitespace
+        if i + 1 < len(tokens):
+            end_of_tok = positions[i] + len(tok)
+            start_of_next = positions[i+1]
 
-        # When tokens aren't adjacent in the raw string, they belong to different arguments 
-        if any(c.isspace() for c in raw[end_of_tok:start_of_next]):
-            args.append("".join(current))
-            current = []
+            # When tokens aren't adjacent in the raw string, they belong to different arguments 
+            if any(c.isspace() for c in raw[end_of_tok:start_of_next]):
+                args.append("".join(current))
+                current = []
 
     if current: 
         args.append("".join(current))
