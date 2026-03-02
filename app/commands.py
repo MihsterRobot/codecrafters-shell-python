@@ -13,7 +13,6 @@ def run_echo(raw_args):
 
 def parse_echo_args(raw):
     tokens = TOKEN_RE.findall(raw)
-    print("tokens:", tokens)
     args, current = [], []
 
     # Track where each token came from
