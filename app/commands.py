@@ -15,14 +15,35 @@ def parse_echo_args(raw):
     tokens = TOKEN_RE.findall(raw)
     args, current = [], []
 
+    # Track where each token came from
+    positions = []
+    idx = 0
     for tok in tokens: 
+        start = raw.find(tok, idx)
+        positions.append(start)
+        idx = start + len(tok)
+
+    for i, tok in enumerate(tokens):
         # Strip quotes
         if tok.startswith("'") and tok.endswith("'"):
-            current.append(tok[1:-1])
+            piece = tok[1:-1]
         elif tok.startswith('"') and tok.endswith('"'):
-            current.append(tok[1:-1])
+            piece = tok[1:-1]
         else:
-            current.append(tok)
+            piece = tok
+
+    # Add segment to current argument
+    current.append(piece)
+
+    # Determine if next token is separated by whitespace
+    if i + 1 < len(tokens):
+        end_of_tok = positions[i] + len(tok)
+        start_of_next = positions[i+1]
+
+        # When tokens aren't adjacent in the raw string, they belong to different arguments 
+        if any(c.isspace() for c in raw[end_of_tok:start_of_next]):
+            args.append("".join(current))
+            current = []
 
     if current: 
         args.append("".join(current))
