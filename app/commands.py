@@ -3,7 +3,7 @@ import re
 import subprocess
 
 EXIT = object()
-TOKEN_RE = re.compile(r'"[^"]*"|\'[^\']*\'[^ \t\'"]+')
+TOKEN_RE = re.compile(r'"[^"]*"|\'[^\']*\'|[^ \t\'"]+')
 
 
 def run_echo(raw_args): 
@@ -13,8 +13,7 @@ def run_echo(raw_args):
 
 def parse_echo_args(raw):
     tokens = TOKEN_RE.findall(raw)
-    args = []
-    current = []
+    args, current = [], []
 
     for tok in tokens: 
         # Strip quotes
