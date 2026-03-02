@@ -1,7 +1,9 @@
 import os
+import re
 import subprocess
 
 EXIT = object()
+TOKEN_RE = re.compile(r'"[^"]*"|\'[^\']*\'[^ \t\'"]+'))
 
 
 def run_echo(args): 
@@ -20,6 +22,7 @@ def run_echo(args):
         # Collapse multiple whitespaces into one
         if "'" not in args:
             spaces = 0
+
             for char in args: 
                 if char == " ": 
                     spaces += 1
