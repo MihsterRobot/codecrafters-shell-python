@@ -6,38 +6,31 @@ EXIT = object()
 TOKEN_RE = re.compile(r'"[^"]*"|\'[^\']*\'[^ \t\'"]+')
 
 
-def run_echo(args): 
-    if args.startswith("'") or args.endswith("'"):
-        # If two consecutive single quotes exist, remove all single quotes
-        if "''" in args: 
-            new_str = args.replace("'", "")
-            return new_str, None
-
-        # Preserve the whitspace
-        if " " in args: 
-            new_str = args[1:len(args)-1]
-            return new_str, None
+def run_echo(raw_args): 
+    args = parse_echo_args(raw_args)
+    return " ".join(args), None
     
-    if not args.startswith("'") and not args.endswith("'"):
-        # Collapse multiple whitespaces into one
-        if "'" not in args:
-            spaces = 0
 
-            for char in args: 
-                if char == " ": 
-                    spaces += 1
+def parse_echo_args(raw):
+    tokens = TOKEN_RE.findall(raw)
+    args = []
+    current = []
 
-                if spaces > 1 and '"' not in args: 
-                    new_str = " ".join(args.split())
-                    return new_str, None
-        
-        # Remove all double quotes
-        new_str = args.replace('"', "")
-        return new_str, None
-            
-    return args, None
+    for tok in tokens: 
+        # Strip quotes
+        if tok.startswith("'")) and tok.endswith("'"):
+            current.append(tok[1:-1])
+        elif tok.startswith('"') and tok.endswith('"'):
+            current.append(tok[1:-1])
+        else:
+            current.append(tok)
 
-    
+    if current: 
+        args.append("".join(current))
+
+    return args
+
+
 def run_type(args): 
     if args in ("echo", "type", "pwd", "exit"): 
         return f"{args} is a shell builtin", None
