@@ -18,7 +18,7 @@ def parse_echo_args(raw):
 
     for tok in tokens: 
         # Strip quotes
-        if tok.startswith("'")) and tok.endswith("'"):
+        if tok.startswith("'") and tok.endswith("'"):
             current.append(tok[1:-1])
         elif tok.startswith('"') and tok.endswith('"'):
             current.append(tok[1:-1])
