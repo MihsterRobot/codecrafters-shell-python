@@ -13,7 +13,8 @@ def run_echo(raw_args):
 
 def parse_echo_args(raw):
     tokens = TOKEN_RE.findall(raw)
-    args, current = [], []
+    args = []
+    current = []
 
     # Track where each token came from
     positions = []
@@ -24,6 +25,20 @@ def parse_echo_args(raw):
         idx = start + len(tok)
 
     for i, tok in enumerate(tokens):
+        # Handle backslashes outside quotes
+        if "\\" in tok and not (tok.startswith("'") and tok.endswith("'")) and not (tok.startswith('"') and tok.endswith('"')): 
+            new_tok = []
+            j = 0
+
+            while j < len(tok): 
+                if tok[j] == "\\" and j + 1 < len(tok):
+                    new_tok.append(tok[j+1])
+                    j += 2
+                else:
+                    new_tok.append(tok[j])
+                    j += 1
+                tok = "".join(new_tok)
+
         # Strip quotes
         if tok.startswith("'") and tok.endswith("'"):
             piece = tok[1:-1]
@@ -41,10 +56,10 @@ def parse_echo_args(raw):
             start_of_next = positions[i+1]
 
             # When tokens aren't adjacent in the raw string, they belong to different arguments 
-            if any(c.isspace() for c in raw[end_of_tok:start_of_next]):
+            if any(char.isspace() for char in raw[end_of_tok:start_of_next]):
                 args.append("".join(current))
                 current = []
-
+    
     if current: 
         args.append("".join(current))
 
@@ -73,7 +88,7 @@ def find_executable(program_name):
     # Split PATH into the directories the shell uses to look for executables
     path_env = os.environ["PATH"]
     dirs = path_env.split(":")
-   
+
     for directory in dirs:
         full_path = os.path.join(directory, program_name)
         
