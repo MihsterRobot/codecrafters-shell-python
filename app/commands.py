@@ -3,7 +3,7 @@ import re
 import subprocess
 
 EXIT = object()
-TOKEN_RE = re.compile(r'"[^"]*" | \'[^\']*\' | [^ \t\'"]+')
+TOKEN_RE = re.compile(r'"[^"]*"|\'[^\']*\'|[^ \t\'"]+')
 
 
 def run_echo(raw_args): 
@@ -60,10 +60,11 @@ def parse_echo_args(raw):
     positions = []
     idx = 0
     for tok in tokens: 
-        start = raw.find(tok, idx)
+        start = raw.find(tok, idx) 
         positions.append(start)
         idx = start + len(tok)
 
+    # Iterate over tokens with their index so we can look at the next token when needed
     for i, tok in enumerate(tokens):
         # Strip quotes
         if tok.startswith("'") and tok.endswith("'"):
@@ -73,7 +74,6 @@ def parse_echo_args(raw):
         else:
             piece = tok
 
-        # Add segment to current argument
         current.append(piece)
 
         # Determine if the next token is separated by whitespace
