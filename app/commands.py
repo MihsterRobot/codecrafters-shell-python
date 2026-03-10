@@ -17,8 +17,9 @@ def preprocess_backslashes(raw):
         return raw
     
     tokens = TOKEN_RE_2.findall(raw)
+    print("tokens:", tokens)
     processed = []
-    
+
     for tok in tokens: 
         if "\\" in tok: 
             processed.append(tok[1:])
