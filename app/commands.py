@@ -3,7 +3,8 @@ import re
 import subprocess
 
 EXIT = object()
-TOKEN_RE = re.compile(r'"[^"]*"|\'[^\']*\'|[^ \t\'"]+')
+TOKEN_RE_1 = re.compile(r'"[^"]*"|\'[^\']*\'|[^ \t\'"]+')
+TOKEN_RE_2 = re.compile(r'[\S]+\\.|\\.|[^ \t]+')
 
 
 def run_echo(raw_args): 
@@ -12,47 +13,24 @@ def run_echo(raw_args):
     
 
 def preprocess_backslashes(raw):
-    result = []
-    i = 0
-    n = len(raw)
-    in_single = False
-    in_double = False
-
-    while i < n: 
-        char = raw[i]
-
-        # If the character is a single quote and not inside of double quotes
-        if char == "'" and not in_double: 
-            in_single = not in_single
-            result.append(char)
-            i += 1
-            continue
-
-        if char == '"' and not in_single:
-            in_double = not in_double
-            result.append(char)
-            i += 1
-            continue
-        
-        if char == "\\" and not in_single and not in_double:
-            if i + 1 < n: 
-                result.append(raw[i+1])
-                i += 2
-                continue
-            else:
-                result.append("\\")
-                i += 1
-                continue
-        
-        result.append(char)
-        i += 1
+    if raw.startswith("'") and raw.endswith("'") or raw.startswith('"') and raw.endswith('"'): 
+        return raw
     
-    return "".join(result)
+    tokens = TOKEN_RE_2.findall(raw)
+    processed = []
+    
+    for tok in tokens: 
+        if "\\" in tok: 
+            processed.append(tok[1:])
+        else:
+            processed.append(tok)
 
+    return "".join(processed)
+    
 
 def parse_echo_args(raw):
     raw = preprocess_backslashes(raw)
-    tokens = TOKEN_RE.findall(raw)
+    tokens = TOKEN_RE_1.findall(raw)
     args = []
     current = []
 
