@@ -4,7 +4,7 @@ import subprocess
 
 EXIT = object()
 TOKEN_RE_1 = re.compile(r'"[^"]*"|\'[^\']*\'|[^ \t\'"]+')
-TOKEN_RE_2 = re.compile(r'[\S]+\\.|\\.|[^ \t]+')
+TOKEN_RE_2 = re.compile(r'[\S]+\\[\S]+|[\S]+\\.|\\.|[^ \t]+')
 
 
 def run_echo(raw_args): 
@@ -21,8 +21,8 @@ def preprocess_backslashes(raw):
     processed = []
 
     for tok in tokens: 
-        if "\\" in tok: 
-            processed.append(tok[1:])
+        if tok[0].isChar(): 
+            processed.append(to)
         else:
             processed.append(tok)
 
