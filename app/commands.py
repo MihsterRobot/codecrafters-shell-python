@@ -40,7 +40,7 @@ def preprocess_backslashes(raw):
         else:
             processed.append(tok)
         
-    print("processed", "".join(processed)) # Debugging
+    # print("processed", "".join(processed)) # Debugging
     
     return "".join(processed)
     
@@ -48,7 +48,7 @@ def preprocess_backslashes(raw):
 def parse_echo_args(raw):
     raw = preprocess_backslashes(raw)
     tokens = TOKEN_RE_1.findall(raw)
-    # print("tokens:", tokens) # Debugging
+    print("tokens:", tokens) # Debugging
     args = []
     current = []
 
