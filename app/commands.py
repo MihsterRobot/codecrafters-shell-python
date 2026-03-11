@@ -32,7 +32,7 @@ def preprocess_backslashes(raw):
                 for i, char in enumerate(tok): 
                     if char == "\\" and prev_char != "\\":
                         prev_char = char
-                        new_string = tok.replace("\\", "")
+                        new_string = tok.replace("\\", "", 1)
                     else:   
                         prev_char = char
 
