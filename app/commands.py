@@ -17,15 +17,18 @@ def preprocess_backslashes(raw):
         return raw
     
     tokens = TOKEN_RE_2.findall(raw)
+    ESCAPED_SPACE = "{{SPACE}}"
     processed = []
 
     for tok in tokens: 
         if "\\" in tok :
-            # Remove the first occurence of the backslash 
-            processed.append(tok.replace("\\", "", 1))
-        else: 
+            if tok.startswith("\\ ") or tok.endswith("\\ "):
+                processed.append(tok.replace("\\", ESCAPED_SPACE, 1))
+            else: 
+                processed.append(tok.replace("\\", "", 1))
+        else:
             processed.append(tok)
-
+        
     # print("processed", "".join(processed)) # Debugging
     
     return "".join(processed)
@@ -34,7 +37,7 @@ def preprocess_backslashes(raw):
 def parse_echo_args(raw):
     raw = preprocess_backslashes(raw)
     tokens = TOKEN_RE_1.findall(raw)
-    print("tokens:", tokens)
+    # print("tokens:", tokens) # Debugging
     args = []
     current = []
 
@@ -70,6 +73,8 @@ def parse_echo_args(raw):
     
     if current: 
         args.append("".join(current))
+        
+    args = [args.replace("{{SPACE}}") for arg in args]
 
     return args
 
