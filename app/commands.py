@@ -36,11 +36,11 @@ def preprocess_backslashes(raw):
                     else:   
                         prev = char
 
-            processed.append("".join(new_string))
+                processed.append("".join(new_string))
         else:
             processed.append(tok)
         
-    # print("processed", "".join(processed)) # Debugging
+    print("processed", "".join(processed)) # Debugging
     
     return "".join(processed)
     
