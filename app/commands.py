@@ -25,7 +25,7 @@ def preprocess_backslashes(raw):
             processed.append(tok.replace("\\", "", 1))
         else: 
             processed.append(tok)
-    print(processed)
+    print("".join(processed))
     
     return "".join(processed)
     
