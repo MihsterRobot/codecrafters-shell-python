@@ -73,8 +73,8 @@ def parse_echo_args(raw):
     
     if current: 
         args.append("".join(current))
-        
-    args = [args.replace("{{SPACE}}") for arg in args]
+
+    args = [arg.replace("{{SPACE}}") for arg in args]
 
     return args
 
