@@ -17,16 +17,15 @@ def preprocess_backslashes(raw):
         return raw
     
     tokens = TOKEN_RE_2.findall(raw)
-    print("tokens:", tokens) # Debugging
-    print("\\")
     processed = []
 
     for tok in tokens: 
-        if tok[0].isChar(): 
-            processed.append(to)
-        else:
+        if "\\" in tok :
+            # Remove the first occurence of the backslash 
+            processed.append(tok.replace("\\", "", 1))
+        else: 
             processed.append(tok)
-
+    
     return "".join(processed)
     
 
