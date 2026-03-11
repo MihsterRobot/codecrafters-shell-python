@@ -27,16 +27,16 @@ def preprocess_backslashes(raw):
             if tok.startswith("\\ ") or tok.endswith("\\ "):
                 processed.append(tok.replace("\\ ", ESCAPED_SPACE))
             else: 
-                prev_char = ""
+                prev = ""
                 # Backslashes followed by non-whitespace characters
-                for i, char in enumerate(tok): 
-                    if char == "\\" and prev_char != "\\":
-                        prev_char = char
-                        new_string = tok.replace("\\", "", 1)
+                for char in tok: 
+                    if char == "\\" and prev != "\\":
+                        prev = char
+                        new_string = tok.replace(char, "", 1)
                     else:   
-                        prev_char = char
+                        prev = char
 
-                processed.append("".join(new_string))
+            processed.append("".join(new_string))
         else:
             processed.append(tok)
         
