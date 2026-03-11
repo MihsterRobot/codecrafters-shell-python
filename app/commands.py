@@ -23,7 +23,7 @@ def preprocess_backslashes(raw):
     for tok in tokens: 
         if "\\" in tok :
             if tok.startswith("\\ ") or tok.endswith("\\ "):
-                processed.append(tok.replace("\\", ESCAPED_SPACE, 1))
+                processed.append(tok.replace("\\ ", ESCAPED_SPACE, 1))
             else: 
                 processed.append(tok.replace("\\", "", 1))
         else:
