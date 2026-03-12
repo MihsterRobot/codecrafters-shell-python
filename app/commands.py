@@ -17,9 +17,8 @@ def preprocess_backslashes(raw):
         return raw
     
     tokens = TOKEN_RE_2.findall(raw)
-    ESCAPED_SPACE = "{{SPACE}}"  # Placeholder for preserving escaped spaces
     processed = []
-    new_string = []
+    ESCAPED_SPACE = "{{SPACE}}"  # Placeholder for preserving escaped spaces
 
     for tok in tokens: 
         if "\\" in tok :
@@ -27,16 +26,18 @@ def preprocess_backslashes(raw):
             if tok.startswith("\\ ") or tok.endswith("\\ "):
                 processed.append(tok.replace("\\ ", ESCAPED_SPACE))
             else: 
+                new_string = tok
                 prev = ""
+
                 # Backslashes followed by non-whitespace characters
                 for char in tok: 
                     if char == "\\" and prev != "\\":
-                        prev = char
-                        new_string = tok.replace(char, "", 1)
+                        prev = char  
+                        new_string = new_string.replace(char, "", 1),
                     else:   
                         prev = char
 
-                processed.append("".join(new_string))
+                processed.append(new_string)
         else:
             processed.append(tok)
         
