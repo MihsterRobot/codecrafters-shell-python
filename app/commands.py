@@ -68,9 +68,6 @@ def parse_echo_args(raw):
         positions.append(start)
         idx = start + len(tok)
 
-    tokens = [tok.replace("{{SINGLE_QUOTE}}", "'") for tok in tokens]
-    tokens = [tok.replace("{{DOUBLE_QUOTE}}", '"') for tok in tokens]
-
     # Iterate over tokens with their index so we can look at the next token when needed
     for i, tok in enumerate(tokens):
         # Strip quotes
@@ -97,6 +94,11 @@ def parse_echo_args(raw):
         args.append("".join(current))
 
     args = [arg.replace("{{SPACE}}", " ") for arg in args]
+    
+    # FIXME: This is a mistake because it causes tokens to bypass the quoting logic above 
+    # The placeholders need to be replaced to identify quoted strings
+    tokens = [tok.replace("{{SINGLE_QUOTE}}", "'") for tok in tokens]
+    tokens = [tok.replace("{{DOUBLE_QUOTE}}", '"') for tok in tokens]
 
     return args
 
