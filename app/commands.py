@@ -24,30 +24,27 @@ def preprocess_backslashes(raw):
     
     for tok in tokens: 
         if "\\" in tok :
-            # Handle backslashes followed by a single space
-            if tok.startswith("\\ ") or tok.endswith("\\ "):
-                processed.append(tok.replace("\\ ", ESCAPED_SPACE))
-            else: 
-                new_string = tok
-                prev = ""
+            new_string = tok
+            prev = ""
 
-                # Backslashes followed by non-whitespace characters
-                for char in tok: 
-                    if char == "\\" and prev != "\\":
-                        prev = char  
-                        new_string = new_string.replace(char, "", 1)
-                    elif char == "'" and prev == "\\": 
-                        prev = char
-                        new_string = new_string.replace(char, ESCAPED_SINGLE_QUOTE, 1)
-                    elif char == '"' and prev == "\\":
-                        prev = char
-                        new_string = new_string.replace(char, ESCAPED_DOUBLE_QUOTE, 1)
-                    else:   
-                        prev = char
+            for char in tok: 
+                if tok.startswith("\\ ") or tok.endswith("\\ "):
+                    new_string = new_string.replace("\\ ", ESCAPED_SPACE)
+                elif char == "\\" and prev != "\\":
+                    prev = char  
+                    new_string = new_string.replace(char, "", 1)
+                elif char == "'" and prev == "\\": 
+                    prev = char
+                    new_string = new_string.replace(char, ESCAPED_SINGLE_QUOTE, 1)
+                elif char == '"' and prev == "\\":
+                    prev = char
+                    new_string = new_string.replace(char, ESCAPED_DOUBLE_QUOTE, 1)
+                else:   
+                    prev = char
 
-                # print("new_string:", new_string) # Debugging
+            # print("new_string:", new_string) # Debugging
 
-                processed.append(new_string)
+            processed.append(new_string)
         else:
             processed.append(tok)
         
