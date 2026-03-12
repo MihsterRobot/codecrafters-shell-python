@@ -44,12 +44,14 @@ def preprocess_backslashes(raw):
                         new_string = new_string.replace(char, ESCAPED_DOUBLE_QUOTE, 1)
                     else:   
                         prev = char
-                print(new_string)
+
+                print("new_string:", new_string) # Debugging
+
                 processed.append(new_string)
         else:
             processed.append(tok)
         
-    # print("processed", "".join(processed)) # Debugging
+    print("processed", "".join(processed)) # Debugging
     
     return "".join(processed)
     
@@ -57,7 +59,7 @@ def preprocess_backslashes(raw):
 def parse_echo_args(raw):
     raw = preprocess_backslashes(raw)
     tokens = TOKEN_RE_1.findall(raw)
-    # print("tokens:", tokens) # Debugging
+    print("tokens:", tokens) # Debugging
     args = []
     current = []
 
