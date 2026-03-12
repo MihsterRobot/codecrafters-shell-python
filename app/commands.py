@@ -4,7 +4,7 @@ import subprocess
 
 EXIT = object()
 TOKEN_RE_1 = re.compile(r'"[^"]*"|\'[^\']*\'|[^ \t\'"]+')
-TOKEN_RE_2 = re.compile(r'[\S]+\\[\S]+|[\S]+\\.|\\.|[^ \t]+')
+TOKEN_RE_2 = re.compile(r'[\S]+\\[\S ]+|[\S]+\\.|\\.|[^ \t]+')
 ESCAPED_SPACE = "{{SPACE}}"  
 ESCAPED_SINGLE_QUOTE = "{{SINGLE_QUOTE}}"
 ESCAPED_DOUBLE_QUOTE = "{{DOUBLE_QUOTE}}"
