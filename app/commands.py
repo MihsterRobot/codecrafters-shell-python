@@ -20,10 +20,10 @@ def preprocess_backslashes(raw):
         return raw
     
     tokens = TOKEN_RE_2.findall(raw)
-    print("TOKENS: ", tokens)
     processed = []
     
     for tok in tokens: 
+        print("TOKENS: ", tokens)
         if "\\" in tok :
             # Handle backslashes followed by a single space
             if tok.startswith("\\ ") or tok.endswith("\\ "):
