@@ -37,8 +37,10 @@ def preprocess_backslashes(raw):
                         prev = char  
                         new_string = new_string.replace(char, "", 1)
                     elif char == "'" and prev == "\\": 
+                        prev = char
                         new_string = new_string.replace(char, ESCAPED_SINGLE_QUOTE, 1)
                     elif char == '"' and prev == "\\":
+                        prev = char
                         new_string = new_string.replace(char, ESCAPED_DOUBLE_QUOTE, 1)
                     else:   
                         prev = char
