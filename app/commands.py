@@ -5,7 +5,9 @@ import subprocess
 EXIT = object()
 TOKEN_RE_1 = re.compile(r'"[^"]*"|\'[^\']*\'|[^ \t\'"]+')
 TOKEN_RE_2 = re.compile(r'[\S]+\\[\S]+|[\S]+\\.|\\.|[^ \t]+')
-ESCAPED_SPACE = "{{SPACE}}"  # Placeholder for preserving escaped spaces
+ESCAPED_SPACE = "{{SPACE}}"  
+ESCAPED_SINGLE_QUOTE = "{{SINGLE_QUOTE}}"
+ESCAPED_DOUBLE_QUOTE = "{{DOUBLE_QUOTE}}"
 
 
 def run_echo(raw_args): 
@@ -34,6 +36,10 @@ def preprocess_backslashes(raw):
                     if char == "\\" and prev != "\\":
                         prev = char  
                         new_string = new_string.replace(char, "", 1)
+                    elif char == "'" and prev == "\\": 
+                        new_string = new_string.replace(char, ESCAPED_SINGLE_QUOTE, 1)
+                    elif char == '"' and prev == "\\":
+                        new_string = new_string.replace(char, ESCAPED_DOUBLE_QUOTE, 1)
                     else:   
                         prev = char
 
@@ -87,6 +93,8 @@ def parse_echo_args(raw):
         args.append("".join(current))
 
     args = [arg.replace("{{SPACE}}", " ") for arg in args]
+    args = [arg.replace("{{SINGLE_QUOTE}}", "'") for arg in args]
+    args = [arg.replace("{{DOUBLE_QUOTE}}", '"') for arg in args]
 
     return args
 
