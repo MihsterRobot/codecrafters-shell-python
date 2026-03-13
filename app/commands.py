@@ -33,10 +33,10 @@ def preprocess_backslashes(raw):
             prev = char
 
     # Whitespace inside quotes needs to be preserved
-    if result.startswith("'") and result.endswith("'") or result.startswith('"') and result.endswith('"') or "\\ " in result: 
+    if result.startswith("'") and result.endswith("'") or result.startswith('"') and result.endswith('"'): 
         result = [space.replace(" ", "{{SPACE}}") for space in result]
     
-    return "".join(result)
+    return result
     
  
 def parse_echo_args(raw):
