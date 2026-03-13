@@ -37,7 +37,7 @@ def preprocess_backslashes(raw):
         result = "".join([space.replace(" ", "{{SPACE}}") for space in result])
         result = "{{QUOTE}}" + result[1:-1] + "{{QUOTE}}"
 
-    return "".join(result)
+    return result
     
  
 def parse_echo_args(raw):
