@@ -5,9 +5,6 @@ import subprocess
 EXIT = object()
 TOKEN_RE_1 = re.compile(r'"[^"]*"|\'[^\']*\'|[^ \t\'"]+')
 TOKEN_RE_2 = re.compile(r'[\S]+\\[\S]+|[\S]+\\.|\\.|[^ \t]+')
-ESCAPED_SPACE = "{{SPACE}}"  
-ESCAPED_SINGLE_QUOTE = "{{SINGLE_QUOTE}}"
-ESCAPED_DOUBLE_QUOTE = "{{DOUBLE_QUOTE}}"
 
 
 def run_echo(raw_args): 
@@ -19,42 +16,29 @@ def preprocess_backslashes(raw):
     if raw.startswith("'") and raw.endswith("'") or raw.startswith('"') and raw.endswith('"'): 
         return raw
     
-    tokens = TOKEN_RE_2.findall(raw)
-    processed = []
-    
-    for tok in tokens: 
-        if "\\" in tok :
-            new_string = tok
-            prev = ""
+    # tokens = TOKEN_RE_2.findall(raw)
 
-            for char in tok: 
-                if tok.startswith("\\ ") or tok.endswith("\\ "):
-                    new_string = new_string.replace("\\ ", ESCAPED_SPACE)
-                elif char == "\\" and prev != "\\":
-                    prev = char  
-                    new_string = new_string.replace(char, "", 1)
-                elif char == " ": 
-                    new_string = new_string.replace(char, ESCAPED_SPACE)
-                else:   
-                    prev = char
+    result = raw
+    prev = ""
 
-            processed.append(new_string)
-            # print("new_string:", new_string) # Debugging
-        else:
-            processed.append(tok)
-        
-    # print("processed:", "".join(processed)) # Debugging
+    for char in raw: 
+        if char == "\\" and prev != "\\": 
+            # Handle nonliteral backslashes
+            prev = char
+            result = result.replace("\\", "")
+        # FIXME: Only whitespace inside quotes needs to be preserved
+        # This line treats all whitespace as literal
+        elif char == " ":
+            prev = char
+            result = result.replace(" ", "{{SPACE}}")
+        else: 
+            prev = char
     
-    return "".join(processed)
+    return "".join(result)
     
 
 def parse_echo_args(raw):
     raw = preprocess_backslashes(raw)
-    # FIXME: This is a mistake because it causes tokens to bypass the quoting logic above 
-    # The placeholders need to be replaced to identify quoted strings
-    raw = [placeholder.replace("{{SINGLE_QUOTE}}", "'") for placeholder in raw]
-    raw = [placeholder.replace("{{DOUBLE_QUOTE}}", '"') for placeholder in raw]
-    raw = "".join(raw)
     # print("RAW:", raw) # Debugging
     tokens = TOKEN_RE_1.findall(raw)
     # print("tokens:", tokens) # Debugging
@@ -86,7 +70,7 @@ def parse_echo_args(raw):
             end_of_tok = positions[i] + len(tok)
             start_of_next = positions[i+1]
 
-            # When tokens aren't adjacent in the raw string, they belong to different arguments 
+            # Nonadjacent tokens belong to different arguments 
             if any(char.isspace() for char in raw[end_of_tok:start_of_next]):
                 args.append("".join(current))
                 current = []
@@ -95,7 +79,7 @@ def parse_echo_args(raw):
         args.append("".join(current))
 
     args = [arg.replace("{{SPACE}}", " ") for arg in args]
-    
+
     return args
 
 
@@ -113,7 +97,7 @@ def run_type(args):
         
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
             return f"{filename} is {full_path}", None
-
+        
     return f"{filename}: not found", None
 
 
