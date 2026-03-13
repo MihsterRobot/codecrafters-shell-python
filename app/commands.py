@@ -36,7 +36,7 @@ def preprocess_backslashes(raw):
     if result.startswith("'") and result.endswith("'") or result.startswith('"') and result.endswith('"'): 
         result = [space.replace(" ", "{{SPACE}}") for space in result]
     
-    return result
+    return "".join(result)
     
  
 def parse_echo_args(raw):
