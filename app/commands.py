@@ -4,7 +4,7 @@ import subprocess
 
 EXIT = object()
 TOKEN_RE_1 = re.compile(r'"[^"]*"|\'[^\']*\'|[^ \t\'"]+')
-TOKEN_RE_2 = re.compile(r'[\S]+\\[\S]+|[\S]+\\.|\\.|[^ \t]+')
+# TOKEN_RE_2 = re.compile(r'[\S]+\\[\S]+|[\S]+\\.|\\.|[^ \t]+')
 
 
 def run_echo(raw_args): 
@@ -13,8 +13,8 @@ def run_echo(raw_args):
     
 
 def preprocess_backslashes(raw):
-    if raw.startswith("'") and raw.endswith("'") or raw.startswith('"') and raw.endswith('"'): 
-        return raw
+    # if raw.startswith("'") and raw.endswith("'") or raw.startswith('"') and raw.endswith('"'): 
+    #     return raw
     
     # tokens = TOKEN_RE_2.findall(raw)
 
@@ -26,17 +26,16 @@ def preprocess_backslashes(raw):
             # Handle nonliteral backslashes
             prev = char
             result = result.replace("\\", "")
-        # FIXME: Only whitespace inside quotes needs to be preserved
-        # This line treats all whitespace as literal
-        elif char == " ":
-            prev = char
-            result = result.replace(" ", "{{SPACE}}")
         else: 
             prev = char
+
+    # Whitespace inside quotes needs to be preserved
+    if result.startswith("'") and result.endswith("'") or result.startswith('"') and result.endswith('"'): 
+        result = [space.replace(" ", "{{SPACE}}") for space in result]
     
     return "".join(result)
     
-
+ 
 def parse_echo_args(raw):
     raw = preprocess_backslashes(raw)
     # print("RAW:", raw) # Debugging
