@@ -41,7 +41,7 @@ def parse_echo_args(raw):
     raw = preprocess_backslashes(raw)
     # print("RAW:", raw) # Debugging
     tokens = TOKEN_RE_1.findall(raw)
-    # print("tokens:", tokens) # Debugging
+    print("TOKENS:", tokens) # Debugging
     args = []
     current = []
 
