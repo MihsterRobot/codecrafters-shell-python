@@ -62,7 +62,7 @@ def parse_echo_args(raw):
     raw = [placeholder.replace("{{SINGLE_QUOTE}}", "'") for placeholder in raw]
     raw = [placeholder.replace("{{DOUBLE_QUOTE}}", '"') for placeholder in raw]
     raw = "".join(raw)
-    print("RAW:", raw) # Debugging
+    # print("RAW:", raw) # Debugging
     tokens = TOKEN_RE_1.findall(raw)
     # print("tokens:", tokens) # Debugging
     args = []
