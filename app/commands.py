@@ -26,7 +26,10 @@ def preprocess_backslashes(raw):
             # Handle nonliteral backslashes
             prev = char
             result = result.replace("\\", "")
-        else: 
+        elif char ==  " " and prev == "\\":
+            prev = char
+            result = result.replace(" ", "{{SPACE}}")
+        else:
             prev = char
 
     # Whitespace inside quotes needs to be preserved
