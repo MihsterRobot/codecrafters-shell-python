@@ -61,11 +61,6 @@ def parse_echo_args(raw):
     args = []
     current = []
 
-    # FIXME: This is a mistake because it causes tokens to bypass the quoting logic above 
-    # The placeholders need to be replaced to identify quoted strings
-    tokens = [tok.replace("{{SINGLE_QUOTE}}", "'") for tok in tokens]
-    tokens = [tok.replace("{{DOUBLE_QUOTE}}", '"') for tok in tokens]
-
     # Track where each token came from
     positions = []
     idx = 0
