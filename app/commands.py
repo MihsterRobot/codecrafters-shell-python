@@ -32,10 +32,11 @@ def preprocess_backslashes(raw):
         else:
             prev = char
 
-    # Whitespace inside quotes needs to be preserved
+    # Whitespace inside quotes has to be preserved
     if result.startswith("'") and result.endswith("'") or result.startswith('"') and result.endswith('"'): 
         result = [space.replace(" ", "{{SPACE}}") for space in result]
-    
+        result = "{{QUOTE}}" + result[1:-1] + "{{QUOTE}}"
+
     return "".join(result)
     
  
