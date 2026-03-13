@@ -57,6 +57,10 @@ def preprocess_backslashes(raw):
 
 def parse_echo_args(raw):
     raw = preprocess_backslashes(raw)
+    # FIXME: This is a mistake because it causes tokens to bypass the quoting logic above 
+    # The placeholders need to be replaced to identify quoted strings
+    raw = [placeholder.replace("{{SINGLE_QUOTE}}", "'") for placeholder in raw]
+    raw = [placeholder.replace("{{DOUBLE_QUOTE}}", '"') for placeholder in raw]
     # print("RAW:", raw) # Debugging
     tokens = TOKEN_RE_1.findall(raw)
     # print("tokens:", tokens) # Debugging
