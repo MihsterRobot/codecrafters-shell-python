@@ -30,7 +30,7 @@ def preprocess_backslashes(raw):
             prev = char
 
     # Whitespace inside quotes needs to be preserved
-    if result.startswith("'") and result.endswith("'") or result.startswith('"') and result.endswith('"'): 
+    if result.startswith("'") and result.endswith("'") or result.startswith('"') and result.endswith('"') or "\\ " in result: 
         result = [space.replace(" ", "{{SPACE}}") for space in result]
     
     return "".join(result)
