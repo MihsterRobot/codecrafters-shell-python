@@ -26,16 +26,16 @@ def preprocess_backslashes(raw):
             # Handle nonliteral backslashes
             prev = char
             result = result.replace("\\", "")
+        elif char ==  " " and prev == "\\":
+            prev = char
+            result = result.replace(" ", "{{SPACE}}")
         else:
             prev = char
 
-    in_single_quotes = result.startswith("'") and result.endswith("'")
-    in_double_quotes = result.startswith('"') and result.endswith('"')
-    contains_escaped_space = "\\ " in result
-
-    if in_single_quotes or in_double_quotes or contains_escaped_space:
-        result = [char.replace(" ", "{{SPACE}}") for char in result]
-        
+    # Whitespace inside quotes needs to be preserved
+    if result.startswith("'") and result.endswith("'") or result.startswith('"') and result.endswith('"') or "\\ " in result: 
+        result = [space.replace(" ", "{{SPACE}}") for space in result]
+    
     return "".join(result)
     
  
