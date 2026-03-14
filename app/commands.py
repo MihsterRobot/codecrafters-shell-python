@@ -13,26 +13,20 @@ def run_echo(raw_args):
     
 
 def preprocess_backslashes(raw):
-    # if raw.startswith("'") and raw.endswith("'") or raw.startswith('"') and raw.endswith('"'): 
-    #     return raw
-    
-    # tokens = TOKEN_RE_2.findall(raw)
-
     result = raw
     prev = ""
 
     for char in raw: 
-        if char == "\\" and prev != "\\": 
-            # Handle nonliteral backslashes
+        if char == "\\" and prev != "\\": # Handle escaped characters other than backslashes
             prev = char
             result = result.replace("\\", "")
-        elif char ==  " " and prev == "\\":
+        elif char ==  " " and prev == "\\": # Handle single escaped space  
             prev = char
             result = result.replace(" ", "{{SPACE}}")
         else:
             prev = char
 
-    # Whitespace inside quotes has to be preserved
+    # Whitespace inside quotes needs to be preserved
     if result.startswith("'") and result.endswith("'") or result.startswith('"') and result.endswith('"'): 
         result = [space.replace(" ", "{{SPACE}}") for space in result]
 
@@ -57,10 +51,13 @@ def parse_echo_args(raw):
 
     # Iterate over tokens with their index so we can look at the next token when needed
     for i, tok in enumerate(tokens):
+        in_single_quotes = tok.startswith("'") and tok.endswith("'")
+        in_double_quotes = tok.startswith('"') and tok.endswith('"')
+
         # Strip quotes
-        if tok.startswith("'") and tok.endswith("'"):
+        if in_single_quotes:
             piece = tok[1:-1]
-        elif tok.startswith('"') and tok.endswith('"'):
+        elif in_double_quotes:
             piece = tok[1:-1]
         else:
             piece = tok
