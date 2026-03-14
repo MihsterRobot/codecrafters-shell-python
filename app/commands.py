@@ -23,6 +23,12 @@ def preprocess_backslashes(raw):
         elif char ==  " " and prev == "\\": # Handle single escaped space  
             prev = char
             result = result.replace(" ", "{{SPACE}}")
+        elif char == "'" and prev == "\\":
+            prev = char
+            result = result.replace("\\'", "{{LIT_SQ}}", 1)
+        elif char == '"' and prev == "\\":
+            prev = char
+            result = result.replace('\\"', "{{LIT_DQ}}", 1)
         else:
             prev = char
 
@@ -62,6 +68,8 @@ def parse_echo_args(raw):
         else:
             piece = tok
 
+        piece = piece.replace("{{LIT_SQ}}", "'")
+        piece = piece.replace("{{LIT_DQ}}", '"')
         current.append(piece)
 
         # Determine if the next token is separated by whitespace
