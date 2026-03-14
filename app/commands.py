@@ -3,8 +3,7 @@ import re
 import subprocess
 
 EXIT = object()
-TOKEN_RE_1 = re.compile(r'"[^"]*"|\'[^\']*\'|[^ \t\'"]+')
-# TOKEN_RE_2 = re.compile(r'[\S]+\\[\S]+|[\S]+\\.|\\.|[^ \t]+')
+TOKEN_RE = re.compile(r'"[^"]*"|\'[^\']*\'|[^ \t\'"]+')
 
 
 def run_echo(raw_args): 
@@ -32,7 +31,12 @@ def preprocess_backslashes(raw):
         else:
             prev = char
 
-    # Whitespace inside quotes needs to be preserved
+    # FIXME: REMOVE 
+    # This block runs before tokenization in parse_echo_args
+    # It replaces every space inside the entire string if the whole string starts
+    # and ends with quotes, but that assumes the input is always a single quoted string
+    # This causes issues when handling multiple quoted strings because only whitespace within quotes should be preserved
+    # Whitespace between quoted strings should be collapsed 
     # if result.startswith("'") and result.endswith("'") or result.startswith('"') and result.endswith('"'): 
     #     result = [space.replace(" ", "{{SPACE}}") for space in result]
 
@@ -42,7 +46,7 @@ def preprocess_backslashes(raw):
 def parse_echo_args(raw):
     raw = preprocess_backslashes(raw)
     # print("RAW:", raw) # Debugging
-    tokens = TOKEN_RE_1.findall(raw)
+    tokens = TOKEN_RE.findall(raw)
     # print("TOKENS:", tokens) # Debugging
     args = []
     current = []
@@ -68,9 +72,10 @@ def parse_echo_args(raw):
         else:
             piece = tok
 
+        # Added after removing space preservation block from preprocess_backslashes
         if in_single_quotes or in_double_quotes:
             piece = piece.replace(" ", "{{SPACE}}")
-            
+
         piece = piece.replace("{{LIT_SQ}}", "'")
         piece = piece.replace("{{LIT_DQ}}", '"')
 
