@@ -33,8 +33,8 @@ def preprocess_backslashes(raw):
             prev = char
 
     # Whitespace inside quotes needs to be preserved
-    if result.startswith("'") and result.endswith("'") or result.startswith('"') and result.endswith('"'): 
-        result = [space.replace(" ", "{{SPACE}}") for space in result]
+    # if result.startswith("'") and result.endswith("'") or result.startswith('"') and result.endswith('"'): 
+    #     result = [space.replace(" ", "{{SPACE}}") for space in result]
 
     return "".join(result)
     
@@ -68,6 +68,9 @@ def parse_echo_args(raw):
         else:
             piece = tok
 
+        if in_single_quotes or in_double_quotes:
+            piece = piece.replace(" ", "{{SPACE}}")
+            
         piece = piece.replace("{{LIT_SQ}}", "'")
         piece = piece.replace("{{LIT_DQ}}", '"')
 
