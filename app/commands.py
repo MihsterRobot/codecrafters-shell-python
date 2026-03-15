@@ -47,7 +47,7 @@ def parse_echo_args(raw):
     # Preprocess backslashes only if the string is not within single quotes, as that would mean backslashes should
     # be treated as literal 
     if raw.startswith("'") and raw.endswith("'") or raw.startswith('"') and raw.endswith('"'):
-        raw = "".join([char.replace("'\'", "\\") for char in raw])
+        raw = "".join([char.replace("'\\'", "\\") for char in raw])
         tokens = TOKEN_RE.findall(raw)
     else: 
         raw = preprocess_backslashes(raw)
