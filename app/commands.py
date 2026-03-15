@@ -48,9 +48,11 @@ def parse_echo_args(raw):
     if not raw.startswith("'") and not raw.endswith("'") and not raw.startswith('"') and not raw.endswith('"'):
         raw = preprocess_backslashes(raw)
         tokens = TOKEN_RE.findall(raw)
+        print("1ST IF CONDITION EXECUTED")
     else: 
-        raw = raw.replace("'\\'", "5")
+        raw = raw.replace("'\\'", "\\")
         tokens = TOKEN_RE.findall(raw)
+        print("2ND IF CONDITION EXECUTED")
 
     # print("RAW:", raw) # Debugging
     # print("TOKENS:", tokens) # Debugging
