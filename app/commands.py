@@ -44,15 +44,15 @@ def preprocess_backslashes(raw):
     
  
 def parse_echo_args(raw):
-    # Preprocess backslashes only if the string is not within quotes
+    # Preprocess backslashes if the string is not within quotes (backslashes outside quotes = escape; backslashes inside quotes = literal (with some exceptions))
     if not raw.startswith("'") and not raw.endswith("'") and not raw.startswith('"') and not raw.endswith('"'):
         raw = preprocess_backslashes(raw)
         tokens = TOKEN_RE.findall(raw)
-        print("1ST IF CONDITION EXECUTED")
+        # print("1ST IF CONDITION EXECUTED") # Debugging
     else: 
-        raw = raw.replace("'\\'", "\\")
+        raw = raw.replace("'\\'", "'\'")
         tokens = TOKEN_RE.findall(raw)
-        print("2ND IF CONDITION EXECUTED")
+        # print("2ND IF CONDITION EXECUTED") Debugging
 
     # print("RAW:", raw) # Debugging
     # print("TOKENS:", tokens) # Debugging
