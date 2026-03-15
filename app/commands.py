@@ -18,10 +18,10 @@ def preprocess_backslashes(raw):
     for char in raw: 
         if char == "\\" and prev != "\\": # Handle escaped characters other than backslashes
             prev = char
-            result = result.replace("\\", "")
+            result = result.replace("\\", "", 1)
         elif char ==  " " and prev == "\\": # Handle single escaped space  
             prev = char
-            result = result.replace(" ", "{{SPACE}}")
+            result = result.replace(" ", "{{SPACE}}", 1)
         elif char == "'" and prev == "\\":
             prev = char
             result = result.replace(char, "{{LIT_SQ}}", 1)
