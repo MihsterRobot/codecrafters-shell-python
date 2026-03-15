@@ -95,9 +95,6 @@ def parse_echo_args(raw):
 
     args = [arg.replace("{{SPACE}}", " ") for arg in args]
 
-    if "'\\'" in args: 
-        args = args.replace("'\\'", "'\'")
-
     return args
 
 
