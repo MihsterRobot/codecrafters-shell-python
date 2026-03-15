@@ -45,7 +45,7 @@ def preprocess_backslashes(raw):
  
 def parse_echo_args(raw):
     # Preprocess backslashes if the string is not within quotes (backslashes outside quotes = escape; backslashes inside quotes = literal (with some exceptions))
-    if not raw.startswith("'") and not raw.endswith("'") and not raw.startswith('"') and not raw.endswith('"'):
+    if not (raw.startswith("'") and raw.endswith("'") or raw.startswith('"') and raw.endswith('"')):
         raw = preprocess_backslashes(raw)
         tokens = TOKEN_RE.findall(raw)
         # print("1ST IF CONDITION EXECUTED") # Debugging
