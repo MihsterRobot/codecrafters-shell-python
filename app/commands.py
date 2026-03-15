@@ -33,7 +33,7 @@ def preprocess_backslashes(raw):
 
     # FIXME: REMOVE 
     # This block runs before tokenization in parse_echo_args
-    # It replaces every space inside the entire string if the whole string starts
+    # It replaces every space inside the string if the entire string starts
     # and ends with quotes, but that assumes the input is always a single quoted string
     # This causes issues when handling multiple quoted strings because only whitespace within quotes should be preserved
     # Whitespace between quoted strings should be collapsed 
@@ -44,10 +44,17 @@ def preprocess_backslashes(raw):
     
  
 def parse_echo_args(raw):
-    raw = preprocess_backslashes(raw)
+    # Preprocess backslashes only if the string is not within single quotes, as that would mean backslashes should
+    # be treated as literal 
+    if raw.startswith("'") and raw.endswith("'"):
+        tokens = TOKEN_RE.findall(raw)
+    else: 
+        raw = preprocess_backslashes(raw)
+        tokens = TOKEN_RE.findall(raw)
+
     # print("RAW:", raw) # Debugging
-    tokens = TOKEN_RE.findall(raw)
     # print("TOKENS:", tokens) # Debugging
+
     args = []
     current = []
 
@@ -139,8 +146,8 @@ def run_external_program(path, args):
 
 def run_cd(args):
     destination_path = args
-
     home_dir = os.environ["HOME"]
+
     if destination_path == "~":
         os.chdir(home_dir)
         return None, None
