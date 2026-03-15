@@ -31,17 +31,8 @@ def preprocess_backslashes(raw):
         else:
             prev = char
 
-    # FIXME: REMOVE 
-    # This block runs before tokenization in parse_echo_args
-    # It replaces every space inside the string if the entire string starts
-    # and ends with quotes, but that assumes the input is always a single quoted string
-    # This causes issues when handling multiple quoted strings because only whitespace within quotes should be preserved
-    # Whitespace between quoted strings should be collapsed 
-    # if result.startswith("'") and result.endswith("'") or result.startswith('"') and result.endswith('"'): 
-    #     result = [space.replace(" ", "{{SPACE}}") for space in result]
-
     return "".join(result)
-    
+
  
 def parse_echo_args(raw):
     # Preprocess backslashes if the string is not within quotes (backslashes outside quotes = escape; backslashes inside quotes = literal (with some exceptions))
@@ -103,6 +94,9 @@ def parse_echo_args(raw):
         args.append("".join(current))
 
     args = [arg.replace("{{SPACE}}", " ") for arg in args]
+
+    if "'\\'" in args: 
+        args = args.replace("'\\'", "'\'")
 
     return args
 
