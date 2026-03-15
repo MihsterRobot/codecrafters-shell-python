@@ -50,7 +50,6 @@ def parse_echo_args(raw):
         tokens = TOKEN_RE.findall(raw)
         # print("1ST IF CONDITION EXECUTED") # Debugging
     else: 
-        raw = raw.replace("'\\'", "'\'")
         tokens = TOKEN_RE.findall(raw)
         # print("2ND IF CONDITION EXECUTED") Debugging
 
