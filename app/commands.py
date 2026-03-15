@@ -12,26 +12,30 @@ def run_echo(raw_args):
     
 
 def preprocess_backslashes(raw):
-    result = raw
+    buffer = []
     prev = ""
 
-    for char in raw: 
-        if char == "\\" and prev != "\\": # Handle escaped characters other than backslashes
-            prev = char
-            result = result.replace("\\", "", 1)
-        elif char ==  " " and prev == "\\": # Handle single escaped space  
-            prev = char
-            result = result.replace(" ", "{{SPACE}}", 1)
-        elif char == "'" and prev == "\\":
-            prev = char
-            result = result.replace(char, "{{LIT_SQ}}", 1)
-        elif char == '"' and prev == "\\":
-            prev = char
-            result = result.replace(char, "{{LIT_DQ}}", 1)
+    for char in raw:
+        if prev == "\\":
+            if char == " ":
+                buffer.append("{{SPACE}}")
+            elif char == "'":
+                buffer.append("{{LIT_SQ}}")
+            elif char == '"':
+                buffer.append("{{LIT_DQ}}")
+            else:
+                buffer.append(char)
+            prev = ""
         else:
-            prev = char
+            if char == "\\":
+                prev = "\\"
+            else:
+                buffer.append(char)
 
-    return "".join(result)
+    if prev == "\\":
+        buffer.append("\\")
+
+    return "".join(buffer)
 
  
 def parse_echo_args(raw):
