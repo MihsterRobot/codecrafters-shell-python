@@ -49,7 +49,7 @@ def parse_echo_args(raw):
         raw = preprocess_backslashes(raw)
         tokens = TOKEN_RE.findall(raw)
     else: 
-        raw = raw.replace("'\\'", "\\")
+        raw = raw.replace("'\\'", "5")
         tokens = TOKEN_RE.findall(raw)
 
     # print("RAW:", raw) # Debugging
