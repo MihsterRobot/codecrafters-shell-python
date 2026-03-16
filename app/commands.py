@@ -71,7 +71,7 @@ def parse_echo_args(raw):
         if in_single_quotes:
             piece = tok[1:-1]
         elif in_double_quotes:
-            piece = tok[1:-1]
+            piece = re.sub(r'\\([\\\"$`\n])', r'\1', tok[1:-1])
         else:
             piece = tok
 
