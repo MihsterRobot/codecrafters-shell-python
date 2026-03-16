@@ -48,7 +48,6 @@ def parse_echo_args(raw):
         # print("1ST IF CONDITION EXECUTED") # Debugging
     else: 
         tokens = TOKEN_RE.findall(raw)
-        print("TOKENS:", tokens)
         # print("2ND IF CONDITION EXECUTED") Debugging
 
     # print("RAW:", raw) # Debugging
