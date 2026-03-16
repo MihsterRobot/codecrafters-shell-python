@@ -39,13 +39,16 @@ def preprocess_backslashes(raw):
 
  
 def parse_echo_args(raw):
-    # Preprocess backslashes if the string is not within quotes (backslashes outside quotes = escape; backslashes inside quotes = literal (with some exceptions))
+    # (backslashes outside quotes = escape; backslashes inside quotes = literal (with some exceptions))
+    # Inside double quotes, a backslash escapes these symbols: \, $, ", `, newline
+    # Preprocess backslashes if the string is not inside quotes (treat them as escape sequences)
     if not (raw.startswith("'") and raw.endswith("'") or raw.startswith('"') and raw.endswith('"')):
         raw = preprocess_backslashes(raw)
         tokens = TOKEN_RE.findall(raw)
         # print("1ST IF CONDITION EXECUTED") # Debugging
     else: 
         tokens = TOKEN_RE.findall(raw)
+        print("TOKENS:", tokens)
         # print("2ND IF CONDITION EXECUTED") Debugging
 
     # print("RAW:", raw) # Debugging
@@ -75,7 +78,6 @@ def parse_echo_args(raw):
         else:
             piece = tok
 
-        # Added after removing space preservation block from preprocess_backslashes
         if in_single_quotes or in_double_quotes:
             piece = piece.replace(" ", "{{SPACE}}")
 
