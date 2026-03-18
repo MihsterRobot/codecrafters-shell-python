@@ -208,12 +208,13 @@ def parse_echo_args(raw):
                 else:
                     current.append(char)
                     i += 1
-            elif char == ' ' and state != 'unquoted': 
-                current.append(char)
-                i += 1
-            elif char == ' ' and state == 'unquoted': 
-                args.append(''.join(current))
-                current = []
+            elif char == ' ': 
+                if state == 'unquoted':
+                    if current: 
+                        args.append(''.join(current))
+                        current = []
+                else: 
+                    current.append(char)
                 i += 1
             else: 
                 current.append(char)
