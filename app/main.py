@@ -7,9 +7,9 @@ from .commands import COMMANDS, EXIT
 
 def main():
     while True:
-        line = input("$ ")
+        line = input('$ ')
 
-        command_name, raw_args = line.split(" ", 1) if " " in line else (line, "")
+        command_name, raw_args = line.split(' ', 1) if ' ' in line else (line, '')
 
         if command_name in COMMANDS: 
             handler = COMMANDS[command_name] 
@@ -28,12 +28,12 @@ def main():
         if path is not None: 
             arg_list = shlex.split(raw_args)
 
-            print(c.run_external_program(path, arg_list), end="")
+            print(c.run_external_program(path, arg_list), end='')
             
             continue
         
-        print(f"{command_name}: not found")
+        print(f'{command_name}: not found')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
