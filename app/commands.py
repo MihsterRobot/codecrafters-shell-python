@@ -222,7 +222,7 @@ def parse_echo_args(raw):
     if current: # The current list may retain characters after the loop finishes
         args.append("".join(current))
     
-    return args
+    return ''.join(args)
             
     
 
