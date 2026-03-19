@@ -9,11 +9,11 @@ def main():
         line = input('$ ')
 
         tokens = tokenize(line)
-        command_name = tokens[0]
-        raw_args = ''.join(tokens[1:])
+        command = tokens[0]
+        raw_args = ' '.join(tokens[1:])
 
-        if command_name in COMMANDS: 
-            handler = COMMANDS[command_name] 
+        if command in COMMANDS: 
+            handler = COMMANDS[command] 
             output, signal = handler(raw_args)
 
             if signal is EXIT:
@@ -24,13 +24,13 @@ def main():
 
             continue
         
-        path = c.find_executable(command_name)
+        path = c.find_executable(command)
 
         if path is not None: 
             print(c.run_external_program(path, tokens[1:]), end='')
             continue
         
-        print(f'{command_name}: not found')
+        print(f'{command}: not found')
 
 
 if __name__ == '__main__':
