@@ -7,8 +7,8 @@ from .commands import COMMANDS, EXIT, tokenize
 def main():
     while True:
         line = input('$ ')
-
         tokens = tokenize(line)
+        print('TOKENS:', tokens)
         command = tokens[0]
         raw_args = ' '.join(tokens[1:])
 
