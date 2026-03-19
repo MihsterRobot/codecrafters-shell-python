@@ -10,9 +10,8 @@ def main():
         line = input('$ ')
 
         tokens = tokenize(line)
-        
         command_name = tokens[0]
-        raw_args = tokens[1:]
+        raw_args = ' '.join(tokens[1:])
 
         # command_name, raw_args = line.split(' ', 1) if ' ' in line else (line, '')
 
@@ -31,9 +30,9 @@ def main():
         path = c.find_executable(command_name)
         
         if path is not None: 
-            arg_list = shlex.split(raw_args)
+            # arg_list = shlex.split(raw_args)
 
-            print(c.run_external_program(path, arg_list), end='')
+            print(c.run_external_program(path, raw_args), end='')
             
             continue
         
