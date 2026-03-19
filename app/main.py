@@ -10,7 +10,7 @@ def main():
 
         tokens = tokenize(line)
         command_name = tokens[0]
-        raw_args = ' '.join(tokens[1:])
+        raw_args = ''.join(tokens[1:])
 
         if command_name in COMMANDS: 
             handler = COMMANDS[command_name] 
@@ -25,7 +25,7 @@ def main():
             continue
         
         path = c.find_executable(command_name)
-        
+
         if path is not None: 
             print(c.run_external_program(path, tokens[1:]), end='')
             continue
