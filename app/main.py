@@ -2,14 +2,19 @@ import sys
 import shlex
 
 from . import commands as c
-from .commands import COMMANDS, EXIT
+from .commands import COMMANDS, EXIT, tokenize
 
 
 def main():
     while True:
         line = input('$ ')
 
-        command_name, raw_args = line.split(' ', 1) if ' ' in line else (line, '')
+        tokens = tokenize(line)
+        
+        command_name = tokens[0]
+        raw_args = tokens[1:]
+
+        # command_name, raw_args = line.split(' ', 1) if ' ' in line else (line, '')
 
         if command_name in COMMANDS: 
             handler = COMMANDS[command_name] 

@@ -2,15 +2,15 @@ import os
 import re
 import subprocess
 
-EXIT = object()
+EXIT = object() # Sentinel value (flag)
 
 
 def run_echo(raw_args): 
-    args = parse_echo_args(raw_args)
+    args = tokenize(raw_args)
     return ' '.join(args), None
     
-    
-def parse_echo_args(raw): 
+
+def tokenize(raw): 
     current = [] # Accumulate characters for the current argument
     args = [] # Collect completed arguments 
     symbols = {"'": 'single', '"': 'double'}
