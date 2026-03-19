@@ -1,5 +1,4 @@
 import os
-import re
 import subprocess
 
 EXIT = object() # Sentinel value (flag)
