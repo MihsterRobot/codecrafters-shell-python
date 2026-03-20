@@ -5,7 +5,7 @@ EXIT = object() # Sentinel value (flag)
 
 
 def run_echo(raw_args): 
-    return ''.join(raw_args), None
+    return ''.join(raw_args) + '\n', None
     
 
 def tokenize(raw): 
