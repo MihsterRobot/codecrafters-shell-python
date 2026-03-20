@@ -33,7 +33,7 @@ def main():
 
             if output is not None and output_file_path is not None: 
                 with open(output_file_path, 'w') as f:
-                    f.write(output)
+                    f.write(output + '\n')
             elif output is not None: 
                 print(output)
 
