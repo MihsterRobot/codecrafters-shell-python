@@ -48,11 +48,15 @@ def main():
                 if stdout: 
                     with open(output_file_path, 'w') as f:
                         f.write(stdout)
-
-                if stderr: 
-                    print(stderr, end='')
             else:
                 print(stdout, end='')
+              
+            if '2>' in tokens: 
+                if stderr:
+                    with open(output_file_path, 'w') as f: 
+                        f.write(stderr)
+            else: 
+                print(stderr, end='')
 
             continue
         else: 
