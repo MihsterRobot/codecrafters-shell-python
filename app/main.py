@@ -48,9 +48,9 @@ def main():
                 if output: 
                     with open(output_file_path, 'w') as f:
                         f.write(output)
-                        
+
                 if error: 
-                    print(error)
+                    print(error, end='')
             else:
                 print(output, end='')
 
