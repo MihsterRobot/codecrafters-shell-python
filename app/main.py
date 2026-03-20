@@ -42,13 +42,18 @@ def main():
         exe_name = c.find_executable(cmd_name)
 
         if exe_name is not None:
-            output = c.run_external_program(exe_name, cmd_tokens[1:])
+            output, error = c.run_external_program(exe_name, cmd_tokens[1:])
 
             if output_file_path is not None:
                 with open(output_file_path, 'w') as f:
                     f.write(output)
+                
+                if error: 
+                    print(error)
             else:
                 print(output, end='')
+                if error:
+                    print(error)
 
             continue
         else: 

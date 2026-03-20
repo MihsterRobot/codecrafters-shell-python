@@ -83,24 +83,24 @@ def run_type(args):
     return f'{filename}: not found', None
 
 
-def find_executable(program_name): 
+def find_executable(exe_name): 
     # Split PATH into the directories the shell uses to look for executables
     path_env = os.environ['PATH']
     dirs = path_env.split(':')
 
     for directory in dirs:
-        exe_path = os.path.join(directory, program_name)
+        exe_path = os.path.join(directory, exe_name)
         
         # If the path points to an executable file, return the program name
         if os.path.isfile(exe_path) and os.access(exe_path, os.X_OK):
-            return program_name
+            return exe_name
         
     return None
 
 
-def run_external_program(path, args): 
-    result = subprocess.run([path] + args, capture_output=True, text=True)
-    return result.stdout if result.returncode == 0 else result.stderr
+def run_external_program(exe_name, args): 
+    result = subprocess.run([exe_name] + args, capture_output=True, text=True)
+    return result.stdout, result.stderr
 
 
 def run_cd(args):
