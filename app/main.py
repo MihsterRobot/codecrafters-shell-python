@@ -51,11 +51,12 @@ def main():
             else:
                 print(stdout, end='')
               
-            if '2>' in tokens: 
-                if stderr:
-                    with open(output_file_path, 'w') as f: 
-                        f.write(stderr)
-            else: 
+                if '2>' in tokens: 
+                    if stderr:
+                        with open(output_file_path, 'w') as f: 
+                            f.write(stderr)
+            
+            if stderr:
                 print(stderr, end='')
 
             continue
