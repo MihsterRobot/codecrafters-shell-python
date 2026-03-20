@@ -15,16 +15,17 @@ def main():
             redir_idx = tokens.index(redir_type)
 
             cmd_tokens = tokens[0:redir_idx]
-            command_name = cmd_tokens[0]
+            cmd_name = cmd_tokens[0]
             raw_args = ' '.join(cmd_tokens[1:])
 
             output_file_path = tokens[redir_idx+1]
         else: 
-            command_name = tokens[0]
+            cmd_tokens = tokens
+            cmd_name = tokens[0]
             raw_args = ' '.join(tokens[1:])
 
-        if command_name in c.COMMANDS: 
-            handler = c.COMMANDS[command_name] 
+        if cmd_name in c.COMMANDS: 
+            handler = c.COMMANDS[cmd_name] 
             output, signal = handler(raw_args)
 
             if signal is c.EXIT:
@@ -38,11 +39,11 @@ def main():
 
             continue
         
-        path = c.find_executable(command_name)
+        exe_name = c.find_executable(cmd_name)
 
-        if path is not None:
-            output = c.run_external_program(path, tokens[1:])
-            
+        if exe_name is not None:
+            output = c.run_external_program(exe_name, cmd_tokens[1:])
+
             if output_file_path is not None:
                 with open(output_file_path, 'w') as f:
                     f.write(output)
@@ -51,7 +52,7 @@ def main():
 
             continue
         
-        print(f'{command_name}: not found')
+        print(f'{cmd_name}: not found')
 
 
 if __name__ == '__main__':

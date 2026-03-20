@@ -83,16 +83,17 @@ def run_type(args):
     return f'{filename}: not found', None
 
 
+# TODO: Should parameter be renamed? 
 def find_executable(program_name): 
     # Split PATH into the directories the shell uses to look for executables
     path_env = os.environ['PATH']
     dirs = path_env.split(':')
 
     for directory in dirs:
-        full_path = os.path.join(directory, program_name)
+        exe_path = os.path.join(directory, program_name)
         
         # If the path points to an executable file, return the program name
-        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+        if os.path.isfile(exe_path) and os.access(exe_path, os.X_OK):
             return program_name
         
     return None
