@@ -8,7 +8,8 @@ def main():
         line = input('$ ')
         tokens = c.tokenize(line)
 
-        output_file_path = None
+        stdout_file_path = None
+        stderr_file_path = None
 
         if '>' in tokens or '1>' in tokens:   
             redir_type = '>' if '>' in tokens else '1>'
@@ -18,28 +19,32 @@ def main():
             cmd_name = cmd_tokens[0]
             raw_args = ' '.join(cmd_tokens[1:])
 
-            output_file_path = tokens[redir_idx+1]
-        else: 
+            stdout_file_path = tokens[redir_idx+1]
+        elif '2>' in tokens: 
+            redir_idx = tokens.index('2>')
+
+            cmd_tokens = tokens[0:redir_idx]
+            cmd_name = cmd_tokens[0]
+            raw_args = ' '.join(cmd_tokens[1:])
+
+            stderr_file_path = tokens[redir_idx+1]
+        else:
             cmd_tokens = tokens
             cmd_name = tokens[0]
             raw_args = ' '.join(tokens[1:])
-
-        if '2>' in tokens: 
-            redir_idx = tokens.index('2>')
-            stderr_file_path = tokens[redir_idx+1]
             
         if cmd_name in c.COMMANDS: 
             handler = c.COMMANDS[cmd_name] 
-            output, signal = handler(raw_args)
+            stdout, signal = handler(raw_args)
 
             if signal is c.EXIT:
                 break
 
-            if output is not None and output_file_path is not None: 
-                with open(output_file_path, 'w') as f:
-                    f.write(output + '\n')
-            elif output is not None: 
-                print(output)
+            if stdout is not None and stdout_file_path is not None: 
+                with open(stdout_file_path, 'w') as f:
+                    f.write(stdout + '\n')
+            elif stdout is not None: 
+                print(stdout)
 
             continue
         
@@ -48,9 +53,9 @@ def main():
         if exe_name is not None:
             stdout, stderr = c.run_external_program(exe_name, cmd_tokens[1:])
 
-            if output_file_path is not None:
+            if stdout_file_path is not None:
                 if stdout: 
-                    with open(output_file_path, 'w') as f:
+                    with open(stdout_file_path, 'w') as f:
                         f.write(stdout)
             else:
                 print(stdout, end='')
