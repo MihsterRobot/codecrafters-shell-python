@@ -47,13 +47,11 @@ def main():
             if output_file_path is not None:
                 with open(output_file_path, 'w') as f:
                     f.write(output)
-                
+
                 if error: 
                     print(error)
             else:
                 print(output, end='')
-                if error:
-                    print(error)
 
             continue
         else: 
