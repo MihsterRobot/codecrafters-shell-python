@@ -45,9 +45,10 @@ def main():
             output, error = c.run_external_program(exe_name, cmd_tokens[1:])
 
             if output_file_path is not None:
-                with open(output_file_path, 'w') as f:
-                    f.write(output)
-
+                if output: 
+                    with open(output_file_path, 'w') as f:
+                        f.write(output)
+                        
                 if error: 
                     print(error)
             else:
