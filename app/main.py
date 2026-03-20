@@ -46,7 +46,7 @@ def main():
 
             if output_file_path is not None:
                 with open(output_file_path, 'w') as f:
-                    f.write(output + '\n')
+                    f.write(output)
             else:
                 print(output, end='')
 
