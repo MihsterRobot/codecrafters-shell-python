@@ -56,7 +56,7 @@ def main():
                 print(stdout, end='')
               
             if stderr_file_path: 
-                    with open(output_file_path, 'w') as f: 
+                    with open(stderr_file_path, 'w') as f: 
                         f.write(stderr)
             else: 
                 if stderr: 
