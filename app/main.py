@@ -24,6 +24,10 @@ def main():
             cmd_name = tokens[0]
             raw_args = ' '.join(tokens[1:])
 
+        if '2>' in tokens: 
+            redir_idx = tokens.index('2>')
+            stderr_file_path = tokens[redir_idx+1]
+            
         if cmd_name in c.COMMANDS: 
             handler = c.COMMANDS[cmd_name] 
             output, signal = handler(raw_args)
@@ -51,13 +55,12 @@ def main():
             else:
                 print(stdout, end='')
               
-                if '2>' in tokens: 
-                    if stderr:
-                        with open(output_file_path, 'w') as f: 
-                            f.write(stderr)
-            
-            if stderr:
-                print(stderr, end='')
+            if stderr_file_path: 
+                    with open(output_file_path, 'w') as f: 
+                        f.write(stderr)
+            else: 
+                if stderr: 
+                    print(stderr, end='')
 
             continue
         else: 
