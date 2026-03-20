@@ -51,8 +51,8 @@ def main():
                 print(output, end='')
 
             continue
-        
-        print(f'{cmd_name}: not found')
+        else: 
+            print(f'{cmd_name}: not found')
 
 
 if __name__ == '__main__':

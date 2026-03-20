@@ -83,7 +83,6 @@ def run_type(args):
     return f'{filename}: not found', None
 
 
-# TODO: Should parameter be renamed? 
 def find_executable(program_name): 
     # Split PATH into the directories the shell uses to look for executables
     path_env = os.environ['PATH']
