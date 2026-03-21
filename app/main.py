@@ -7,7 +7,7 @@ def main():
     while True:
         line = input('$ ')
         tokens = c.tokenize(line)
-        cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path = c.parse_redirects(tokens)
+        cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode = c.parse_redirects(tokens)
 
         if cmd_name in c.COMMANDS: 
             handler = c.COMMANDS[cmd_name] 
@@ -16,9 +16,14 @@ def main():
             if signal is c.EXIT:
                 break
 
+            # Redirect stdout to file if specified, otherwise print to terminal
             if stdout and stdout_file_path: 
-                with open(stdout_file_path, 'w') as f:
-                    f.write(stdout + '\n')
+                if stdout_mode == 'w': 
+                    with open(stdout_file_path, 'w') as f:
+                        f.write(stdout + '\n')
+                else: 
+                    with open(stdout_file_path, 'a') as f:
+                        f.write(stdout + '\n')
             elif stdout: 
                 print(stdout)
 
