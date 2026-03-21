@@ -12,15 +12,16 @@ def main():
         stderr_file_path = None
 
         if '>' in tokens or '1>' in tokens:   
-            redir_type = '>' if '>' in tokens else '1>'
-            redir_idx = tokens.index(redir_type)
+            redir_symb = '>' if '>' in tokens else '1>'
+            redir_idx = tokens.index(redir_symb)
 
             cmd_tokens = tokens[0:redir_idx]
             cmd_name = cmd_tokens[0]
             raw_args = ' '.join(cmd_tokens[1:])
 
             stdout_file_path = tokens[redir_idx+1]
-        elif '2>' in tokens: 
+            
+        if '2>' in tokens: 
             redir_idx = tokens.index('2>')
 
             cmd_tokens = tokens[0:redir_idx]
@@ -28,7 +29,8 @@ def main():
             raw_args = ' '.join(cmd_tokens[1:])
 
             stderr_file_path = tokens[redir_idx+1]
-        else:
+        
+        if '>' not in tokens and '1>' not in tokens and '2>' not in tokens: 
             cmd_tokens = tokens
             cmd_name = tokens[0]
             raw_args = ' '.join(tokens[1:])
