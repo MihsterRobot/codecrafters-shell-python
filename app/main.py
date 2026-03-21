@@ -22,6 +22,7 @@ def main():
             elif stdout: 
                 print(stdout)
 
+            # Builtins don't produce stderr, but the file must still be created when 2> is used
             if stderr_file_path:
                 with open(stderr_file_path, 'w') as f:
                     f.write('')
