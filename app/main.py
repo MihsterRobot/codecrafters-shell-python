@@ -22,6 +22,10 @@ def main():
             elif stdout: 
                 print(stdout)
 
+            if stderr_file_path:
+                with open(stderr_file_path, 'w') as f:
+                    f.write('')
+
             continue
         
         exe_name = c.find_executable(cmd_name)
