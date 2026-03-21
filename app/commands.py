@@ -65,6 +65,59 @@ def tokenize(raw):
     return args
             
 
+def parse_redirects(tokens): 
+    cmd_tokens = None
+    stdout_file_path = None
+    stderr_file_path = None
+    
+    if ('>' in tokens or '1>' in tokens) and '2>' not in tokens:   
+        redir_symb = '>' if '>' in tokens else '1>'
+        redir_idx = tokens.index(redir_symb)
+
+        cmd_tokens = tokens[0:redir_idx]
+        cmd_name = cmd_tokens[0]
+        raw_args = ' '.join(cmd_tokens[1:])
+
+        stdout_file_path = tokens[redir_idx+1]
+
+        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path
+    
+    # Both stdout and stderr redirection present
+    if '2>' in tokens and ('>' in tokens or '1>' in tokens):  
+        redir_symb = '>' if '>' in tokens else '1>'
+        stdout_redir_idx = tokens.index(redir_symb)
+        stderr_redir_idx = tokens.index('2>')
+
+        # Slice up to the first redirect operator to exclude redirect syntax from cmd_tokens
+        earliest_idx = min(stdout_redir_idx, stderr_redir_idx)
+        cmd_tokens = tokens[0:earliest_idx]
+        cmd_name = cmd_tokens[0]
+        raw_args = ' '.join(cmd_tokens[1:])
+
+        stdout_file_path = tokens[stdout_redir_idx+1]
+        stderr_file_path = tokens[stderr_redir_idx+1]
+
+        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path
+    
+    if '2>' in tokens and '>' not in tokens and '1>' not in tokens: 
+        redir_idx = tokens.index('2>')
+
+        cmd_tokens = tokens[0:redir_idx]
+        cmd_name = cmd_tokens[0]
+        raw_args = ' '.join(cmd_tokens[1:])
+
+        stderr_file_path = tokens[redir_idx+1]
+
+        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path
+
+    # No redirect found
+    if cmd_tokens is None: 
+        cmd_tokens = tokens
+        cmd_name = tokens[0]
+        raw_args = ' '.join(tokens[1:])
+        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path
+
+
 def run_type(args): 
     if args in ('echo', 'type', 'pwd', 'exit'): 
         return f'{args} is a shell builtin', None
