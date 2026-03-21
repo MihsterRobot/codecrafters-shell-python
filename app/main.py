@@ -20,7 +20,7 @@ def main():
             if stdout and stdout_file_path: 
                     with open(stdout_file_path, stdout_mode) as f:
                         f.write(stdout + '\n')
-            elif stdout: 
+            else:  
                 print(stdout)
 
             # Builtins don't produce stderr, but the file must still be created when 2> is used
@@ -35,10 +35,9 @@ def main():
         if exe_name is not None:
             stdout, stderr = c.run_external_program(exe_name, cmd_tokens[1:])
 
-            if stdout_file_path:
-                if stdout: 
-                    with open(stdout_file_path, 'w') as f:
-                        f.write(stdout)
+            if stdout and stdout_file_path: 
+                with open(stdout_file_path, stdout_mode) as f:
+                    f.write(stdout)
             else:
                 print(stdout, end='')
               
@@ -46,8 +45,7 @@ def main():
                     with open(stderr_file_path, 'w') as f: 
                         f.write(stderr)
             else: 
-                if stderr: 
-                    print(stderr, end='')
+                print(stderr, end='')
 
             continue
         else: 
