@@ -18,11 +18,7 @@ def main():
 
             # Redirect stdout to file if specified, otherwise print to terminal
             if stdout and stdout_file_path: 
-                if stdout_mode == 'w': 
-                    with open(stdout_file_path, 'w') as f:
-                        f.write(stdout + '\n')
-                else: 
-                    with open(stdout_file_path, 'a') as f:
+                    with open(stdout_file_path, stdout_mode) as f:
                         f.write(stdout + '\n')
             elif stdout: 
                 print(stdout)
