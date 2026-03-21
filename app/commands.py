@@ -70,9 +70,9 @@ def parse_redirects(tokens):
     stdout_file_path = None
     stderr_file_path = None
     stdout_mode = 'w'
-    
+
     if '>>' in tokens or '1>>' in tokens: 
-        redir_symb = '>' if '>' in tokens else '1>'
+        redir_symb = '>>' if '>>' in tokens else '1>>'
         redir_idx = tokens.index(redir_symb)
 
         cmd_tokens = tokens[0:redir_idx]
