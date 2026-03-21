@@ -119,7 +119,7 @@ def parse_redirects(tokens):
         cmd_tokens = tokens
         cmd_name = tokens[0]
         raw_args = ' '.join(tokens[1:])
-        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path
+        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode
 
 
 def run_type(args): 
