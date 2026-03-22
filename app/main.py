@@ -9,14 +9,14 @@ def completer(text, state):
     matches = [cmd for cmd in cmds if cmd.startswith(text)]
 
     if state < len(matches):
-        return matches[state]
+        return matches[state] + ' '
     
     return None
 
 
 def main():
     r.set_completer(completer)
-    r.parse_and_bind('tab: complete ')
+    r.parse_and_bind('tab: complete')
 
     while True:
         line = input('$ ')
