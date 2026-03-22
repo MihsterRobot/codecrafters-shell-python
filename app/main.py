@@ -15,7 +15,7 @@ def completer(text, state):
 
 
 def main():
-    r.set_completer([completer])
+    r.set_completer(completer)
     r.parse_and_bind('tab: complete')
 
     while True:
