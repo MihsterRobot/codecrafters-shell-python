@@ -73,7 +73,16 @@ def parse_redirects(tokens):
     stderr_mode = 'w'
 
     if '2>>' in tokens: 
+        redir_idx = tokens.index('2>>')
+
+        cmd_tokens = tokens[0:redir_idx]
+        cmd_name = cmd_tokens[0]
+        raw_args = ' '.join(cmd_tokens[1:])
+
+        stderr_file_path = tokens[redir_idx+1]
         stderr_mode = 'a'
+
+        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode
 
     if '>>' in tokens or '1>>' in tokens: 
         redir_symb = '>>' if '>>' in tokens else '1>>'
