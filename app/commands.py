@@ -70,6 +70,10 @@ def parse_redirects(tokens):
     stdout_file_path = None
     stderr_file_path = None
     stdout_mode = 'w'
+    stderr_mode = 'w'
+
+    if '2>>' in tokens: 
+        stderr_mode = 'a'
 
     if '>>' in tokens or '1>>' in tokens: 
         redir_symb = '>>' if '>>' in tokens else '1>>'
@@ -82,7 +86,7 @@ def parse_redirects(tokens):
         stdout_file_path = tokens[redir_idx+1]
         stdout_mode = 'a'
 
-        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode
+        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode
     
     if ('>' in tokens or '1>' in tokens) and '2>' not in tokens:   
         redir_symb = '>' if '>' in tokens else '1>'
@@ -94,7 +98,7 @@ def parse_redirects(tokens):
 
         stdout_file_path = tokens[redir_idx+1]
 
-        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode
+        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode
     
     # Both stdout and stderr redirection present
     if '2>' in tokens and ('>' in tokens or '1>' in tokens):  
@@ -111,7 +115,7 @@ def parse_redirects(tokens):
         stdout_file_path = tokens[stdout_redir_idx+1]
         stderr_file_path = tokens[stderr_redir_idx+1]
 
-        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode
+        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode
     
     if '2>' in tokens and '>' not in tokens and '1>' not in tokens: 
         redir_idx = tokens.index('2>')
@@ -122,14 +126,14 @@ def parse_redirects(tokens):
 
         stderr_file_path = tokens[redir_idx+1]
 
-        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode
+        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode
 
     # No redirect found
     if cmd_tokens is None: 
         cmd_tokens = tokens
         cmd_name = tokens[0]
         raw_args = ' '.join(tokens[1:])
-        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode
+        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode
 
 
 def run_type(args): 

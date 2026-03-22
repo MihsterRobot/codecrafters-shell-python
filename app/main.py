@@ -7,7 +7,7 @@ def main():
     while True:
         line = input('$ ')
         tokens = c.tokenize(line)
-        cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode = c.parse_redirects(tokens)
+        cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode = c.parse_redirects(tokens)
 
         if cmd_name in c.COMMANDS: 
             handler = c.COMMANDS[cmd_name] 
@@ -25,28 +25,27 @@ def main():
 
             # Builtins don't produce stderr, but the file must still be created when 2> is used
             if stderr_file_path:
-                with open(stderr_file_path, 'w') as f:
+                with open(stderr_file_path, stderr_mode) as f:
                     f.write('')
 
             continue
         
         exe_name = c.find_executable(cmd_name)
-
+        
         if exe_name is not None:
             stdout, stderr = c.run_external_program(exe_name, cmd_tokens[1:])
 
             if stdout and stdout_file_path: 
                 with open(stdout_file_path, stdout_mode) as f:
                     f.write(stdout)
-            else:
+            elif stdout: 
                 print(stdout, end='')
               
             if stderr_file_path: 
-                    with open(stderr_file_path, 'w') as f: 
-                        f.write(stderr)
-            else: 
-                if stderr: 
-                    print(stderr, end='')
+                with open(stderr_file_path, stderr_mode) as f: 
+                    f.write(stderr)
+            elif stderr:
+                print(stderr, end='')3
 
             continue
         else: 
