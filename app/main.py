@@ -35,10 +35,10 @@ def main():
         if exe_name is not None:
             stdout, stderr = c.run_external_program(exe_name, cmd_tokens[1:])
 
-            if stdout and stdout_file_path: 
+            if stdout_file_path: 
                 with open(stdout_file_path, stdout_mode) as f:
-                    f.write(stdout)
-            elif stdout: 
+                    f.write(stdout if stdout else '')
+            elif stdout:
                 print(stdout, end='')
               
             if stderr_file_path: 
