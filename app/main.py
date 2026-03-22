@@ -1,9 +1,23 @@
 import sys
+import readline as r
 
 from . import commands as c
 
 
+def completer(text, state): 
+    cmds = ['echo', 'exit']
+    matches = [cmd for cmd in cmds if cmd.startswith(text)]
+
+    if state < len(matches):
+        return matches[state]
+    
+    return None
+
+
 def main():
+    r.set_completer([completer])
+    r.parse_and_bind('tab: complete')
+
     while True:
         line = input('$ ')
         tokens = c.tokenize(line)
