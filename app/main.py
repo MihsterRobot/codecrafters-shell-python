@@ -31,7 +31,7 @@ def main():
             continue
         
         exe_name = c.find_executable(cmd_name)
-        
+
         if exe_name is not None:
             stdout, stderr = c.run_external_program(exe_name, cmd_tokens[1:])
 
@@ -45,7 +45,7 @@ def main():
                 with open(stderr_file_path, stderr_mode) as f: 
                     f.write(stderr)
             elif stderr:
-                print(stderr, end='')3
+                print(stderr, end='')
 
             continue
         else: 
