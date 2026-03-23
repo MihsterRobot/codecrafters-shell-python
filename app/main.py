@@ -1,15 +1,14 @@
-import readline as r
+import readline 
 
 from . import commands as c
 
 
 def completer(text, state): 
-    builtin_cmds = ['echo', 'exit']
-    builtin_matches = [cmd for cmd in builtin_cmds if cmd.startswith(text)]
+    builtin_matches = c.get_builtin_completions(text)
     exe_matches = c.get_executable_completions(text)
     completions = builtin_matches + exe_matches
 
-    # state is an index incremented by readline on each call — return the match at that index
+    # readline increments state on each call; use it to index into the matches list
     # When state exceeds the number of matches, return None to signal no more completions
     if state < len(completions):
         return completions[state] + ' '
@@ -18,13 +17,30 @@ def completer(text, state):
 
 
 def main():
-    r.set_completer(completer)
-    r.parse_and_bind('tab: complete')
+    readline.set_completer(completer)
+    readline.parse_and_bind('tab: complete')
 
     while True:
         line = input('$ ')
         tokens = c.tokenize(line)
-        cmd_tokens, cmd_name, args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode = c.parse_redirects(tokens)
+
+        if '|' in tokens: 
+            pipe_idx = tokens.index('|')
+
+            cmd1_tokens = tokens[0:pipe_idx]
+            cmd2_tokens = tokens[pipe_idx+1:]
+
+            stdout, stderr = c.run_pipeline(cmd1_tokens, cmd2_tokens)
+
+            if stdout: 
+                print(stdout)
+                
+            if stderr: 
+                print(stderr)
+
+            continue
+
+        cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode = c.parse_redirects(tokens)
 
         if cmd_name in c.COMMANDS: 
             handler = c.COMMANDS[cmd_name] 

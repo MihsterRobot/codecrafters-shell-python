@@ -2,15 +2,15 @@ import os
 import subprocess
 
 
-def tokenize(raw): 
+def tokenize(line): 
     symbols = {"'": 'single', '"': 'double'}
     state = 'unquoted'
     current = []
     tokens = []
     
     i = 0
-    while i < len(raw):  
-        char = raw[i]
+    while i < len(line):  
+        char = line[i]
 
         if state == 'unquoted' and char in symbols:  # Start a quoted segment
             state = symbols[char]
@@ -24,16 +24,16 @@ def tokenize(raw):
                 i += 1
         else: 
             if char == '\\': 
-                if i + 1 < len(raw):
+                if i + 1 < len(line):
                     if state == 'unquoted':
-                        current.append(raw[i+1])
+                        current.append(line[i+1])
                         i += 2
                     elif state == 'single': 
                         current.append(char)
                         i += 1
                     elif state == 'double': 
-                        if raw[i+1] in ['\\', '"', '`', '$', '\n']: 
-                            current.append(raw[i+1])
+                        if line[i+1] in ['\\', '"', '`', '$', '\n']: 
+                            current.append(line[i+1])
                             i += 2
                         else: 
                             current.append(char)
@@ -66,43 +66,33 @@ def parse_redirects(tokens):
     stderr_file_path = None
     stderr_mode = 'w'
 
-    if '2>>' in tokens: 
-        redir_idx = tokens.index('2>>')
-
-        cmd_tokens = tokens[0:redir_idx]
-        cmd_name = cmd_tokens[0]
-        raw_args = ' '.join(cmd_tokens[1:])
-
-        stderr_file_path = tokens[redir_idx+1]
-        stderr_mode = 'a'
-
-        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode
-
+    # Append stdout
     if '>>' in tokens or '1>>' in tokens: 
         redir_symb = '>>' if '>>' in tokens else '1>>'
         redir_idx = tokens.index(redir_symb)
 
         cmd_tokens = tokens[0:redir_idx]
         cmd_name = cmd_tokens[0]
-        raw_args = ' '.join(cmd_tokens[1:])
+        args = ' '.join(cmd_tokens[1:])
 
         stdout_file_path = tokens[redir_idx+1]
         stdout_mode = 'a'
 
-        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode
-    
-    if ('>' in tokens or '1>' in tokens) and '2>' not in tokens:   
-        redir_symb = '>' if '>' in tokens else '1>'
-        redir_idx = tokens.index(redir_symb)
+        return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
+
+    # Append stderr
+    if '2>>' in tokens: 
+        redir_idx = tokens.index('2>>')
 
         cmd_tokens = tokens[0:redir_idx]
         cmd_name = cmd_tokens[0]
-        raw_args = ' '.join(cmd_tokens[1:])
+        args = ' '.join(cmd_tokens[1:])
 
-        stdout_file_path = tokens[redir_idx+1]
+        stderr_file_path = tokens[redir_idx+1]
+        stderr_mode = 'a'
 
-        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode
-    
+        return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
+
     # Both stdout and stderr redirection present
     if '2>' in tokens and ('>' in tokens or '1>' in tokens):  
         redir_symb = '>' if '>' in tokens else '1>'
@@ -111,37 +101,71 @@ def parse_redirects(tokens):
 
         # Slice up to the first redirect operator to exclude redirect syntax from cmd_tokens
         earliest_idx = min(stdout_redir_idx, stderr_redir_idx)
+
         cmd_tokens = tokens[0:earliest_idx]
         cmd_name = cmd_tokens[0]
-        raw_args = ' '.join(cmd_tokens[1:])
+        args = ' '.join(cmd_tokens[1:])
 
         stdout_file_path = tokens[stdout_redir_idx+1]
         stderr_file_path = tokens[stderr_redir_idx+1]
 
-        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode
+        return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
     
+    # Redirect stdout only
+    if ('>' in tokens or '1>' in tokens) and '2>' not in tokens:   
+        redir_symb = '>' if '>' in tokens else '1>'
+        redir_idx = tokens.index(redir_symb)
+
+        cmd_tokens = tokens[0:redir_idx]
+        cmd_name = cmd_tokens[0]
+        args = ' '.join(cmd_tokens[1:])
+
+        stdout_file_path = tokens[redir_idx+1]
+
+        return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
+    
+    # Redirect stderr only
     if '2>' in tokens and '>' not in tokens and '1>' not in tokens: 
         redir_idx = tokens.index('2>')
 
         cmd_tokens = tokens[0:redir_idx]
         cmd_name = cmd_tokens[0]
-        raw_args = ' '.join(cmd_tokens[1:])
+        args = ' '.join(cmd_tokens[1:])
 
         stderr_file_path = tokens[redir_idx+1]
 
-        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode
+        return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
 
     # No redirect found
     if cmd_tokens is None: 
         cmd_tokens = tokens
-        cmd_name = tokens[0]
-        raw_args = ' '.join(tokens[1:])
-        return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode
+        cmd_name = cmd_tokens[0]
+        args = ' '.join(cmd_tokens[1:])
+        return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
 
 
 def run_echo(args): 
     return ''.join(args), None
 
+
+def run_pwd(args): 
+    return os.getcwd(), None
+
+
+def run_cd(args):
+    dest_path = args
+    home_dir = os.environ['HOME']
+
+    if dest_path == '~':
+        os.chdir(home_dir)
+        return None, None
+   
+    if os.path.isdir(dest_path):
+        os.chdir(dest_path)
+        return None, None
+    else: 
+        return f'{dest_path}: No such file or directory', None
+    
 
 def run_type(args): 
     if args in ('echo', 'type', 'pwd', 'exit'): 
@@ -161,26 +185,6 @@ def run_type(args):
     return f'{filename}: not found', None
 
 
-def run_cd(args):
-    dest_path = args
-    home_dir = os.environ['HOME']
-
-    if dest_path == '~':
-        os.chdir(home_dir)
-        return None, None
-   
-    if os.path.isdir(dest_path):
-        os.chdir(dest_path)
-        return None, None
-    else: 
-        return f'{dest_path}: No such file or directory', None
-    
-
-def run_pwd(args): 
-    return os.getcwd(), None
-
-
-EXIT = object() # Sentinel value
 def run_exit(args):
     return None, EXIT
     
@@ -200,6 +204,31 @@ def find_executable(exe_name):
     return None
 
 
+def run_external_program(exe_name, args): 
+    result = subprocess.run([exe_name] + args, capture_output=True, text=True)
+    return result.stdout, result.stderr
+
+
+def run_pipeline(cmd1_tokens, cmd2_tokens): 
+    cmd1_name = cmd1_tokens[0]
+    cmd1_args = cmd1_tokens[1:]
+    cmd2_name = cmd2_tokens[0]
+    cmd2_args = cmd2_tokens[1:]
+
+    proc1 = subprocess.Popen([cmd1_name] + cmd1_args, stdout=subprocess.PIPE)
+    proc2 = subprocess.Popen([cmd2_name] + cmd2_args, stdin=proc1.stdout)
+
+    proc1.stdout.close()
+    stdout, stderr = proc2.communicate()
+
+    return stdout, stderr
+
+
+def get_builtin_completions(text):
+    matches = [cmd for cmd in COMMANDS if cmd.startswith(text)]
+    return matches
+
+
 def get_executable_completions(text): 
     path_env = os.environ['PATH']
     dirs = path_env.split(':')
@@ -216,9 +245,12 @@ def get_executable_completions(text):
     return matches
 
 
-def run_external_program(exe_name, args): 
-    result = subprocess.run([exe_name] + args, capture_output=True, text=True)
-    return result.stdout, result.stderr
+EXIT = object() # Sentinel value
 
-
-COMMANDS = {'echo': run_echo, 'type': run_type, 'pwd': run_pwd, 'cd': run_cd, 'exit': run_exit}    
+COMMANDS = {
+    'echo': run_echo,
+    'pwd': run_pwd,
+    'cd': run_cd,
+    'type': run_type,
+    'exit': run_exit
+}
