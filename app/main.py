@@ -4,8 +4,8 @@ from . import commands as c
 
 
 def completer(text, state): 
-    cmds = ['echo', 'exit']
-    builtin_matches = [cmd for cmd in cmds if cmd.startswith(text)]
+    builtin_cmds = ['echo', 'exit']
+    builtin_matches = [cmd for cmd in builtin_cmds if cmd.startswith(text)]
     exe_matches = c.get_executable_completions(text)
     completions = builtin_matches + exe_matches
 
