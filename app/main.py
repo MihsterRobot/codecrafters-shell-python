@@ -7,7 +7,7 @@ def completer(text, state):
     cmds = ['echo', 'exit']
     builtin_matches = [cmd for cmd in cmds if cmd.startswith(text)]
     exe_matches = c.get_executable_completions(text)
-    completions = builtin_matches.extend(exe_matches)
+    completions = builtin_matches + exe_matches
 
     # state is an index incremented by readline on each call — return the match at that index
     # When state exceeds the number of matches, return None to signal no more completions
