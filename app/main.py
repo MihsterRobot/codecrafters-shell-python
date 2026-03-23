@@ -25,18 +25,13 @@ def main():
         tokens = c.tokenize(line)
 
         if '|' in tokens: 
-            pipe_idx = tokens.index('|')
-
-            cmd1_tokens = tokens[0:pipe_idx]
-            cmd2_tokens = tokens[pipe_idx+1:]
-
-            stdout, stderr = c.run_pipeline(cmd1_tokens, cmd2_tokens)
+            stdout, stderr = c.run_pipeline(tokens)
 
             if stdout: 
-                print(stdout)
-                
+                print(stdout, end='')
+
             if stderr: 
-                print(stderr)
+                print(stderr, end='')
 
             continue
 

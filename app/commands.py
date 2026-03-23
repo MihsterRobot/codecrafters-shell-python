@@ -209,14 +209,14 @@ def run_external_program(exe_name, args):
     return result.stdout, result.stderr
 
 
-def run_pipeline(cmd1_tokens, cmd2_tokens): 
-    cmd1_name = cmd1_tokens[0]
-    cmd1_args = cmd1_tokens[1:]
-    cmd2_name = cmd2_tokens[0]
-    cmd2_args = cmd2_tokens[1:]
+def run_pipeline(tokens): 
+    pipe_idx = tokens.index('|')
 
-    proc1 = subprocess.Popen([cmd1_name] + cmd1_args, stdout=subprocess.PIPE)
-    proc2 = subprocess.Popen([cmd2_name] + cmd2_args, stdin=proc1.stdout)
+    cmd1_tokens = tokens[0:pipe_idx]
+    cmd2_tokens = tokens[pipe_idx+1:]
+   
+    proc1 = subprocess.Popen([cmd1_tokens[0]] + cmd1_tokens[1:], stdout=subprocess.PIPE)
+    proc2 = subprocess.Popen([cmd2_tokens[0]] + cmd2_tokens[1:], stdin=proc1.stdout)
 
     proc1.stdout.close()
     stdout, stderr = proc2.communicate()
