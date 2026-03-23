@@ -1,18 +1,12 @@
 import os
 import subprocess
 
-EXIT = object() # Sentinel value (flag)
-
-
-def run_echo(raw_args): 
-    return ''.join(raw_args), None
-    
 
 def tokenize(raw): 
-    current = [] # Accumulate characters for the current argument
-    args = [] # Collect completed arguments 
     symbols = {"'": 'single', '"': 'double'}
     state = 'unquoted'
+    current = []
+    tokens = []
     
     i = 0
     while i < len(raw):  
@@ -50,7 +44,7 @@ def tokenize(raw):
             elif char == ' ': 
                 if state == 'unquoted':
                     if current: 
-                        args.append(''.join(current))
+                        tokens.append(''.join(current))
                         current = []
                 else: 
                     current.append(char)
@@ -60,16 +54,16 @@ def tokenize(raw):
                 i += 1
     
     if current: # The current list may retain characters after the loop finishes
-        args.append("".join(current))
+        tokens.append("".join(current))
     
-    return args
+    return tokens
             
 
 def parse_redirects(tokens): 
     cmd_tokens = None
     stdout_file_path = None
-    stderr_file_path = None
     stdout_mode = 'w'
+    stderr_file_path = None
     stderr_mode = 'w'
 
     if '2>>' in tokens: 
@@ -145,6 +139,10 @@ def parse_redirects(tokens):
         return cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode
 
 
+def run_echo(args): 
+    return ''.join(args), None
+
+
 def run_type(args): 
     if args in ('echo', 'type', 'pwd', 'exit'): 
         return f'{args} is a shell builtin', None
@@ -163,6 +161,30 @@ def run_type(args):
     return f'{filename}: not found', None
 
 
+def run_cd(args):
+    dest_path = args
+    home_dir = os.environ['HOME']
+
+    if dest_path == '~':
+        os.chdir(home_dir)
+        return None, None
+   
+    if os.path.isdir(dest_path):
+        os.chdir(dest_path)
+        return None, None
+    else: 
+        return f'{dest_path}: No such file or directory', None
+    
+
+def run_pwd(args): 
+    return os.getcwd(), None
+
+
+EXIT = object() # Sentinel value
+def run_exit(args):
+    return None, EXIT
+    
+
 def find_executable(exe_name): 
     # Split PATH into the directories the shell uses to look for executables
     path_env = os.environ['PATH']
@@ -171,39 +193,32 @@ def find_executable(exe_name):
     for directory in dirs:
         exe_path = os.path.join(directory, exe_name)
         
-        # If the path points to an executable file, return the program name
+        # If the file exists and is executable, return the executable name
         if os.path.isfile(exe_path) and os.access(exe_path, os.X_OK):
             return exe_name
         
     return None
 
 
+def get_executable_completions(text): 
+    path_env = os.environ['PATH']
+    dirs = path_env.split(':')
+    matches = []
+
+    for directory in dirs: 
+        if os.path.isdir(directory):
+            for filename in os.listdir(directory): 
+                if filename.startswith(text):
+                    exe_path = os.path.join(directory, filename)
+                    if os.path.isfile(exe_path) and os.access(exe_path, os.X_OK):
+                        matches.append(filename)
+
+    return matches
+
+
 def run_external_program(exe_name, args): 
     result = subprocess.run([exe_name] + args, capture_output=True, text=True)
     return result.stdout, result.stderr
-
-
-def run_cd(args):
-    destination_path = args
-    home_dir = os.environ['HOME']
-
-    if destination_path == '~':
-        os.chdir(home_dir)
-        return None, None
-   
-    if os.path.isdir(destination_path):
-        os.chdir(destination_path)
-        return None, None
-    else: 
-        return f'{destination_path}: No such file or directory', None
-    
-        
-def run_pwd(args): 
-    return os.getcwd(), None
-
-
-def run_exit(args):
-    return None, EXIT
 
 
 COMMANDS = {'echo': run_echo, 'type': run_type, 'pwd': run_pwd, 'cd': run_cd, 'exit': run_exit}    

@@ -1,4 +1,3 @@
-import sys
 import readline as r
 
 from . import commands as c
@@ -6,10 +5,14 @@ from . import commands as c
 
 def completer(text, state): 
     cmds = ['echo', 'exit']
-    matches = [cmd for cmd in cmds if cmd.startswith(text)]
+    builtin_matches = [cmd for cmd in cmds if cmd.startswith(text)]
+    exe_matches = c.get_executable_completions(text)
+    completions = builtin_matches.extend(exe_matches)
 
-    if state < len(matches):
-        return matches[state] + ' '
+    # state is an index incremented by readline on each call — return the match at that index
+    # When state exceeds the number of matches, return None to signal no more completions
+    if state < len(completions):
+        return completions[state] + ' '
     
     return None
 
@@ -21,11 +24,11 @@ def main():
     while True:
         line = input('$ ')
         tokens = c.tokenize(line)
-        cmd_tokens, cmd_name, raw_args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode = c.parse_redirects(tokens)
+        cmd_tokens, cmd_name, args, stdout_file_path, stderr_file_path, stdout_mode, stderr_mode = c.parse_redirects(tokens)
 
         if cmd_name in c.COMMANDS: 
             handler = c.COMMANDS[cmd_name] 
-            stdout, signal = handler(raw_args)
+            stdout, signal = handler(args)
 
             if signal is c.EXIT:
                 break
