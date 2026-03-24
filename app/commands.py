@@ -122,7 +122,7 @@ def run_echo(args):
 
 
 def run_pwd(args): 
-    return os.getcwd() + '\n', None
+    return os.getcwd(), None
 
 
 def run_cd(args):
