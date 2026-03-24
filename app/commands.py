@@ -66,6 +66,9 @@ def parse_redirects(tokens):
     stdout_mode = 'w'
     stderr_mode = 'w'
     
+    # FIXME: Combinations of append operators (e.g. >> and 2>>) are not handled correctly
+    # redir_idx may be overwritten when both are present, causing incorrect cmd_tokens slicing
+
     # Append stdout
     if '>>' in tokens or '1>>' in tokens: 
         redir_symb = '>>' if '>>' in tokens else '1>>'
@@ -110,7 +113,7 @@ def parse_redirects(tokens):
 
     cmd_name = cmd_tokens[0]
     args = ' '.join(cmd_tokens[1:])
-        
+
     return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
 
 
@@ -184,6 +187,21 @@ def run_pipeline(tokens):
 
     cmd1_tokens = tokens[0:pipe_idx]
     cmd2_tokens = tokens[pipe_idx+1:]
+
+    # If the first command is a builtin and the second is not
+    if cmd1_tokens[0] in COMMANDS and cmd2_tokens[0] not in COMMANDS: 
+        handler = COMMANDS[cmd1_tokens[0]]
+        stdout, signal = handler(' '.join(cmd1_tokens[1:]))
+
+        stdout = stdout or ''
+        result = subprocess.run(cmd2_tokens, capture_output=True, input=stdout, text=True) 
+
+        return result.stdout, result.stderr
+    # If the second command is a builtin and the first is not
+    elif cmd2_tokens[0] in COMMANDS and cmd1_tokens[0] not in COMMANDS:
+           handler = COMMANDS[cmd2_tokens[0]]
+           result, signal = handler(' '.join(cmd2_tokens[1:]))
+           return result, None
    
     proc1 = subprocess.Popen(cmd1_tokens, stdout=subprocess.PIPE)
     proc2 = subprocess.Popen(cmd2_tokens, stdin=proc1.stdout)
