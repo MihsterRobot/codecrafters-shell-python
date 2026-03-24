@@ -141,7 +141,7 @@ def run_cd(args):
     
 
 def run_type(args): 
-    if args in ('echo', 'type', 'pwd', 'exit'): 
+    if args in COMMANDS: 
         return f'{args} is a shell builtin' + '\n', None
     
     path_env = os.environ['PATH']
