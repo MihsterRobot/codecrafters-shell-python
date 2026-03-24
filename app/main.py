@@ -44,7 +44,6 @@ def main():
                 break
 
             # Redirect stdout to file if specified, otherwise print to terminal
-            # '\n' is added explicitly since f.write() does not append a newline unlike print()
             if stdout and stdout_file_path: 
                     with open(stdout_file_path, stdout_mode) as f:
                         f.write(stdout)

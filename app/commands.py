@@ -193,8 +193,6 @@ def run_pipeline(tokens):
         stdout, signal = handler(' '.join(cmd1_tokens[1:]))
 
         stdout = stdout or ''
-
-        # Unix programs expect input to end with a newline
         result = subprocess.run(cmd2_tokens, capture_output=True, input=stdout, text=True) 
 
         return result.stdout, result.stderr 
