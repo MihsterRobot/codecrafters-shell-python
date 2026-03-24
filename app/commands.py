@@ -60,88 +60,58 @@ def tokenize(line):
             
 
 def parse_redirects(tokens): 
-    cmd_tokens = None
+    redir_idx = None
     stdout_file_path = None
-    stdout_mode = 'w'
     stderr_file_path = None
+    stdout_mode = 'w'
     stderr_mode = 'w'
-
+    
     # Append stdout
     if '>>' in tokens or '1>>' in tokens: 
         redir_symb = '>>' if '>>' in tokens else '1>>'
         redir_idx = tokens.index(redir_symb)
-
-        cmd_tokens = tokens[0:redir_idx]
-        cmd_name = cmd_tokens[0]
-        args = ' '.join(cmd_tokens[1:])
-
         stdout_file_path = tokens[redir_idx+1]
         stdout_mode = 'a'
-
-        return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
 
     # Append stderr
     if '2>>' in tokens: 
         redir_idx = tokens.index('2>>')
-
-        cmd_tokens = tokens[0:redir_idx]
-        cmd_name = cmd_tokens[0]
-        args = ' '.join(cmd_tokens[1:])
-
         stderr_file_path = tokens[redir_idx+1]
         stderr_mode = 'a'
 
-        return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
-
     # Both stdout and stderr redirection present
     if '2>' in tokens and ('>' in tokens or '1>' in tokens):  
-        redir_symb = '>' if '>' in tokens else '1>'
-        stdout_redir_idx = tokens.index(redir_symb)
-        stderr_redir_idx = tokens.index('2>')
+       redir_symb = '>' if '>' in tokens else '1>'
+       stdout_redir_idx = tokens.index(redir_symb)
+       stderr_redir_idx = tokens.index('2>')
 
-        # Slice up to the first redirect operator to exclude redirect syntax from cmd_tokens
-        earliest_idx = min(stdout_redir_idx, stderr_redir_idx)
+       stdout_file_path = tokens[stdout_redir_idx+1]
+       stderr_file_path = tokens[stderr_redir_idx+1]
 
-        cmd_tokens = tokens[0:earliest_idx]
-        cmd_name = cmd_tokens[0]
-        args = ' '.join(cmd_tokens[1:])
+       # Slice up to the first redirect operator to exclude redirect syntax from cmd_tokens
+       redir_idx = min(stdout_redir_idx, stderr_redir_idx)
 
-        stdout_file_path = tokens[stdout_redir_idx+1]
-        stderr_file_path = tokens[stderr_redir_idx+1]
-
-        return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
-    
     # Redirect stdout only
     if ('>' in tokens or '1>' in tokens) and '2>' not in tokens:   
         redir_symb = '>' if '>' in tokens else '1>'
         redir_idx = tokens.index(redir_symb)
-
-        cmd_tokens = tokens[0:redir_idx]
-        cmd_name = cmd_tokens[0]
-        args = ' '.join(cmd_tokens[1:])
-
         stdout_file_path = tokens[redir_idx+1]
-
-        return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
     
     # Redirect stderr only
     if '2>' in tokens and '>' not in tokens and '1>' not in tokens: 
         redir_idx = tokens.index('2>')
-
-        cmd_tokens = tokens[0:redir_idx]
-        cmd_name = cmd_tokens[0]
-        args = ' '.join(cmd_tokens[1:])
-
         stderr_file_path = tokens[redir_idx+1]
 
-        return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
-
-    # No redirect found
-    if cmd_tokens is None: 
+    # Derive command tokens from everything before the first redirect operator
+    if redir_idx is None: 
         cmd_tokens = tokens
-        cmd_name = cmd_tokens[0]
-        args = ' '.join(cmd_tokens[1:])
-        return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
+    else: 
+        cmd_tokens = tokens[0:redir_idx]
+
+    cmd_name = cmd_tokens[0]
+    args = ' '.join(cmd_tokens[1:])
+        
+    return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
 
 
 def run_echo(args): 
@@ -215,8 +185,8 @@ def run_pipeline(tokens):
     cmd1_tokens = tokens[0:pipe_idx]
     cmd2_tokens = tokens[pipe_idx+1:]
    
-    proc1 = subprocess.Popen([cmd1_tokens[0]] + cmd1_tokens[1:], stdout=subprocess.PIPE)
-    proc2 = subprocess.Popen([cmd2_tokens[0]] + cmd2_tokens[1:], stdin=proc1.stdout)
+    proc1 = subprocess.Popen(cmd1_tokens, stdout=subprocess.PIPE)
+    proc2 = subprocess.Popen(cmd2_tokens, stdin=proc1.stdout)
 
     proc1.stdout.close()
     stdout, stderr = proc2.communicate()

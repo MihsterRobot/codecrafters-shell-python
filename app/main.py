@@ -28,8 +28,8 @@ def main():
             stdout, stderr = c.run_pipeline(tokens)
 
             if stdout: 
-                print(stdout, end='')
-
+                print(stdout, end='')   
+                
             if stderr: 
                 print(stderr, end='')
 
