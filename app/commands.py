@@ -202,7 +202,7 @@ def run_pipeline(tokens):
            handler = COMMANDS[cmd2_tokens[0]]
            result, signal = handler(' '.join(cmd2_tokens[1:]))
 
-           return result, None
+           return result + '\n', None
    
     proc1 = subprocess.Popen(cmd1_tokens, stdout=subprocess.PIPE)
     proc2 = subprocess.Popen(cmd2_tokens, stdin=proc1.stdout)
