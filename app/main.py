@@ -47,9 +47,9 @@ def main():
             # '\n' is added explicitly since f.write() does not append a newline unlike print()
             if stdout and stdout_file_path: 
                     with open(stdout_file_path, stdout_mode) as f:
-                        f.write(stdout + '\n')
+                        f.write(stdout)
             elif stdout: 
-                print(stdout)
+                print(stdout, end='')
 
             # Builtins don't produce stderr, but the file must still be created when 2> is used
             if stderr_file_path:

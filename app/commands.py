@@ -118,11 +118,11 @@ def parse_redirects(tokens):
 
 
 def run_echo(args): 
-    return ''.join(args), None
+    return ''.join(args) + '\n', None
 
 
 def run_pwd(args): 
-    return os.getcwd(), None
+    return os.getcwd() + '\n', None
 
 
 def run_cd(args):
@@ -137,7 +137,7 @@ def run_cd(args):
         os.chdir(dest_path)
         return None, None
     else: 
-        return f'{dest_path}: No such file or directory', None
+        return f'{dest_path}: No such file or directory' + '\n', None
     
 
 def run_type(args): 
@@ -153,9 +153,9 @@ def run_type(args):
         full_path = os.path.join(directory, filename)
         
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-            return f'{filename} is {full_path}', None
+            return f'{filename} is {full_path}' + '\n', None
         
-    return f'{filename}: not found', None
+    return f'{filename}: not found' + '\n', None
 
 
 def run_exit(args):
@@ -195,7 +195,7 @@ def run_pipeline(tokens):
 
         stdout = stdout or ''
 
-        # '\n' is added so wc counts the line correctly; echo doesn't include a trailing newline
+        # Unix programs expect input to end with a newline
         result = subprocess.run(cmd2_tokens, capture_output=True, input=stdout, text=True) 
 
         return result.stdout, result.stderr 
