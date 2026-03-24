@@ -142,7 +142,7 @@ def run_cd(args):
 
 def run_type(args): 
     if args in ('echo', 'type', 'pwd', 'exit'): 
-        return f'{args} is a shell builtin', None
+        return f'{args} is a shell builtin' + '\n', None
     
     path_env = os.environ['PATH']
     dirs = path_env.split(':')
@@ -184,7 +184,6 @@ def run_external_program(exe_name, args):
 
 def run_pipeline(tokens): 
     pipe_idx = tokens.index('|')
-
     cmd1_tokens = tokens[0:pipe_idx]
     cmd2_tokens = tokens[pipe_idx+1:]
 
@@ -204,8 +203,7 @@ def run_pipeline(tokens):
            handler = COMMANDS[cmd2_tokens[0]]
            result, signal = handler(' '.join(cmd2_tokens[1:]))
            
-           # Builtin handlers don't include a trailing newline; add one so output displays correctly
-           return result + '\n', None
+           return result, None
    
     proc1 = subprocess.Popen(cmd1_tokens, stdout=subprocess.PIPE)
     proc2 = subprocess.Popen(cmd2_tokens, stdin=proc1.stdout)
