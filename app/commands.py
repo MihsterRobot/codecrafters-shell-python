@@ -196,7 +196,7 @@ def run_pipeline(tokens):
         stdout = stdout or ''
         result = subprocess.run(cmd2_tokens, capture_output=True, input=stdout, text=True) 
 
-        return result.stdout + '\n', result.stderr
+        return result.stdout + '\n', result.stderr + '\n'
     # If the second command is a builtin and the first is not
     elif cmd2_tokens[0] in COMMANDS and cmd1_tokens[0] not in COMMANDS:
            handler = COMMANDS[cmd2_tokens[0]]
