@@ -183,33 +183,67 @@ def run_external_program(exe_name, args):
 
 
 def run_pipeline(tokens): 
-    pipe_idx = tokens.index('|')
-    cmd1_tokens = tokens[0:pipe_idx]
-    cmd2_tokens = tokens[pipe_idx+1:]
+    pipeline_cmds = []
+    cmd_tokens = []
 
-    # If the first command is a builtin and the second is not
-    if cmd1_tokens[0] in COMMANDS and cmd2_tokens[0] not in COMMANDS: 
-        handler = COMMANDS[cmd1_tokens[0]]
-        stdout, signal = handler(' '.join(cmd1_tokens[1:]))
+    for tok in tokens: 
+        if tok == '|':
+            pipeline_cmds.append(cmd_tokens)
+            cmd_tokens = []
+            continue
+        cmd_tokens.append(tok)
 
-        stdout = stdout or ''
-        result = subprocess.run(cmd2_tokens, capture_output=True, input=stdout, text=True) 
+    if cmd_tokens: 
+        pipeline_cmds.append(cmd_tokens)
 
-        return result.stdout, result.stderr 
-    # If the second command is a builtin and the first is not
-    elif cmd2_tokens[0] in COMMANDS and cmd1_tokens[0] not in COMMANDS:
-           handler = COMMANDS[cmd2_tokens[0]]
-           result, signal = handler(' '.join(cmd2_tokens[1:]))
-           
-           return result, None
-   
-    proc1 = subprocess.Popen(cmd1_tokens, stdout=subprocess.PIPE)
-    proc2 = subprocess.Popen(cmd2_tokens, stdin=proc1.stdout)
+    prev_proc = None
+    builtin_stdout  = None
+    # curr_proc = None is unnecessary because it's always assigned before being used within the loop
+    # prev_proc and builtin_stdout  need to be initialized because they're referenced across iterations,
+    # while curr_proc is only used within the same iteration it's assigned
 
-    proc1.stdout.close()
-    stdout, stderr = proc2.communicate()
+    # Iterate over pipeline_cmds and determine if the cmd is a builtin or external
+    for i, cmd_toks in enumerate(pipeline_cmds): 
+        cmd_name = cmd_toks[0]
 
-    return stdout, stderr
+        if i == 0: # First command
+            if cmd_name in COMMANDS: # Builtin 
+                handler = COMMANDS[cmd_name]
+                builtin_stdout, _ = handler(' '.join(cmd_toks[1:]))
+            else: # External
+                prev_proc = subprocess.Popen(cmd_toks, stdout=subprocess.PIPE) 
+            continue
+        elif i == len(pipeline_cmds) - 1: # Last command
+            if cmd_name in COMMANDS: # Builtin 
+                handler = COMMANDS[cmd_name]
+                stdout, _ = handler(' '.join(cmd_toks[1:]))
+                return stdout, None
+            else: # External 
+                if prev_proc: # Previous command was external
+                    result = subprocess.run(cmd_toks, stdin=prev_proc.stdout, capture_output=True, text=True)
+                    prev_proc.stdout.close()
+                else: # Previous command was a builtin
+                    result = subprocess.run(cmd_toks, input=builtin_stdout, capture_output=True, text=True)
+                return result.stdout, result.stderr
+
+        # Command is somewhere in the middle
+
+        # If a middle command is a builtin, the previous stdout isn't needed; capture the builtin's stdout
+        if cmd_name in COMMANDS: 
+            handler = COMMANDS[cmd_name]
+            builtin_stdout, _ = handler(' '.join(cmd_toks[1:]))
+            prev_proc = None
+        else: # External
+            if builtin_stdout : # If the previous command was a builtin
+                curr_proc = subprocess.Popen(cmd_toks, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+                curr_proc.stdin.write(builtin_stdout)
+                curr_proc.stdin.close()
+                prev_proc = curr_proc
+                builtin_stdout = None
+            elif prev_proc: # If the previous command was external
+                curr_proc = subprocess.Popen(cmd_toks, stdin=prev_proc.stdout, stdout=subprocess.PIPE, text=True)
+                prev_proc.stdout.close()
+                prev_proc = curr_proc
 
 
 def get_builtin_completions(text):

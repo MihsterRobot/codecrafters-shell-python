@@ -26,12 +26,10 @@ def main():
 
         if '|' in tokens: 
             stdout, stderr = c.run_pipeline(tokens)
-
             if stdout: 
                 print(stdout, end='')
             if stderr: 
                 print(stderr, end='')
-
             continue
 
         cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode = c.parse_redirects(tokens)
