@@ -220,15 +220,15 @@ def run_pipeline(tokens):
                 return stdout, None
             else: # External 
                 if prev_proc: # Previous command was external
-                    curr_proc = subprocess.Popen(cmd_toks, stdin=prev_proc.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                    prev_proc.stdout.close()
-                    stdout, stderr = curr_proc.communicate()
-                    return stdout, stderr
+                   curr_proc = subprocess.Popen(cmd_toks, stdin=prev_proc.stdout, stderr=subprocess.PIPE, text=True)
+                   prev_proc.stdout.close()
+                   _, stderr = curr_proc.communicate()
+                   return None, stderr
                     # result = subprocess.run(cmd_toks, stdin=prev_proc.stdout, capture_output=True, text=True)
                     # prev_proc.stdout.close()
                 else: # Previous command was a builtin
                     result = subprocess.run(cmd_toks, input=builtin_stdout, capture_output=True, text=True)
-                return result.stdout, result.stderr
+                    return result.stdout, result.stderr
 
         # Command is somewhere in the middle
 
