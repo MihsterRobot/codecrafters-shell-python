@@ -130,7 +130,10 @@ def add_to_history(line):
 
 
 def run_history(args):
-    return HISTORY, None
+    # Generator expression produces formatted history entries one at a time
+    # join() consumes them directly without storing the full list in memory
+    output = '\n'.join(f'{i+1}  {cmd}' for i, cmd in enumerate(HISTORY))
+    return output + '\n', None
    
 
 def run_cd(args):
