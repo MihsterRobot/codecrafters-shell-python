@@ -26,7 +26,7 @@ def main():
         if hist_env: 
             with open(hist_env, 'r') as f: 
                 for line in f: 
-                    f.write(c.history.entries.append(line.split()))
+                    c.history.entries.append(line.split())
 
     while True:
         line = input('$ ')
