@@ -5,7 +5,7 @@ import subprocess
 class HistoryState:
     def __init__(self):
         self.entries = []
-        self.last_appended_idx = 0
+        self.last_written_idx = 0
 
 
 def tokenize(line): 
@@ -136,11 +136,8 @@ def add_to_history(line):
 
 
 def run_history(args):
-    # Generator expression produces formatted history entries one at a time
-    # join() consumes them directly without storing the full list in memory
     entries = history.entries
     num_entries = len(history.entries)
-    last_appended_idx = history.last_appended_idx
     start = 0
 
     if args:
@@ -162,14 +159,17 @@ def run_history(args):
                 return None, None
             elif args.startswith('-a'):
                 with open(file_path, 'a') as f: 
-                    for entry in entries[last_appended_idx:]: 
+                    for entry in entries[history.last_written_idx:]: 
                         f.write(entry + '\n')
-                    history.last_appended_idx = num_entries
+                    history.last_written_idx = num_entries
                 return None, None
     else:
-        start = 1
+        start = 1   
 
+    # Generator expression produces formatted history entries one at a time
+    # join() consumes them directly without storing the full list in memory
     output = '\n'.join(f'   {i}  {cmd}' for i, cmd in enumerate(entries, start))
+
     return output + '\n', None
    
 
