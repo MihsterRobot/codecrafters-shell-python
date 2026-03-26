@@ -148,8 +148,7 @@ def run_history(args):
             file_path = args.split()[1]
             with open(file_path, 'w') as f: 
                 for entry in HISTORY: 
-                    f.write(entry)
-                f.write('\n')
+                    f.write(entry + '\n')
             return None, None
     else:
         entries = HISTORY
