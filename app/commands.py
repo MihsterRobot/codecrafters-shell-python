@@ -131,7 +131,7 @@ def run_pwd(args):
     return os.getcwd() + '\n', None
 
 
-def load_history_from_env(args): 
+def load_history_from_env(): 
     # os.environ.get('HISTFILE') is safer than os.environ['HISTFILE'] because it 
     # returns None if the variable doesn't exist instead of raising a KeyError
     hist_file = os.environ.get('HISTFILE')
@@ -140,6 +140,7 @@ def load_history_from_env(args):
             with open(hist_file, 'r') as f: 
                 for line in f: 
                     history.entries.append(line.strip())
+    return None
 
 
 def add_to_history(line): 
