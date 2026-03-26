@@ -1,20 +1,18 @@
-import os
-import readline 
+import readline
 
 from . import commands as c
 
 
-def completer(text, state): 
+def completer(text, state):
     builtin_matches = c.get_builtin_completions(text)
     exe_matches = c.get_executable_completions(text)
     completions = builtin_matches + exe_matches
 
     # readline increments state on each call; use it to index into the matches list
     # When state exceeds the number of matches, return None to signal no more completions
-    if state < len(completions):
-        return completions[state] + ' '
-    
-    return None
+    if state >= len(completions):
+        return None
+    return completions[state] + ' '
 
 
 def main():
@@ -28,18 +26,18 @@ def main():
         c.add_to_history(line)
         tokens = c.tokenize(line)
 
-        if '|' in tokens: 
+        if '|' in tokens:
             stdout, stderr = c.run_pipeline(tokens)
-            if stdout: 
+            if stdout:
                 print(stdout, end='')
-            if stderr: 
+            if stderr:
                 print(stderr, end='')
             continue
 
         cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode = c.parse_redirects(tokens)
 
-        if cmd_name in c.COMMANDS: 
-            handler = c.COMMANDS[cmd_name] 
+        if cmd_name in c.COMMANDS:
+            handler = c.COMMANDS[cmd_name]
             stdout, signal = handler(args)
 
             if signal is c.EXIT:
@@ -47,10 +45,10 @@ def main():
                 break
 
             # Redirect stdout to file if specified, otherwise print to terminal
-            if stdout and stdout_file_path: 
-                    with open(stdout_file_path, stdout_mode) as f:
-                        f.write(stdout)
-            elif stdout: 
+            if stdout and stdout_file_path:
+                with open(stdout_file_path, stdout_mode) as f:
+                    f.write(stdout)
+            elif stdout:
                 print(stdout, end='')
 
             # Builtins don't produce stderr, but the file must still be created when 2> is used
@@ -59,26 +57,26 @@ def main():
                     f.write('')
 
             continue
-        
+
         exe_name = c.find_executable(cmd_name)
 
         if exe_name is not None:
             stdout, stderr = c.run_external_program(exe_name, cmd_tokens[1:])
 
-            if stdout_file_path: 
+            if stdout_file_path:
                 with open(stdout_file_path, stdout_mode) as f:
-                    f.write(stdout if stdout else '')
+                    f.write(stdout or '')
             elif stdout:
                 print(stdout, end='')
               
-            if stderr_file_path: 
-                with open(stderr_file_path, stderr_mode) as f: 
+            if stderr_file_path:
+                with open(stderr_file_path, stderr_mode) as f:
                     f.write(stderr)
             elif stderr:
                 print(stderr, end='')
 
             continue
-        else: 
+        else:
             print(f'{cmd_name}: not found')
 
 
