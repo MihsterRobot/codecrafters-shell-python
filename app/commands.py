@@ -138,8 +138,8 @@ def run_history(args):
     else:
         entries = HISTORY
 
-    output = '\n'.join(f'{i+1}  {cmd}' for i, cmd in enumerate(entries))
-    
+    output = '\n'.join(f'{n+1}  {cmd}' for i, cmd in enumerate(entries))
+
     return output + '\n', None
    
 
