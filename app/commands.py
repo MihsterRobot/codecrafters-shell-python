@@ -133,6 +133,7 @@ def run_history(args):
     # Generator expression produces formatted history entries one at a time
     # join() consumes them directly without storing the full list in memory
     start = 0
+    num_entries = 0
     if args:
         if args.isdigit(): 
             n = int(args)
@@ -151,9 +152,11 @@ def run_history(args):
                         f.write(entry + '\n')
                 return None, None
             elif args.startswith('-a'):
+                
                 with open(file_path, 'a') as f: 
-                    for entry in HISTORY: 
+                    for entry in HISTORY[num_entries:]: 
                         f.write(entry + '\n')
+                        num_entries += 1
                 return None, None
     else:
         entries = HISTORY
