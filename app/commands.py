@@ -132,33 +132,31 @@ def add_to_history(line):
 def run_history(args):
     # Generator expression produces formatted history entries one at a time
     # join() consumes them directly without storing the full list in memory
-    global NUM_ENTRIES
     start = 0
-
     if args:
         if args.isdigit(): 
             n = int(args)
             entries = history_state['entries'][-n:]
-            start = len(HISTORY) - n + 1
+            start = len(history_state['entries']) - n + 1
         else:
             file_path = args.split()[1]
             if args.startswith('-r'):
                 with open(file_path, 'r') as f:
                     for line in f:
-                        HISTORY.append(line.strip())
+                        history_state['entries'].append(line.strip())
                 return None, None
             elif args.startswith('-w'):
                 with open(file_path, 'w') as f: 
-                    for entry in HISTORY: 
+                    for entry in history_state['entries']: 
                         f.write(entry + '\n')
                 return None, None
             elif args.startswith('-a'):
                 with open(file_path, 'a') as f: 
-                    for entry in HISTORY[history_state['last_appended_idx']:]: 
+                    for entry in history_state['last_appended_idx']: 
                         f.write(entry + '\n')
                 return None, None
     else:
-        entries = HISTORY
+        entries = history_state['entries']
         start = 1
 
     output = '\n'.join(f'   {i}  {cmd}' for i, cmd in enumerate(entries, start))
