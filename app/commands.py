@@ -133,7 +133,6 @@ def run_history(args):
     # Generator expression produces formatted history entries one at a time
     # join() consumes them directly without storing the full list in memory
     start = 0
-    num_entries = 0
     if args:
         if args.isdigit(): 
             n = int(args)
@@ -152,11 +151,10 @@ def run_history(args):
                         f.write(entry + '\n')
                 return None, None
             elif args.startswith('-a'):
-                
                 with open(file_path, 'a') as f: 
-                    for entry in HISTORY[num_entries:]: 
+                    for entry in HISTORY[NUM_ENTRIES:]: 
                         f.write(entry + '\n')
-                        num_entries += 1
+                        NUM_ENTRIES += 1
                 return None, None
     else:
         entries = HISTORY
@@ -315,8 +313,8 @@ def get_executable_completions(text):
 
 
 EXIT = object() # Sentinel value
-
 HISTORY = []
+NUM_ENTRIES = 0
 
 COMMANDS = {
     'echo': run_echo,
