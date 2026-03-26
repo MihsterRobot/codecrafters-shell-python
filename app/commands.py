@@ -296,12 +296,12 @@ def get_executable_completions(text):
                 if filename.startswith(text):
                     exe_path = os.path.join(directory, filename)
                     if os.path.isfile(exe_path) and os.access(exe_path, os.X_OK):
-                        matches.append(filename)
-
+                        matches.append(filename)                
     return matches
 
 
 EXIT = object() # Sentinel value
+
 HISTORY = []
 
 COMMANDS = {
