@@ -2,6 +2,12 @@ import os
 import subprocess
 
 
+class HistoryState:
+    def __init__(self):
+        self.entries = []
+        self.last_appended_idx = 0
+
+
 def tokenize(line): 
     symbols = {"'": 'single', '"': 'double'}
     state = 'unquoted'
@@ -126,7 +132,7 @@ def run_pwd(args):
 
 
 def add_to_history(line): 
-    history_state['entries'].append(line)
+    history.entries.append(line)
 
 
 def run_history(args):
@@ -136,27 +142,28 @@ def run_history(args):
     if args:
         if args.isdigit(): 
             n = int(args)
-            entries = history_state['entries'][-n:]
-            start = len(history_state['entries']) - n + 1
+            entries = history.entries[-n:]
+            start = len(history.entries) - n + 1
         else:
             file_path = args.split()[1]
             if args.startswith('-r'):
                 with open(file_path, 'r') as f:
                     for line in f:
-                        history_state['entries'].append(line.strip())
+                        history.entries.append(line.strip())
                 return None, None
             elif args.startswith('-w'):
                 with open(file_path, 'w') as f: 
-                    for entry in history_state['entries']: 
+                    for entry in history.entries: 
                         f.write(entry + '\n')
                 return None, None
             elif args.startswith('-a'):
                 with open(file_path, 'a') as f: 
-                    for entry in history_state['entries'][history_state['last_appended_idx']:]: 
+                    for entry in history.entries[history.last_appended_idx:]: 
                         f.write(entry + '\n')
+                    history.last_appended_idx = len(history.entries)
                 return None, None
     else:
-        entries = history_state['entries']
+        entries = history.entries
         start = 1
 
     output = '\n'.join(f'   {i}  {cmd}' for i, cmd in enumerate(entries, start))
@@ -313,11 +320,7 @@ def get_executable_completions(text):
 
 EXIT = object() # Sentinel value
 
-HISTORY = []
-history_state = {
-    'entries': [],
-    'last_appended_idx': 0
-}
+history = HistoryState()
 
 COMMANDS = {
     'echo': run_echo,
