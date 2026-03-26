@@ -313,8 +313,9 @@ def get_executable_completions(text):
 
 
 EXIT = object() # Sentinel value
+
 HISTORY = []
-NUM_ENTRIES = 0
+global NUM_ENTRIES 
 
 COMMANDS = {
     'echo': run_echo,
