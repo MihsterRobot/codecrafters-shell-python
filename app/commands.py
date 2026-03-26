@@ -134,7 +134,7 @@ def run_history(args):
     # join() consumes them directly without storing the full list in memory
     global NUM_ENTRIES
     start = 0
-    
+
     if args:
         if args.isdigit(): 
             n = int(args)
@@ -156,7 +156,7 @@ def run_history(args):
                 with open(file_path, 'a') as f: 
                     for entry in HISTORY[NUM_ENTRIES:]: 
                         f.write(entry + '\n')
-                        NUM_ENTRIES += 1
+                NUM_ENTRIES = len(HISTORY)
                 return None, None
     else:
         entries = HISTORY
