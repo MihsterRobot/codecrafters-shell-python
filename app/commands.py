@@ -125,6 +125,14 @@ def run_pwd(args):
     return os.getcwd() + '\n', None
 
 
+def add_to_history(line): 
+    HISTORY.append(line)
+
+
+def run_history(args):
+    return HISTORY, None
+   
+
 def run_cd(args):
     dest_path = args
     home_dir = os.environ['HOME']
@@ -238,7 +246,10 @@ def run_pipeline(tokens):
             builtin_stdout, _ = handler(' '.join(cmd_toks[1:]))
             prev_proc = None
         else: # External
-            if builtin_stdout : # If the previous command was a builtin
+            # If the previous command was a builtin, pass its output to the current process via stdin
+            # Popen doesn't accept input= directly like subprocess.run; stdin must be written to manually
+            # text=True allows writing strings directly to stdin; otherwise, builtin_stdout would need to be encoded to bytes first
+            if builtin_stdout: 
                 curr_proc = subprocess.Popen(cmd_toks, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
                 curr_proc.stdin.write(builtin_stdout)
                 curr_proc.stdin.close()
@@ -272,10 +283,12 @@ def get_executable_completions(text):
 
 
 EXIT = object() # Sentinel value
+HISTORY = []
 
 COMMANDS = {
     'echo': run_echo,
     'pwd': run_pwd,
+    'history': run_history,
     'cd': run_cd,
     'type': run_type,
     'exit': run_exit

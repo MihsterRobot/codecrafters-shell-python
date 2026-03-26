@@ -22,6 +22,7 @@ def main():
 
     while True:
         line = input('$ ')
+        c.add_to_history(line)
         tokens = c.tokenize(line)
 
         if '|' in tokens: 
