@@ -150,7 +150,7 @@ def run_history(args):
                     for entry in HISTORY: 
                         f.write(entry + '\n')
                 return None, None
-            elif args.startwiths('-a'):
+            elif args.startswith('-a'):
                 with open(file_path, 'a') as f: 
                     for entry in HISTORY: 
                         f.write(entry + '\n')
