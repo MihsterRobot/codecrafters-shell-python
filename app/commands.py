@@ -138,18 +138,22 @@ def run_history(args):
             n = int(args)
             entries = HISTORY[-n:]
             start = len(HISTORY) - n + 1
-        elif args.startswith('-r'):
+        else:
             file_path = args.split()[1]
-            with open(file_path, 'r') as f:
-                for line in f:
-                    HISTORY.append(line.strip())
-            return None, None
-        elif args.startswith('-w'):
-            file_path = args.split()[1]
-            with open(file_path, 'w') as f: 
-                for entry in HISTORY: 
-                    f.write(entry + '\n')
-            return None, None
+            if args.startswith('-r'):
+                with open(file_path, 'r') as f:
+                    for line in f:
+                        HISTORY.append(line.strip())
+                return None, None
+            elif args.startswith('-w'):
+                with open(file_path, 'w') as f: 
+                    for entry in HISTORY: 
+                        f.write(entry + '\n')
+                return None, None
+            elif args.startwith('a'):
+                with open(file_path, 'a') as f: 
+                    f.write(file_path)
+                return None, None
     else:
         entries = HISTORY
         start = 1
