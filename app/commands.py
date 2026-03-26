@@ -152,7 +152,7 @@ def run_history(args):
                 return None, None
             elif args.startswith('-a'):
                 with open(file_path, 'a') as f: 
-                    for entry in history_state['last_appended_idx']: 
+                    for entry in history_state['entries'][history_state['last_appended_idx']:]: 
                         f.write(entry + '\n')
                 return None, None
     else:
