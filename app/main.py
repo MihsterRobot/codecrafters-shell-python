@@ -21,12 +21,7 @@ def main():
     readline.set_completer(completer)
     readline.parse_and_bind('tab: complete')
 
-    hist_env = os.environ['HISTFILE']
-    if os.path.isfile(hist_env): 
-        if hist_env: 
-            with open(hist_env, 'r') as f: 
-                for line in f: 
-                    c.history.entries.append(line.split())
+    c.load_history_from_env()
 
     while True:
         line = input('$ ')

@@ -131,6 +131,17 @@ def run_pwd(args):
     return os.getcwd() + '\n', None
 
 
+def load_history_from_env(args): 
+    # os.environ.get('HISTFILE') is safer than os.environ['HISTFILE'] because it 
+    # returns None if the variable doesn't exist instead of raising a KeyError
+    hist_file = os.environ.get('HISTFILE')
+    if hist_file: 
+        if os.path.isfile(hist_file): 
+            with open(hist_file, 'r') as f: 
+                for line in f: 
+                    history.entries.append(line.strip())
+
+
 def add_to_history(line): 
     history.entries.append(line)
 
@@ -192,6 +203,8 @@ def run_type(args):
     if args in COMMANDS: 
         return f'{args} is a shell builtin' + '\n', None
     
+    # os.environ['PATH'] and os.environ['HOME'] are used directly because
+    # these variables are always expected to be set on a Unix system 
     path_env = os.environ['PATH']
     dirs = path_env.split(':')
     filename = args
