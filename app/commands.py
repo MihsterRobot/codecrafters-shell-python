@@ -136,11 +136,12 @@ def run_history(args):
     if args:
         n = int(args)
         entries = HISTORY[-n:]
+        n = len(HISTORY) - 1
     else:
         entries = HISTORY
-        n = 1
+        n = 0
 
-    output = '\n'.join(f'{i+n}  {cmd}' for i, cmd in enumerate(entries))
+    output = '\n'.join(f'{n+1} {cmd}' for cmd in entries)
 
     return output + '\n', None
    
