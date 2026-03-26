@@ -129,6 +129,9 @@ def add_to_history(line):
     HISTORY.append(line)
 
 
+global NUM_ENTRIES 
+
+
 def run_history(args):
     # Generator expression produces formatted history entries one at a time
     # join() consumes them directly without storing the full list in memory
@@ -315,7 +318,6 @@ def get_executable_completions(text):
 EXIT = object() # Sentinel value
 
 HISTORY = []
-global NUM_ENTRIES 
 
 COMMANDS = {
     'echo': run_echo,
