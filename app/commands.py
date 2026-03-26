@@ -132,16 +132,16 @@ def add_to_history(line):
 def run_history(args):
     # Generator expression produces formatted history entries one at a time
     # join() consumes them directly without storing the full list in memory
-    n = 0
+    start = 0
     if args:
         n = int(args)
         entries = HISTORY[-n:]
-        n = len(HISTORY) - 1
+        start = len(HISTORY) - n + 1
     else:
         entries = HISTORY
-        n = 0
+        start = 1
 
-    output = '\n'.join(f'{n+1}  {cmd}' for cmd in entries)
+    output = '\n'.join(f'   {i}  {cmd}' for i, cmd in enumerate(entries, start))
 
     return output + '\n', None
    
