@@ -130,6 +130,7 @@ def add_to_history(line):
 
 
 global NUM_ENTRIES 
+NUM_ENTRIES = 0
 
 
 def run_history(args):
