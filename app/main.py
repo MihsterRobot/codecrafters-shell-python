@@ -43,7 +43,7 @@ def main():
             stdout, signal = handler(args)
 
             if signal is c.EXIT:
-                c.load_history_from_env()
+                c.save_history_to_env()
                 break
 
             # Redirect stdout to file if specified, otherwise print to terminal

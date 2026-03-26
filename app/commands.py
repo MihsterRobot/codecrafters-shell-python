@@ -140,7 +140,14 @@ def load_history_from_env():
             with open(hist_file, 'r') as f: 
                 for line in f: 
                     history.entries.append(line.strip())
-    return None
+
+
+def save_history_to_env():
+    hist_file = os.environ.get('HISTFILE')
+    if hist_file:
+        with open(hist_file, 'w') as f:
+            for entry in history.entries:
+                f.write(entry + '\n')
 
 
 def add_to_history(line): 
