@@ -126,7 +126,7 @@ def run_pwd(args):
 
 
 def add_to_history(line): 
-    HISTORY.append(line)
+    history_state['entries'].append(line)
 
 
 def run_history(args):
@@ -138,7 +138,7 @@ def run_history(args):
     if args:
         if args.isdigit(): 
             n = int(args)
-            entries = HISTORY[-n:]
+            entries = history_state['entries'][-n:]
             start = len(HISTORY) - n + 1
         else:
             file_path = args.split()[1]
@@ -154,9 +154,8 @@ def run_history(args):
                 return None, None
             elif args.startswith('-a'):
                 with open(file_path, 'a') as f: 
-                    for entry in HISTORY[NUM_ENTRIES:]: 
+                    for entry in HISTORY[history_state['last_appended_idx']:]: 
                         f.write(entry + '\n')
-                NUM_ENTRIES = len(HISTORY)
                 return None, None
     else:
         entries = HISTORY
@@ -317,7 +316,10 @@ def get_executable_completions(text):
 EXIT = object() # Sentinel value
 
 HISTORY = []
-NUM_ENTRIES = 0
+history_state = {
+    'entries': [],
+    'last_appended_idx': 0
+}
 
 COMMANDS = {
     'echo': run_echo,
