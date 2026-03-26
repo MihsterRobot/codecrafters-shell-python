@@ -134,7 +134,11 @@ def run_history(args):
     # join() consumes them directly without storing the full list in memory
     start = 0
     if args:
-        if args.startswith('-r'):
+        if args.isdigit(): 
+            n = int(args)
+            entries = HISTORY[-n:]
+            start = len(HISTORY) - n + 1
+        elif args.startswith('-r'):
             file_path = args.split()[1]
             with open(file_path, 'r') as f:
                 for line in f:
