@@ -21,10 +21,10 @@ def main():
     readline.set_completer(completer)
     readline.parse_and_bind('tab: complete')
 
-    hist_path = os.path['HISTFILE']
-    if os.path.isfile(hist_path): 
-        if hist_path: 
-            with open(hist_path, 'r') as f: 
+    hist_env = os.environ['HISTFILE']
+    if os.path.isfile(hist_env): 
+        if hist_env: 
+            with open(hist_env, 'r') as f: 
                 for line in f: 
                     f.write(c.history.entries.append(line.split()))
 
