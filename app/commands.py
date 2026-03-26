@@ -144,7 +144,7 @@ def run_history(args):
                 for line in f:
                     HISTORY.append(line.strip())
             return None, None
-        elif args.startswith('w'):
+        elif args.startswith('-w'):
             file_path = args.split()[1]
             with open(file_path, 'w') as f: 
                 for entry in HISTORY: 
