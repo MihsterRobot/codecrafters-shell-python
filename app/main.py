@@ -6,7 +6,8 @@ from . import commands as c
 def completer(text, state):
     builtin_matches = c.get_builtin_completions(text)
     exe_matches = c.get_executable_completions(text)
-    completions = builtin_matches + exe_matches
+    filename_matches = c.get_filename_completions(text)
+    completions = builtin_matches + exe_matches + filename_matches
 
     # readline increments state on each call; use it to index into the completions list
     # Return None when state reaches or exceeds the number of matches, signaling no more completions

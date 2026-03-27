@@ -251,6 +251,7 @@ def run_external_program(exe_name, args):
     return result.stdout, result.stderr
 
 
+# TODO: Review the pipeline process and structure
 def run_pipeline(tokens):
     pipeline_cmds = []
     cmd_tokens = []
@@ -339,6 +340,16 @@ def get_executable_completions(text):
                     exe_path = os.path.join(directory, filename)
                     if os.path.isfile(exe_path) and os.access(exe_path, os.X_OK):
                         matches.append(filename)        
+    return matches
+
+
+def get_filename_completions(text):
+    cwd = os.getcwd()
+    matches = []
+    if os.path.isdir(cwd):
+        for filename in os.listdir(cwd):
+            if filename.startswith(text):
+                matches.append(filename)
     return matches
 
 
