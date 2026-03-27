@@ -18,6 +18,7 @@ def completer(text, state):
 
 def main():
     readline.set_completer(completer)
+    readline.set_completer_delims(' ')
     readline.parse_and_bind('tab: complete')
 
     c.load_history_from_env()
