@@ -349,6 +349,7 @@ def get_filename_completions(text):
         tokens = text.rsplit('/', maxsplit=1)
         directory = tokens[0]
         prefix = tokens[1]
+        print(tokens)
 
         if os.path.isdir(directory):
             for name in os.listdir(directory):
