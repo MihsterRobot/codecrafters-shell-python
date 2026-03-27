@@ -347,9 +347,10 @@ def get_filename_completions(text):
     cwd = os.getcwd()
     matches = []
     if os.path.isdir(cwd):
-        for filename in os.listdir(cwd):
-            if filename.startswith(text):
-                matches.append(filename)
+        for name in os.listdir(cwd):
+            if os.path.isfile(name):
+                if name.startswith(text):
+                    matches.append(name)
     return matches
 
 
