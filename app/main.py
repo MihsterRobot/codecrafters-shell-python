@@ -8,8 +8,8 @@ def completer(text, state):
     exe_matches = c.get_executable_completions(text)
     completions = builtin_matches + exe_matches
 
-    # readline increments state on each call; use it to index into the matches list
-    # When state exceeds the number of matches, return None to signal no more completions
+    # readline increments state on each call; use it to index into the completions list
+    # Return None when state reaches or exceeds the number of matches, signaling no more completions
     if state >= len(completions):
         return None
     return completions[state] + ' '
@@ -68,7 +68,7 @@ def main():
                     f.write(stdout or '')
             elif stdout:
                 print(stdout, end='')
-              
+
             if stderr_file_path:
                 with open(stderr_file_path, stderr_mode) as f:
                     f.write(stderr)

@@ -66,11 +66,11 @@ def tokenize(line):
 
 
 def parse_redirects(tokens):
-    redir_idx = None
     stdout_file_path = None
-    stderr_file_path = None
     stdout_mode = 'w'
+    stderr_file_path = None
     stderr_mode = 'w'
+    redir_idx = None
 
     # FIXME: Combinations of append operators (e.g. >> and 2>>) are not handled correctly
     # redir_idx may be overwritten when both are present, causing incorrect cmd_tokens slicing
@@ -199,7 +199,7 @@ def run_cd(args):
     if dest_path == '~':
         os.chdir(home_dir)
         return None, None
-    
+
     if os.path.isdir(dest_path):
         os.chdir(dest_path)
         return None, None
@@ -342,9 +342,9 @@ def get_executable_completions(text):
     return matches
 
 
-EXIT = object() # Sentinel value
-
 history = HistoryState()
+
+EXIT = object() # Sentinel value
 
 COMMANDS = {
     'echo': run_echo,
