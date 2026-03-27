@@ -356,7 +356,7 @@ def get_filename_completions(text):
             full_path = os.path.join(os.getcwd(), directory)
             for name in os.listdir(full_path):
                 if os.path.isfile(name) and name.startswith(prefix):
-                    matches.append(''.join(full_path, prefix))
+                    matches.append(os.path.join(directory, prefix))
     else:
         matches = []
         for name in os.listdir(os.getcwd()):
