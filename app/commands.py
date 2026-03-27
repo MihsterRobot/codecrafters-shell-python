@@ -345,22 +345,24 @@ def get_executable_completions(text):
 
 # getcwd() always returns a valid existing directory, so isdir() check isn't needed
 def get_filename_completions(text):
+    matches = []
+
     if '/' in text:
         tokens = text.rsplit('/', maxsplit=1)
         directory = tokens[0]
         prefix = tokens[1]
-        print(tokens)
 
         if os.path.isdir(directory):
             for name in os.listdir(directory):
-                if os.path.isfile(name) and name.startswith(prefix):
-                    return os.path.join(directory, name)
+                if os.path.isfile(os.path.join(directory, name)) and name.startswith(prefix):
+                    matches.append(os.path.join(directory, name))
     else:
         matches = []
         for name in os.listdir(os.getcwd()):
             if os.path.isfile(name) and name.startswith(text):
                 matches.append(name)
-        return matches
+
+    return matches
 
 
 history = HistoryState()
