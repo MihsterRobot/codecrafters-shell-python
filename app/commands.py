@@ -345,6 +345,7 @@ def get_path_completions(text, entry_type):
     is_match = os.path.isfile if entry_type == 'file' else os.path.isdir
     suffix = '' if entry_type == 'file' else '/'
     matches = []
+
     if '/' in text:
         directory, prefix = text.rsplit('/', maxsplit=1)
         if os.path.isdir(directory):
@@ -354,7 +355,7 @@ def get_path_completions(text, entry_type):
                     matches.append(os.path.join(directory, name) + suffix)
     else:
         for name in os.listdir(os.getcwd()):
-            if is_match(name) and name.startswith(text):
+            if is_match(os.path.join(os.getcwd(), name)) and name.startswith(prefix):
                 matches.append(name + suffix)
     return matches
 
