@@ -4,8 +4,12 @@ from . import commands as c
 
 
 def completer(text, state):
-    builtin_matches = c.get_builtin_completions(text)
-    exe_matches = c.get_executable_completions(text)
+    if text:
+        builtin_matches = c.get_builtin_completions(text)
+        exe_matches = c.get_executable_completions(text)
+    else:
+        builtin_matches = []
+        exe_matches = []
     filename_matches = c.get_filename_completions(text)
     directory_matches = c.get_directory_completions(text)
     completions = builtin_matches + exe_matches + filename_matches + directory_matches
@@ -24,7 +28,6 @@ def main():
     readline.set_completer(completer)
     readline.set_completer_delims(' ')
     readline.parse_and_bind('tab: complete')
-    readline.parse_and_bind('set show-all-if-ambiguous on')
 
     c.load_history_from_env()
 
