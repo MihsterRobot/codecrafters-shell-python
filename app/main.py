@@ -16,7 +16,7 @@ def completer(text, state):
         return None
 
     # Directories get a trailing '/' with no space; files get a trailing space
-    suffix = '' if completions[state].endswith('/') else ' '
+    suffix = '' if completions[state].endswith('/') else ''
     return completions[state] + suffix
 
 
