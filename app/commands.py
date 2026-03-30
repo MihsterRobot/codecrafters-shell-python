@@ -366,8 +366,8 @@ def get_directory_completions(text):
         if os.path.isdir(directory):
             full_path = os.path.join(os.getcwd(), directory)
             for name in os.listdir(full_path):
-                if os.path.isdir(os.path.join(directory, name)) and name.startswith(prefix):
-                    matches.append(os.path.join(directory, name))
+                if os.path.isdir(name) and name.startswith(prefix):
+                    matches.append(name)
     else:
         for name in os.listdir(os.getcwd()):
             if os.path.isdir(os.path.join(os.getcwd(), name)) and name.startswith(text):
