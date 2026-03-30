@@ -16,7 +16,7 @@ def completer(text, state):
         return None
 
     # Directories get a trailing '/' with no space; files get a trailing space
-    suffix = '' if completions[state].endswith('/') else ''
+    suffix = '' if completions[state].endswith('/') else ' '
     return completions[state] + suffix
 
 
@@ -24,6 +24,7 @@ def main():
     readline.set_completer(completer)
     readline.set_completer_delims(' ')
     readline.parse_and_bind('tab: complete')
+    readline.parse_and_bind('set show-all-if-ambiguous on')
 
     c.load_history_from_env()
 
