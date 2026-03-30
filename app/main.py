@@ -4,6 +4,8 @@ from . import commands as c
 
 
 def completer(text, state):
+    import sys
+    print(f'\ntext={repr(text)} state={state}', file=sys.stderr)
     builtin_matches = c.get_builtin_completions(text)
     exe_matches = c.get_executable_completions(text)
     filename_matches = c.get_filename_completions(text)
