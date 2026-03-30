@@ -360,7 +360,6 @@ def get_filename_completions(text):
 
 
 def get_directory_completions(text):
-    import sys
     matches = []
     if '/' in text:  
         directory, prefix = text.rsplit('/', maxsplit=1)
@@ -373,8 +372,6 @@ def get_directory_completions(text):
         for name in os.listdir(os.getcwd()):
             if os.path.isdir(name) and name.startswith(text): 
                 matches.append(name + '/')
-
-    print(f'DEBUG dir completions: text={repr(text)}, matches={matches}', file=sys.stderr)
     return matches
 
 
