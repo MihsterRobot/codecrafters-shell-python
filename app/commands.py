@@ -370,7 +370,7 @@ def get_directory_completions(text):
                     matches.append(os.path.join(directory, name) + '/')
     else:
         for name in os.listdir(os.getcwd()):
-            if os.path.isdir(name): 
+            if os.path.isdir(name) and name.startswith(text): 
                 matches.append(name + '/')
     return matches
 
