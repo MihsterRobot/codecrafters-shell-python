@@ -4,8 +4,14 @@ from . import commands as c
 
 
 def completer(text, state):
-    builtin_matches = c.get_builtin_completions(text)
-    exe_matches = c.get_executable_completions(text)
+    # Skip builtin and executable completions when text is empty; returning all matches
+    # would overwhelm readline and prevent file/directory completions from taking effect
+    if text:
+        builtin_matches = c.get_builtin_completions(text)
+        exe_matches = c.get_executable_completions(text)
+    else:
+        builtin_matches = []
+        exe_matches = []
     filename_matches = c.get_filename_completions(text)
     directory_matches = c.get_directory_completions(text)
     completions = builtin_matches + exe_matches + filename_matches + directory_matches
