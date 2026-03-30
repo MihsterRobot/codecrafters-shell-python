@@ -12,8 +12,8 @@ def completer(text, state):
     else:
         builtin_matches = []
         exe_matches = []
-    filename_matches = c.get_filename_completions(text)
-    directory_matches = c.get_directory_completions(text)
+    filename_matches = c.get_path_completions(text, 'file')
+    directory_matches = c.get_path_completions(text, 'dir')
     completions = builtin_matches + exe_matches + filename_matches + directory_matches
 
     # readline increments state on each call; use it to index into the completions list
@@ -21,6 +21,7 @@ def completer(text, state):
     if state >= len(completions):
         return None
 
+    # TODO: Check if this can be removed and added to get_path_completions
     # Directories get a trailing '/' with no space; files get a trailing space
     suffix = '' if completions[state].endswith('/') else ' '
     return completions[state] + suffix

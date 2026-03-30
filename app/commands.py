@@ -266,16 +266,16 @@ def run_pipeline(tokens):
     if cmd_tokens:
         pipeline_cmds.append(cmd_tokens)
 
+    # curr_proc = None is unnecessary because it's always assigned before being used within the loop
+    # prev_proc and builtin_stdout need to be initialized because they're referenced across iterations,
+    # while curr_proc is only used within the same iteration it's assigned
+
     prev_proc = None
     builtin_stdout = None
-    # curr_proc = None is unnecessary because it's always assigned before being used within the loop
-    # prev_proc and builtin_stdout  need to be initialized because they're referenced across iterations,
-    # while curr_proc is only used within the same iteration it's assigned
 
     # Iterate over pipeline_cmds and determine if the cmd is a builtin or external
     for i, cmd_toks in enumerate(pipeline_cmds):
         cmd_name = cmd_toks[0]
-
         if i == 0: # First command
             if cmd_name in COMMANDS: # Builtin
                 handler = COMMANDS[cmd_name]
@@ -294,8 +294,6 @@ def run_pipeline(tokens):
                    prev_proc.stdout.close()
                    _, stderr = curr_proc.communicate()
                    return None, stderr
-                    # result = subprocess.run(cmd_toks, stdin=prev_proc.stdout, capture_output=True, text=True)
-                    # prev_proc.stdout.close()
                 else: # Previous command was a builtin
                     result = subprocess.run(cmd_toks, input=builtin_stdout, capture_output=True, text=True)
                     return result.stdout, result.stderr
@@ -343,35 +341,21 @@ def get_executable_completions(text):
     return matches
 
 
-def get_filename_completions(text):
+def get_path_completions(text, entry_type):
+    is_match = os.path.isfile if entry_type == 'file' else os.path.isdir
+    suffix = '' if entry_type == 'file' else '/'
     matches = []
-    if '/' in text:  # Return file path
+    if '/' in text:
         directory, prefix = text.rsplit('/', maxsplit=1)
         if os.path.isdir(directory):
             full_path = os.path.join(os.getcwd(), directory)
             for name in os.listdir(full_path):
-                if os.path.isfile(os.path.join(directory, name)) and name.startswith(prefix):
-                    matches.append(os.path.join(directory, name))
-    else:  # Return filename
-        for name in os.listdir(os.getcwd()):
-            if os.path.isfile(name) and name.startswith(text):
-                matches.append(name)
-    return matches
-
-
-def get_directory_completions(text):
-    matches = []
-    if '/' in text:  
-        directory, prefix = text.rsplit('/', maxsplit=1)
-        if os.path.isdir(directory):
-            full_path = os.path.join(os.getcwd(), directory)
-            for name in os.listdir(full_path):
-                if os.path.isdir(os.path.join(full_path, name)) and name.startswith(prefix):
-                    matches.append(os.path.join(directory, name) + '/')
+                if is_match(os.path.join(full_path, name)) and name.startswith(prefix):
+                    matches.append(os.path.join(directory, name) + suffix)
     else:
         for name in os.listdir(os.getcwd()):
-            if os.path.isdir(name) and name.startswith(text): 
-                matches.append(name + '/')
+            if is_match(name) and name.startswith(text):
+                matches.append(name + suffix)
     return matches
 
 
