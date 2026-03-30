@@ -355,7 +355,7 @@ def get_path_completions(text, entry_type):
                     matches.append(os.path.join(directory, name) + suffix)
     else:
         for name in os.listdir(os.getcwd()):
-            if is_match(os.path.join(os.getcwd(), name)) and name.startswith(prefix):
+            if is_match(os.path.join(os.getcwd(), name)) and name.startswith(text):
                 matches.append(name + suffix)
     return matches
 
