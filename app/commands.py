@@ -360,6 +360,7 @@ def get_filename_completions(text):
 
 
 def get_directory_completions(text):
+    import sys
     matches = []
     print(f'DEBUG dir completions: text={repr(text)}, matches={matches}', file=sys.stderr)
     return matches
