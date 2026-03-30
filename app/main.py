@@ -3,25 +3,21 @@ import readline
 from . import commands as c
 
 
-_completions_cache = []
-
 def completer(text, state):
-    global _completions_cache
-    if state == 0:
-        builtin_matches = c.get_builtin_completions(text)
-        exe_matches = c.get_executable_completions(text)
-        filename_matches = c.get_filename_completions(text)
-        directory_matches = c.get_directory_completions(text)
-        _completions_cache = builtin_matches + exe_matches + filename_matches + directory_matches
+    builtin_matches = c.get_builtin_completions(text)
+    exe_matches = c.get_executable_completions(text)
+    filename_matches = c.get_filename_completions(text)
+    directory_matches = c.get_directory_completions(text)
+    completions = builtin_matches + exe_matches + filename_matches + directory_matches
 
     # readline increments state on each call; use it to index into the completions list
     # Return None when state reaches or exceeds the number of matches, signaling no more completions
-    if state >= len(_completions_cache):
+    if state >= len(completions):
         return None
 
     # Directories get a trailing '/' with no space; files get a trailing space
-    suffix = '' if _completions_cache[state].endswith('/') else ' '
-    return _completions_cache[state] + suffix
+    suffix = '' if completions[state].endswith('/') else ' '
+    return completions[state] + suffix
 
 
 def main():
