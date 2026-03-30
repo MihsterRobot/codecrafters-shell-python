@@ -14,7 +14,10 @@ def completer(text, state):
     # Return None when state reaches or exceeds the number of matches, signaling no more completions
     if state >= len(completions):
         return None
-    return completions[state] + ' '
+
+    # Directories get a trailing '/' with no space; files get a trailing space
+    suffix = '' if completions[state].endswith('/') else ' '
+    return completions[state] + suffix
 
 
 def main():

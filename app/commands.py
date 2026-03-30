@@ -361,12 +361,9 @@ def get_filename_completions(text):
 
 def get_directory_completions(text): 
     matches = []
-    prefix = text.split()[1]
-    # List the contents of the cwd
-    for name in os.path.listdir(os.getcwd()):
-        # Check if the current name is a directory
-        if os.path.isdir(name) and name.startswith(prefix): 
-            matches.append(name)
+    for name in os.listdir(os.getcwd()): 
+        if os.path.isdir(name) and name.startswith(text): 
+            matches.append(name + '/')
     return matches
     
 
