@@ -359,13 +359,13 @@ def get_filename_completions(text):
     return matches
 
 
-def get_directory_completions(text): 
+def get_directory_completions(text):
     matches = []
-    for name in os.listdir(os.getcwd()): 
-        if os.path.isdir(name) and name.startswith(text): 
+    for name in os.listdir(os.getcwd()):
+        if os.path.isdir(os.path.join(os.getcwd(), name)) and name.startswith(text):
             matches.append(name + '/')
     return matches
-    
+
 
 history = HistoryState()
 
