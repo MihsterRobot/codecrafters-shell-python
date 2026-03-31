@@ -235,7 +235,7 @@ def run_type(args):
 def run_jobs(args):
     proc = subprocess.Popen(args, stdout=subprocess.PIPE, text=True)
     job_state.counter += 1
-    return proc
+    return proc, None
 
 
 def run_exit(args):
