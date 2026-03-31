@@ -227,6 +227,10 @@ def run_type(args):
     return f'{filename}: not found' + '\n', None
 
 
+def run_job(args):
+    return None, None
+
+
 def run_exit(args):
     return None, EXIT
 
@@ -370,5 +374,6 @@ COMMANDS = {
     'history': run_history,
     'cd': run_cd,
     'type': run_type,
+    'job': run_job,
     'exit': run_exit
 }
