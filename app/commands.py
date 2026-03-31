@@ -8,6 +8,11 @@ class HistoryState:
         self.last_written_idx = 0
 
 
+class JobState:
+    def __init__(self):
+        self.counter = 0
+
+
 def tokenize(line):
     symbols = {"'": 'single', '"': 'double'}
     state = 'unquoted'
@@ -229,7 +234,7 @@ def run_type(args):
 
 def run_jobs(args):
     proc = subprocess.Popen(args, stdout=subprocess.PIPE, text=True)
-    print(proc.pid)
+    job_state.counter += 1
     return proc
 
 
@@ -367,6 +372,7 @@ def get_path_completions(text, entry_type):
 
 
 history = HistoryState()
+job_state = JobState()
 
 EXIT = object() # Sentinel value
 
