@@ -374,6 +374,6 @@ COMMANDS = {
     'history': run_history,
     'cd': run_cd,
     'type': run_type,
-    'job': run_jobs,
+    'jobs': run_jobs,
     'exit': run_exit
 }
