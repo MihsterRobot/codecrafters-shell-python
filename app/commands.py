@@ -228,7 +228,8 @@ def run_type(args):
 
 
 def run_jobs(args):
-    return None, None
+    proc = subprocess.Popen(args, stdout=subprocess.PIPE)
+    return proc
 
 
 def run_exit(args):

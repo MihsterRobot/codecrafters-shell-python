@@ -40,6 +40,13 @@ def main():
         c.add_to_history(line)
         tokens = c.tokenize(line)
 
+        if '&' in tokens: 
+            args = tokens[:-1]
+            proc = c.run_jobs(args)
+            print(proc.pid)
+            print(proc.stdout)
+            continue
+
         if '|' in tokens:
             stdout, stderr = c.run_pipeline(tokens)
             if stdout:
