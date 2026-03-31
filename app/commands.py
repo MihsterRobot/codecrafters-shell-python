@@ -227,7 +227,7 @@ def run_type(args):
     return f'{filename}: not found' + '\n', None
 
 
-def run_job(args):
+def run_jobs(args):
     return None, None
 
 
@@ -374,6 +374,6 @@ COMMANDS = {
     'history': run_history,
     'cd': run_cd,
     'type': run_type,
-    'job': run_job,
+    'job': run_jobs,
     'exit': run_exit
 }
