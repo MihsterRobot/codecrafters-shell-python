@@ -42,8 +42,6 @@ def main():
 
         if '&' in tokens: 
             proc = c.run_jobs(tokens[:-1])
-            print(proc.pid)
-            print(proc.stdout)
             continue
 
         if '|' in tokens:
