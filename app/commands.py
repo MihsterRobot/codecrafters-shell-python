@@ -23,10 +23,10 @@ def tokenize(line):
     while i < len(line):
         char = line[i]
 
-        if state == 'unquoted' and char in symbols:  # Start a quoted segment
+        if state == 'unquoted' and char in symbols:  # Start a quoted segment.
             state = symbols[char]
             i += 1
-        elif state != 'unquoted' and char in symbols:  # Complete the quoted segment
+        elif state != 'unquoted' and char in symbols:  # Complete the quoted segment.
             if symbols[char] == state:
                 state = 'unquoted'
                 i += 1
@@ -64,7 +64,7 @@ def tokenize(line):
                 current.append(char)
                 i += 1
 
-    if current:  # The current list may retain characters after the loop finishes
+    if current:  # The current list may retain characters after the loop finishes.
         tokens.append("".join(current))
 
     return tokens
@@ -77,8 +77,8 @@ def parse_redirects(tokens):
     stderr_mode = 'w'
     redir_idx = None
 
-    # FIXME: Combinations of append operators (e.g. >> and 2>>) are not handled correctly
-    # redir_idx may be overwritten when both are present, causing incorrect cmd_tokens slicing
+    # FIXME: Combinations of append operators (e.g. >> and 2>>) are not handled correctly.
+    # redir_idx may be overwritten when both are present, causing incorrect cmd_tokens slicing.
 
     # Append stdout
     if '>>' in tokens or '1>>' in tokens:
@@ -102,7 +102,7 @@ def parse_redirects(tokens):
        stdout_file_path = tokens[stdout_redir_idx+1]
        stderr_file_path = tokens[stderr_redir_idx+1]
 
-       # Slice up to the first redirect operator to exclude redirect syntax from cmd_tokens
+       # Slice up to the first redirect operator to exclude redirect syntax from cmd_tokens.
        redir_idx = min(stdout_redir_idx, stderr_redir_idx)
 
     # Redirect stdout only
@@ -116,7 +116,7 @@ def parse_redirects(tokens):
         redir_idx = tokens.index('2>')
         stderr_file_path = tokens[redir_idx+1]
 
-    # Derive command tokens from everything before the first redirect operator
+    # Derive command tokens from everything before the first redirect operator.
     if redir_idx is None:
         cmd_tokens = tokens
     else:
@@ -138,7 +138,7 @@ def run_pwd(args):
 
 def load_history_from_env():
     # os.environ.get('HISTFILE') is safer than os.environ['HISTFILE'] because it
-    # returns None if the variable doesn't exist instead of raising a KeyError
+    # returns None if the variable doesn't exist instead of raising a KeyError.
     hist_file = os.environ.get('HISTFILE')
     if hist_file:
         if os.path.isfile(hist_file):
@@ -190,8 +190,8 @@ def run_history(args):
     else:
         start = 1
 
-    # Generator expression produces formatted history entries one at a time
-    # join() consumes them directly without storing the full list in memory
+    # Generator expression produces formatted history entries one at a time.
+    # join() consumes them directly without storing the full list in memory.
     output = '\n'.join(f'   {i}  {cmd}' for i, cmd in enumerate(entries, start))
 
     return output + '\n', None
@@ -217,13 +217,13 @@ def run_type(args):
         return f'{args} is a shell builtin' + '\n', None
 
     # os.environ['PATH'] and os.environ['HOME'] are used directly because
-    # these variables are always expected to be set on a Unix system
+    # these variables are always expected to be set on a Unix system.
     path_env = os.environ['PATH']
     dirs = path_env.split(':')
     filename = args
 
     for directory in dirs:
-        # Construct the path to the program within this directory
+        # Construct the path to the program within this directory.
         full_path = os.path.join(directory, filename)
 
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
@@ -247,14 +247,14 @@ def run_exit(args):
 
 
 def find_executable(exe_name):
-    # Split PATH into the directories the shell uses to look for executables
+    # Split PATH into the directories the shell uses to look for executables.
     path_env = os.environ['PATH']
     dirs = path_env.split(':')
 
     for directory in dirs:
         exe_path = os.path.join(directory, exe_name)
 
-        # If the file exists and is executable, return the executable name
+        # If the file exists and is executable, return the executable name.
         if os.path.isfile(exe_path) and os.access(exe_path, os.X_OK):
             return exe_name
 
@@ -266,7 +266,7 @@ def run_external_program(exe_name, args):
     return result.stdout, result.stderr
 
 
-# TODO: Review the pipeline process and structure
+# TODO: Review the pipeline process and structure.
 def run_pipeline(tokens):
     pipeline_cmds = []
     cmd_tokens = []
@@ -281,14 +281,14 @@ def run_pipeline(tokens):
     if cmd_tokens:
         pipeline_cmds.append(cmd_tokens)
 
-    # curr_proc = None is unnecessary because it's always assigned before being used within the loop
+    # curr_proc = None is unnecessary because it's always assigned before being used within the loop.
     # prev_proc and builtin_stdout need to be initialized because they're referenced across iterations,
-    # while curr_proc is only used within the same iteration it's assigned
+    # while curr_proc is only used within the same iteration it's assigned.
 
     prev_proc = None
     builtin_stdout = None
 
-    # Iterate over pipeline_cmds and determine if the cmd is a builtin or external
+    # Iterate over pipeline_cmds and determine if the cmd is a builtin or external.
     for i, cmd_toks in enumerate(pipeline_cmds):
         cmd_name = cmd_toks[0]
         if i == 0: # First command
@@ -313,17 +313,15 @@ def run_pipeline(tokens):
                     result = subprocess.run(cmd_toks, input=builtin_stdout, capture_output=True, text=True)
                     return result.stdout, result.stderr
 
-        # Command is somewhere in the middle
-
-        # If a middle command is a builtin, the previous stdout isn't needed; capture the builtin's stdout
+        # If a middle command is a builtin, the previous stdout isn't needed; capture the builtin's stdout.
         if cmd_name in COMMANDS:
             handler = COMMANDS[cmd_name]
             builtin_stdout, _ = handler(' '.join(cmd_toks[1:]))
             prev_proc = None
         else: # External
-            # If the previous command was a builtin, pass its output to the current process via stdin
-            # Popen doesn't accept input= directly like subprocess.run; stdin must be written to manually
-            # text=True allows writing strings directly to stdin; otherwise, builtin_stdout would need to be encoded to bytes first
+            # If the previous command was a builtin, pass its output to the current process via stdin.
+            # Popen doesn't accept input= directly like subprocess.run; stdin must be written to manually.
+            # text=True allows writing strings directly to stdin; otherwise, builtin_stdout would need to be encoded to bytes first.
             if builtin_stdout:
                 curr_proc = subprocess.Popen(cmd_toks, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
                 curr_proc.stdin.write(builtin_stdout)
