@@ -232,11 +232,15 @@ def run_type(args):
     return f'{filename}: not found' + '\n', None
 
 
-def run_jobs(args):
+def start_background_job(args): 
     proc = subprocess.Popen(args, stdout=subprocess.PIPE, text=True)
     job_state.counter += 1
-    return proc, None
+    return proc
 
+
+def run_jobs(args):
+    return None, None
+    
 
 def run_exit(args):
     return None, EXIT

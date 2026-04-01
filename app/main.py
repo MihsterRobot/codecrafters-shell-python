@@ -41,7 +41,7 @@ def main():
         tokens = c.tokenize(line)
 
         if '&' in tokens: 
-            proc = c.run_jobs(tokens[:-1])
+            proc = c.start_background_job(tokens[:-1])
             print(f'[{c.job_state.counter}] {proc.pid}')
             continue
 
