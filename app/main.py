@@ -3,18 +3,19 @@ import readline
 from . import commands as c
 
 
-def completer(text, state):
+def completer(text: str, state: int) -> str | None:
     # Skip builtin and executable completions when text is empty; returning all matches
     # would overwhelm readline and prevent file/directory completions from taking effect.
+    builtin_matches: list[str] = []
+    exe_matches: list[str] = []
     if text:
         builtin_matches = c.get_builtin_completions(text)
         exe_matches = c.get_executable_completions(text)
-    else:
-        builtin_matches = []
-        exe_matches = []
-    filename_matches = c.get_path_completions(text, 'file')
-    directory_matches = c.get_path_completions(text, 'dir')
-    completions = builtin_matches + exe_matches + filename_matches + directory_matches
+
+    filename_matches: list[str] = c.get_path_completions(text, 'file')
+    directory_matches: list[str] = c.get_path_completions(text, 'dir')
+    
+    completions: list[str] = builtin_matches + exe_matches + filename_matches + directory_matches
 
     # readline increments state on each call; use it to index into the completions list.
     # Return None when state reaches or exceeds the number of matches, signaling no more completions.
@@ -23,11 +24,12 @@ def completer(text, state):
 
     # TODO: Check if this can be removed and added to get_path_completions.
     # Directories get a trailing '/' with no space; files get a trailing space.
-    suffix = '' if completions[state].endswith('/') else ' '
+    suffix: str = '' if completions[state].endswith('/') else ' '
+
     return completions[state] + suffix
 
 
-def main():
+def main() -> None:
     readline.set_completer(completer)
     readline.set_completer_delims(' ')
     readline.parse_and_bind('tab: complete')

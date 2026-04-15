@@ -1,5 +1,17 @@
 import os
 import subprocess
+from typing import Literal
+from typing import NamedTuple
+
+
+class RedirectResult(NamedTuple):
+    cmd_tokens: list[str]
+    cmd_name: str
+    args: str
+    stdout_file_path: str | None
+    stdout_mode: str
+    stderr_file_path: str | None
+    stderr_mode: str
 
 
 class HistoryState:
@@ -13,7 +25,7 @@ class JobState:
         self.counter = 0
 
 
-def tokenize(line):
+def tokenize(line: str) -> list[str]:
     symbols = {"'": 'single', '"': 'double'}
     state = 'unquoted'
     current = []
@@ -70,7 +82,7 @@ def tokenize(line):
     return tokens
 
 
-def parse_redirects(tokens):
+def parse_redirects(tokens: list[str]) -> RedirectResult:
     stdout_file_path = None
     stdout_mode = 'w'
     stderr_file_path = None
@@ -125,18 +137,18 @@ def parse_redirects(tokens):
     cmd_name = cmd_tokens[0]
     args = ' '.join(cmd_tokens[1:])
 
-    return cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode
+    return RedirectResult(cmd_tokens, cmd_name, args, stdout_file_path, stdout_mode, stderr_file_path, stderr_mode)
 
 
-def run_echo(args):
+def run_echo(args: str) -> tuple[str, None]:
     return ''.join(args) + '\n', None
 
 
-def run_pwd(args):
+def run_pwd(args: str) -> tuple[str, None]:
     return os.getcwd() + '\n', None
 
 
-def load_history_from_env():
+def load_history_from_env() -> None:
     # os.environ.get('HISTFILE') is safer than os.environ['HISTFILE'] because it
     # returns None if the variable doesn't exist instead of raising a KeyError.
     hist_file = os.environ.get('HISTFILE')
@@ -147,7 +159,7 @@ def load_history_from_env():
                     history.entries.append(line.strip())
 
 
-def save_history_to_env():
+def save_history_to_env() -> None:
     hist_file = os.environ.get('HISTFILE')
     if hist_file:
         with open(hist_file, 'w') as f:
@@ -155,11 +167,11 @@ def save_history_to_env():
                 f.write(entry + '\n')
 
 
-def add_to_history(line):
+def add_to_history(line: str) -> None:
     history.entries.append(line)
 
 
-def run_history(args):
+def run_history(args: str) -> tuple[str | None, None]:
     entries = history.entries
     num_entries = len(history.entries)
     start = 0
@@ -197,7 +209,7 @@ def run_history(args):
     return output + '\n', None
 
 
-def run_cd(args):
+def run_cd(args: str) -> tuple[str | None, None]:
     dest_path = args
     home_dir = os.environ['HOME']
 
@@ -212,7 +224,7 @@ def run_cd(args):
     return f'{dest_path}: No such file or directory' + '\n', None
 
 
-def run_type(args):
+def run_type(args: str) -> tuple[str, None]:
     if args in COMMANDS:
         return f'{args} is a shell builtin' + '\n', None
 
@@ -232,21 +244,21 @@ def run_type(args):
     return f'{filename}: not found' + '\n', None
 
 
-def start_background_job(args): 
+def start_background_job(args: list[str]) -> subprocess.Popen:
     proc = subprocess.Popen(args, stdout=subprocess.PIPE, text=True)
     job_state.counter += 1
     return proc
 
 
-def run_jobs(args):
+def run_jobs(args: str) -> tuple[None, None]:
     return None, None
     
 
-def run_exit(args):
+def run_exit(args: str) -> tuple[None, object]:
     return None, EXIT
 
 
-def find_executable(exe_name):
+def find_executable(exe_name: str) -> str | None:
     # Split PATH into the directories the shell uses to look for executables.
     path_env = os.environ['PATH']
     dirs = path_env.split(':')
@@ -261,13 +273,13 @@ def find_executable(exe_name):
     return None
 
 
-def run_external_program(exe_name, args):
+def run_external_program(exe_name: str, args: list[str]) -> tuple[str, str]:
     result = subprocess.run([exe_name] + args, capture_output=True, text=True)
     return result.stdout, result.stderr
 
 
 # TODO: Review the pipeline process and structure.
-def run_pipeline(tokens):
+def run_pipeline(tokens: list[str]) -> tuple[str | None, str | None]:
     pipeline_cmds = []
     cmd_tokens = []
 
@@ -306,7 +318,8 @@ def run_pipeline(tokens):
             else: # External
                 if prev_proc: # Previous command was external
                    curr_proc = subprocess.Popen(cmd_toks, stdin=prev_proc.stdout, stderr=subprocess.PIPE, text=True)
-                   prev_proc.stdout.close()
+                   if prev_proc.stdout:
+                    prev_proc.stdout.close()
                    _, stderr = curr_proc.communicate()
                    return None, stderr
                 else: # Previous command was a builtin
@@ -320,26 +333,30 @@ def run_pipeline(tokens):
             prev_proc = None
         else: # External
             # If the previous command was a builtin, pass its output to the current process via stdin.
-            # Popen doesn't accept input= directly like subprocess.run; stdin must be written to manually.
-            # text=True allows writing strings directly to stdin; otherwise, builtin_stdout would need to be encoded to bytes first.
+            # Popen doesn't accept 'input=' directly like subprocess.run; stdin must be written to manually.
+            # 'text=True' allows writing strings directly to stdin; otherwise, builtin_stdout would need to be encoded to bytes first.
             if builtin_stdout:
                 curr_proc = subprocess.Popen(cmd_toks, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
-                curr_proc.stdin.write(builtin_stdout)
-                curr_proc.stdin.close()
+                if curr_proc.stdin:
+                    curr_proc.stdin.write(builtin_stdout)
+                    curr_proc.stdin.close()
                 prev_proc = curr_proc
                 builtin_stdout = None
             elif prev_proc: # If the previous command was external
                 curr_proc = subprocess.Popen(cmd_toks, stdin=prev_proc.stdout, stdout=subprocess.PIPE, text=True)
-                prev_proc.stdout.close()
+                if prev_proc.stdout: 
+                    prev_proc.stdout.close()
                 prev_proc = curr_proc
 
+    return None, None
 
-def get_builtin_completions(text):
+
+def get_builtin_completions(text: str) -> list[str]:
     matches = [cmd for cmd in COMMANDS if cmd.startswith(text)]
     return matches
 
 
-def get_executable_completions(text):
+def get_executable_completions(text: str) -> list[str]:
     path_env = os.environ['PATH']
     dirs = path_env.split(':')
     matches = []
@@ -354,7 +371,7 @@ def get_executable_completions(text):
     return matches
 
 
-def get_path_completions(text, entry_type):
+def get_path_completions(text: str, entry_type: Literal['file', 'dir']) -> list[str]:
     is_match = os.path.isfile if entry_type == 'file' else os.path.isdir
     suffix = '' if entry_type == 'file' else '/'
     matches = []
@@ -370,6 +387,7 @@ def get_path_completions(text, entry_type):
         for name in os.listdir(os.getcwd()):
             if is_match(os.path.join(os.getcwd(), name)) and name.startswith(text):
                 matches.append(name + suffix)
+
     return matches
 
 
