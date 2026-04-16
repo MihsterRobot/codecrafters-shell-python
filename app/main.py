@@ -1,9 +1,26 @@
+'''Entry point and main loop for the shell, including tab completion and input handling.'''
+
 import readline
 
 from . import commands as c
 
 
 def completer(text: str, state: int) -> str | None:
+    '''Return a tab completion match for the given text prefix.
+
+    Called repeatedly by readline with incrementing state values until None
+    is returned. Completes builtin commands, executables in PATH, filenames,
+    and directory names. Builtin and executable completions are skipped when
+    text is empty to avoid overwhelming readline with all possible matches.
+
+    Args:
+        text: The prefix typed by the user to complete.
+        state: The index of the match to return, incremented by readline on each call.
+
+    Returns:
+        The matching completion string with a trailing space for files or '/'
+        for directories, or None when no more matches are available.
+    '''
     # Skip builtin and executable completions when text is empty; returning all matches
     # would overwhelm readline and prevent file/directory completions from taking effect.
     builtin_matches: list[str] = []
@@ -30,6 +47,13 @@ def completer(text: str, state: int) -> str | None:
 
 
 def main() -> None:
+    '''Run the main shell loop.
+
+    Initialises readline with tab completion and history, then repeatedly
+    reads input, parses it, and dispatches to the appropriate handler.
+    Supports background jobs (&), pipelines (|), I/O redirection, builtin
+    commands, and external executables. Saves history to HISTFILE on exit.
+    '''
     readline.set_completer(completer)
     readline.set_completer_delims(' ')
     readline.parse_and_bind('tab: complete')

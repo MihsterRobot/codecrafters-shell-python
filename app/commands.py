@@ -1,3 +1,5 @@
+'''Shell command implementations, utilities, and state management.'''
+
 import os
 import subprocess
 from typing import Literal
@@ -5,6 +7,22 @@ from typing import NamedTuple
 
 
 class RedirectResult(NamedTuple):
+    '''Represents the parsed result of a command line with redirect operators.
+
+    Attributes:
+        cmd_tokens: The list of tokens representing the command and its arguments,
+                    excluding any redirect operators and file paths.
+        cmd_name: The name of the command to execute.
+        args: The arguments to pass to the command as a single string.
+        stdout_file_path: The file path to redirect stdout to,
+                          or None if stdout is not redirected.
+        stdout_mode: The file mode for stdout redirection ('w' for overwrite,
+                     'a' for append).
+        stderr_file_path: The file path to redirect stderr to,
+                          or None if stderr is not redirected.
+        stderr_mode: The file mode for stderr redirection ('w' for overwrite,
+                     'a' for append).
+    '''
     cmd_tokens: list[str]
     cmd_name: str
     args: str
@@ -15,17 +33,41 @@ class RedirectResult(NamedTuple):
 
 
 class HistoryState:
+    '''Tracks the shell's command history and file write state.
+
+    Attributes:
+        entries: The list of commands entered by the user.
+        last_written_idx: The index of the last entry written to a history file,
+                          used to determine which entries are new when appending.
+    '''
     def __init__(self):
         self.entries = []
         self.last_written_idx = 0
 
 
 class JobState:
+    '''Tracks the state of background jobs.
+
+    Attributes:
+        counter: The number of background jobs started, used to assign
+                 sequential job numbers.
+    '''
     def __init__(self):
         self.counter = 0
 
 
 def tokenize(line: str) -> list[str]:
+    '''Parse a raw input line into a list of tokens, respecting quoting and escaping rules.
+
+    Handles single quotes (no escaping), double quotes (backslash escapes for
+    \\, ", $, `, and newline), and unquoted backslash escaping.
+
+    Args:
+        line: The raw input line to tokenize.
+
+    Returns:
+        A list of parsed tokens with quotes stripped and escape sequences resolved.
+    '''
     symbols = {"'": 'single', '"': 'double'}
     state = 'unquoted'
     current = []
@@ -83,6 +125,17 @@ def tokenize(line: str) -> list[str]:
 
 
 def parse_redirects(tokens: list[str]) -> RedirectResult:
+    '''Parse redirect operators from a token list and extract the command and file paths.
+
+    Handles >, 1>, 2>, >>, 1>>, 2>>, and combinations of stdout and stderr redirection.
+
+    Args:
+        tokens: The list of tokens to parse for redirect operators.
+
+    Returns:
+        A RedirectResult containing the command tokens, command name, arguments,
+        and redirect file paths and modes.
+    '''
     stdout_file_path = None
     stdout_mode = 'w'
     stderr_file_path = None
@@ -141,14 +194,35 @@ def parse_redirects(tokens: list[str]) -> RedirectResult:
 
 
 def run_echo(args: str) -> tuple[str, None]:
+    '''Return the provided string back to the terminal.
+
+    Args:
+        args: The string to echo.
+
+    Returns:
+        A tuple of the echoed string with a trailing newline, and None as the signal.
+    '''
     return ''.join(args) + '\n', None
 
 
 def run_pwd(args: str) -> tuple[str, None]:
+    '''Print the current working directory.
+
+    Args:
+        args: Unused.
+
+    Returns:
+        A tuple of the current working directory path with a trailing newline,
+        and None as the signal.
+    '''
     return os.getcwd() + '\n', None
 
 
 def load_history_from_env() -> None:
+    '''Load command history from the file specified by the HISTFILE environment variable.
+
+    If HISTFILE is not set or the file does not exist, this function does nothing.
+    '''
     # os.environ.get('HISTFILE') is safer than os.environ['HISTFILE'] because it
     # returns None if the variable doesn't exist instead of raising a KeyError.
     hist_file = os.environ.get('HISTFILE')
@@ -160,6 +234,10 @@ def load_history_from_env() -> None:
 
 
 def save_history_to_env() -> None:
+    '''Save the current command history to the file specified by the HISTFILE environment variable.
+
+    If HISTFILE is not set, this function does nothing. Creates the file if it does not exist.
+    '''
     hist_file = os.environ.get('HISTFILE')
     if hist_file:
         with open(hist_file, 'w') as f:
@@ -168,10 +246,31 @@ def save_history_to_env() -> None:
 
 
 def add_to_history(line: str) -> None:
+    '''Append a command line to the in-memory history.
+
+    Args:
+        line: The command line to append.
+    '''
     history.entries.append(line)
 
 
 def run_history(args: str) -> tuple[str | None, None]:
+    '''Display or manage the command history.
+
+    Supports the following usage:
+        history         — display all entries
+        history <n>     — display the last n entries
+        history -r <file> — load entries from a file into history
+        history -w <file> — write all entries to a file
+        history -a <file> — append new entries since the last -a call to a file
+
+    Args:
+        args: The arguments string specifying the operation and optional file path.
+
+    Returns:
+        A tuple of the formatted history output and None as the signal,
+        or (None, None) for file operations.
+    '''
     entries = history.entries
     num_entries = len(history.entries)
     start = 0
@@ -210,6 +309,15 @@ def run_history(args: str) -> tuple[str | None, None]:
 
 
 def run_cd(args: str) -> tuple[str | None, None]:
+    '''Change the current working directory.
+
+    Args:
+        args: The destination path. Use '~' to navigate to the home directory.
+
+    Returns:
+        A tuple of an error message and None if the directory does not exist,
+        or (None, None) on success.
+    '''
     dest_path = args
     home_dir = os.environ['HOME']
 
@@ -225,6 +333,15 @@ def run_cd(args: str) -> tuple[str | None, None]:
 
 
 def run_type(args: str) -> tuple[str, None]:
+    '''Identify whether a command is a shell builtin or an executable in PATH.
+
+    Args:
+        args: The command name to look up.
+
+    Returns:
+        A tuple of the type description string with a trailing newline,
+        and None as the signal.
+    '''
     if args in COMMANDS:
         return f'{args} is a shell builtin' + '\n', None
 
@@ -245,20 +362,54 @@ def run_type(args: str) -> tuple[str, None]:
 
 
 def start_background_job(args: list[str]) -> subprocess.Popen:
+    '''Start a command as a background job without waiting for it to finish.
+
+    Increments the job counter each time a new background job is started.
+
+    Args:
+        args: The command and its arguments as a list of tokens.
+
+    Returns:
+        The Popen object representing the background process.
+    '''
     proc = subprocess.Popen(args, stdout=subprocess.PIPE, text=True)
     job_state.counter += 1
     return proc
 
 
 def run_jobs(args: str) -> tuple[None, None]:
+    '''List active background jobs.
+
+    Args:
+        args: Unused.
+
+    Returns:
+        (None, None) — not yet implemented.
+    '''
     return None, None
     
 
 def run_exit(args: str) -> tuple[None, object]:
+    '''Exit the shell.
+
+    Args:
+        args: Unused.
+
+    Returns:
+        A tuple of None and the EXIT sentinel value to signal the shell to exit.
+    '''
     return None, EXIT
 
 
 def find_executable(exe_name: str) -> str | None:
+    '''Search PATH directories for an executable with the given name.
+
+    Args:
+        exe_name: The name of the executable to find.
+
+    Returns:
+        The executable name if found, or None if not found in any PATH directory.
+    '''
     # Split PATH into the directories the shell uses to look for executables.
     path_env = os.environ['PATH']
     dirs = path_env.split(':')
@@ -274,12 +425,33 @@ def find_executable(exe_name: str) -> str | None:
 
 
 def run_external_program(exe_name: str, args: list[str]) -> tuple[str, str]:
+    '''Run an external program and capture its stdout and stderr.
+
+    Args:
+        exe_name: The name of the executable to run.
+        args: The list of arguments to pass to the executable.
+
+    Returns:
+        A tuple of the program's stdout and stderr output as strings.
+    '''
     result = subprocess.run([exe_name] + args, capture_output=True, text=True)
     return result.stdout, result.stderr
 
 
 # TODO: Review the pipeline process and structure.
 def run_pipeline(tokens: list[str]) -> tuple[str | None, str | None]:
+    '''Execute a pipeline of commands connected by | operators.
+
+    Handles pipelines containing any number of commands, including builtin
+    commands at any position in the pipeline.
+
+    Args:
+        tokens: The full token list including | operators.
+
+    Returns:
+        A tuple of the final stdout and stderr output as strings, or None
+        if the output was sent directly to the terminal.
+    '''
     pipeline_cmds = []
     cmd_tokens = []
 
@@ -352,11 +524,27 @@ def run_pipeline(tokens: list[str]) -> tuple[str | None, str | None]:
 
 
 def get_builtin_completions(text: str) -> list[str]:
+    '''Return builtin command names that start with the given text.
+
+    Args:
+        text: The prefix to match against builtin command names.
+
+    Returns:
+        A list of matching builtin command names.
+    '''
     matches = [cmd for cmd in COMMANDS if cmd.startswith(text)]
     return matches
 
 
 def get_executable_completions(text: str) -> list[str]:
+    '''Return executable names from PATH directories that start with the given text.
+
+    Args:
+        text: The prefix to match against executable names.
+
+    Returns:
+        A list of matching executable names.
+    '''
     path_env = os.environ['PATH']
     dirs = path_env.split(':')
     matches = []
@@ -372,6 +560,18 @@ def get_executable_completions(text: str) -> list[str]:
 
 
 def get_path_completions(text: str, entry_type: Literal['file', 'dir']) -> list[str]:
+    '''Return file or directory paths that match the given text prefix.
+
+    Handles both simple filenames and paths containing directory separators.
+    Directories are returned with a trailing '/'.
+
+    Args:
+        text: The prefix to match, optionally containing path separators.
+        entry_type: Either 'file' to match files or 'dir' to match directories.
+
+    Returns:
+        A list of matching file or directory paths.
+    '''
     is_match = os.path.isfile if entry_type == 'file' else os.path.isdir
     suffix = '' if entry_type == 'file' else '/'
     matches = []
