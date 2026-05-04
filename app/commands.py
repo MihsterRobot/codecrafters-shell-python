@@ -372,7 +372,7 @@ def start_background_job(args: list[str]) -> subprocess.Popen:
     Returns:
         The Popen object representing the background process.
     '''
-    proc = subprocess.Popen(args, stdout=subprocess.PIPE, text=True)
+    proc = subprocess.Popen(args, text=True)
     job_state.counter += 1
     return proc
 
