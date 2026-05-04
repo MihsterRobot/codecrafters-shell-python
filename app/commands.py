@@ -58,9 +58,9 @@ class JobState:
 
 
 class Job(NamedTuple):
-    number: int
-    process_id: int
-    command: str
+    num: int
+    proc_id: int
+    cmd: str
     status: str
 
 
@@ -381,9 +381,9 @@ def start_background_job(args: list[str]) -> subprocess.Popen:
         The Popen object representing the background process.
     '''
     proc = subprocess.Popen(args, text=True)
+    job_state.counter += 1
     job = Job(job_state.counter, proc.pid, ' '.join(args), 'Running')
     job_state.jobs.append(job)
-    job_state.counter += 1
     return proc
 
 
