@@ -61,6 +61,8 @@ def main() -> None:
     c.load_history_from_env()
 
     while True:
+        c.reap_jobs()
+
         line = input('$ ')
         c.add_to_history(line)
         tokens = c.tokenize(line)

@@ -433,6 +433,22 @@ def run_jobs(args: str) -> tuple[str | None, None]:
     return output + '\n', None
 
 
+def reap_jobs() -> None:
+    '''Check for finished background jobs, print their completion status, and remove them.
+
+    Called automatically before each prompt to reap zombie processes and notify
+    the user of any jobs that have completed since the last prompt.
+    '''
+    if not job_state.jobs:
+        return None
+
+    for job in job_state.jobs:
+        if job.proc.poll() is not None:
+            print(f'[{job.num}]+  {'Done':<23} {job.cmd}')
+
+    job_state.jobs = [job for job in job_state.jobs if job.proc.poll() is None]  # Remove exited jobs
+
+
 def run_exit(args: str) -> tuple[None, object]:
     '''Exit the shell.
 
