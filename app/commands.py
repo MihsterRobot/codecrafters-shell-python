@@ -64,11 +64,13 @@ class Job(NamedTuple):
         num: The sequential job number assigned when the job was started.
         proc_id: The OS-assigned process ID of the background process.
         cmd: The command string used to start the job.
-        status: The current status of the job (e.g. 'Running', 'Done').
+        proc: The Popen object representing the background process, used to check its status.
+        status: The current status of the job (e.g. 'Running', 'Done'). 
     '''
     num: int
     proc_id: int
     cmd: str
+    proc: subprocess.Popen
     status: str
 
 
@@ -391,7 +393,7 @@ def start_background_job(args: list[str]) -> subprocess.Popen:
     '''
     proc = subprocess.Popen(args, text=True)
     job_state.counter += 1
-    job = Job(job_state.counter, proc.pid, ' '.join(args), 'Running')
+    job = Job(job_state.counter, proc.pid, ' '.join(args), proc, 'Running')
     job_state.jobs.append(job)
     return proc
 
@@ -399,6 +401,8 @@ def start_background_job(args: list[str]) -> subprocess.Popen:
 def run_jobs(args: str) -> tuple[str | None, None]:
     '''List all active background jobs with their job number, status, and command.
 
+    Finished jobs are displayed with a 'Done' status and removed from the job list.
+    
     Args:
         args: Unused.
 
@@ -413,12 +417,17 @@ def run_jobs(args: str) -> tuple[str | None, None]:
     lines = []
 
     for i, job in enumerate(job_state.jobs, 1):
+        job_status = 'Done' if job.proc.poll() is not None else job.status
+        suffix = ' &' if job_status == 'Running' else ''
+
         if i == num_of_jobs:  # Most recent job
-            lines.append(f'[{job.num}]+  {job.status:<23} {job.cmd} &')
+            lines.append(f'[{job.num}]+  {job_status:<23} {job.cmd}{suffix}')
         elif i == num_of_jobs - 1:  # Second most recent job
-            lines.append(f'[{job.num}]-  {job.status:<23} {job.cmd} &')
+            lines.append(f'[{job.num}]-  {job_status:<23} {job.cmd}{suffix}')
         else:  # All other jobs
-            lines.append(f'[{job.num}]  {job.status:<23} {job.cmd} &')
+            lines.append(f'[{job.num}]  {job_status:<23} {job.cmd}{suffix}')
+
+    job_state.jobs = [job for job in job_state.jobs if job.proc.poll() is None]  # Remove exited jobs
 
     output = '\n'.join(lines)
     return output + '\n', None
