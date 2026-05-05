@@ -69,7 +69,7 @@ def main() -> None:
 
         if '&' in tokens: 
             proc = c.start_background_job(tokens[:-1])
-            print(f'[{len(c.job_state.jobs)}] {proc.pid}')
+            print(f'[{c.job_state.jobs[-1].num}] {proc.pid}')
             continue
 
         if '|' in tokens:

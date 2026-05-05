@@ -395,9 +395,10 @@ def start_background_job(args: list[str]) -> subprocess.Popen:
     num = 1
     while num in used:
         num += 1
+
     job = Job(num, proc.pid, ' '.join(args), proc, 'Running')
     job_state.jobs.append(job)
-    
+
     return proc
 
 
@@ -654,6 +655,10 @@ def get_path_completions(text: str, entry_type: Literal['file', 'dir']) -> list[
     return matches
 
 
+def run_complete(args: str) -> None:
+    return None
+
+
 history = HistoryState()
 job_state = JobState()
 
@@ -666,5 +671,6 @@ COMMANDS = {
     'cd': run_cd,
     'type': run_type,
     'jobs': run_jobs,
+    'complete': run_complete,
     'exit': run_exit
 }
