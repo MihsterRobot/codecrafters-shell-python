@@ -392,7 +392,13 @@ def start_background_job(args: list[str]) -> subprocess.Popen:
         The Popen object representing the background process.
     '''
     proc = subprocess.Popen(args, text=True)
-    job_state.counter += 1
+
+    used = {job.num for job in job_state.jobs}
+    num = 1
+    while num in used:
+        num += 1
+    job_state.counter = num
+
     job = Job(job_state.counter, proc.pid, ' '.join(args), proc, 'Running')
     job_state.jobs.append(job)
     return proc
@@ -427,7 +433,7 @@ def run_jobs(args: str) -> tuple[str | None, None]:
         else:  # All other jobs
             lines.append(f'[{job.num}]  {job_status:<23} {job.cmd}{suffix}')
 
-    job_state.jobs = [job for job in job_state.jobs if job.proc.poll() is None]  # Remove exited jobs
+    job_state.jobs = [job for job in job_state.jobs if job.proc.poll() is None]  # Remove finished jobs
 
     output = '\n'.join(lines)
     return output + '\n', None
@@ -446,7 +452,7 @@ def reap_jobs() -> None:
         if job.proc.poll() is not None:
             print(f'[{job.num}]+  {'Done':<23} {job.cmd}')
 
-    job_state.jobs = [job for job in job_state.jobs if job.proc.poll() is None]  # Remove exited jobs
+    job_state.jobs = [job for job in job_state.jobs if job.proc.poll() is None]
 
 
 def run_exit(args: str) -> tuple[None, object]:
