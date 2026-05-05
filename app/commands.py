@@ -404,11 +404,23 @@ def run_jobs(args: str) -> tuple[str | None, None]:
 
     Returns:
         A tuple of the formatted job list with a trailing newline, and None as the signal.
-        Returns an empty string with a trailing newline if no jobs are running.
+        Returns (None, None) if no jobs are running.
     '''
     if not job_state.jobs:
         return None, None
-    output = '\n'.join(f'[{job.num}]+  {job.status:<23} {job.cmd} &' for job in job_state.jobs)
+
+    num_of_jobs = len(job_state.jobs)
+    lines = []
+
+    for i, job in enumerate(job_state.jobs, 1):
+        if i == num_of_jobs:  # Most recent job
+            lines.append(f'[{job.num}]+  {job.status:<23} {job.cmd} &')
+        elif i == num_of_jobs - 1:  # Second most recent job
+            lines.append(f'[{job.num}]-  {job.status:<23} {job.cmd} &')
+        else:  # All other jobs
+            lines.append(f'[{job.num}]  {job.status:<23} {job.cmd} &')
+
+    output = '\n'.join(lines)
     return output + '\n', None
 
 
