@@ -655,8 +655,13 @@ def get_path_completions(text: str, entry_type: Literal['file', 'dir']) -> list[
     return matches
 
 
-def run_complete(args: str) -> None:
-    return None
+def run_complete(args: str) -> tuple[str | None, None]:
+    '''Display or manage tab completion specifications for commands.'''
+    if '-p' in args:
+        arg = args.split()[1]
+        return f'complete: {arg}: no completion specification' + '\n', None
+
+    return None, None
 
 
 history = HistoryState()
