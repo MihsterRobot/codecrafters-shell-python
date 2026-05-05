@@ -58,6 +58,14 @@ class JobState:
 
 
 class Job(NamedTuple):
+    '''Represents a background job started by the shell.
+
+    Attributes:
+        num: The sequential job number assigned when the job was started.
+        proc_id: The OS-assigned process ID of the background process.
+        cmd: The command string used to start the job.
+        status: The current status of the job (e.g. 'Running', 'Done').
+    '''
     num: int
     proc_id: int
     cmd: str
@@ -372,7 +380,8 @@ def run_type(args: str) -> tuple[str, None]:
 def start_background_job(args: list[str]) -> subprocess.Popen:
     '''Start a command as a background job without waiting for it to finish.
 
-    Increments the job counter each time a new background job is started.
+    Increments the job counter, creates a Job entry, and appends it to the
+    job state list.
 
     Args:
         args: The command and its arguments as a list of tokens.
@@ -387,17 +396,21 @@ def start_background_job(args: list[str]) -> subprocess.Popen:
     return proc
 
 
-def run_jobs(args: str) -> tuple[None, None]:
-    '''List active background jobs.
+def run_jobs(args: str) -> tuple[str | None, None]:
+    '''List all active background jobs with their job number, status, and command.
 
     Args:
         args: Unused.
 
     Returns:
-        (None, None) — not yet implemented.
+        A tuple of the formatted job list with a trailing newline, and None as the signal.
+        Returns an empty string with a trailing newline if no jobs are running.
     '''
-    return None, None
-    
+    if not job_state.jobs:
+        return None, None
+    output = '\n'.join(f'[{job.num}]+  {job.status:<23} {job.cmd} &' for job in job_state.jobs)
+    return output + '\n', None
+
 
 def run_exit(args: str) -> tuple[None, object]:
     '''Exit the shell.
