@@ -49,11 +49,9 @@ class JobState:
     '''Tracks the state of background jobs.
 
     Attributes:
-        counter: The number of background jobs started, used to assign
-                 sequential job numbers.
+        jobs: The list of active background jobs, each represented as a Job instance.
     '''
     def __init__(self):
-        self.counter = 0
         self.jobs: list[Job] = []
 
 
@@ -397,10 +395,9 @@ def start_background_job(args: list[str]) -> subprocess.Popen:
     num = 1
     while num in used:
         num += 1
-    job_state.counter = num
-
-    job = Job(job_state.counter, proc.pid, ' '.join(args), proc, 'Running')
+    job = Job(num, proc.pid, ' '.join(args), proc, 'Running')
     job_state.jobs.append(job)
+    
     return proc
 
 
