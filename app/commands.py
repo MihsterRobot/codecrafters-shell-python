@@ -665,8 +665,8 @@ def run_complete(args: str) -> tuple[str | None, None]:
     elif '-p' in args:
         spec = completion_specs.get(cmd)
         if spec is None:
-            return f'complete: {cmd}: no completion specification\n', None
-        return f'complete -C \'{spec}\' {cmd}\n', None
+            return f'complete: {cmd}: no completion specification' + '\n', None
+        return f'complete -C \'{spec}\' {cmd}' + '\n', None
     
     return None, None
 
