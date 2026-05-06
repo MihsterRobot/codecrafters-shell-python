@@ -671,7 +671,7 @@ def run_complete(args: str) -> tuple[str | None, None]:
     return None, None
 
 
-completion_specs = dict()
+completion_specs = {}
 history = HistoryState()
 job_state = JobState()
 

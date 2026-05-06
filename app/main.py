@@ -1,6 +1,7 @@
 '''Entry point and main loop for the shell, including tab completion and input handling.'''
 
 import readline
+import subprocess
 
 from . import commands as c
 
@@ -21,6 +22,17 @@ def completer(text: str, state: int) -> str | None:
         The matching completion string with a trailing space for files or '/'
         for directories, or None when no more matches are available.
     '''
+    line_buffer = readline.get_line_buffer()
+    cmd_name = line_buffer.split()[0] if line_buffer.split() else ''
+
+    if c.completion_specs.get(cmd_name) is not None:
+        script = c.completion_specs[cmd_name]
+        result = subprocess.run(script, capture_output=True, text=True)
+        candidates = [line for line in result.stdout.splitlines() if line]
+        if state < len(candidates):
+            return candidates[state] + ' '
+        return None
+
     # Skip builtin and executable completions when text is empty; returning all matches
     # would overwhelm readline and prevent file/directory completions from taking effect.
     builtin_matches: list[str] = []
