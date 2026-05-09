@@ -377,8 +377,20 @@ def run_type(args: str) -> tuple[str, None]:
     return f'{filename}: not found' + '\n', None
 
 
-def run_declare(args: list[str]) -> None:
-    return None
+def run_declare(args: str) -> tuple[str | None, None]:
+    '''Create or inspect shell variables.
+
+    Supports the following flags:
+        -p <var> — display the declaration and value of a shell variable
+    '''
+    if '-p' in args:
+        var = args.split()[1]  # Move this inside the flag check
+        value = shell_variables.get(var)
+        if value is None:
+            return f'declare: {var}: not found\n', None
+        return f'declare -- {var}="{value}"\n', None
+    
+    return None, None
 
 
 def start_background_job(args: list[str]) -> subprocess.Popen:
@@ -723,6 +735,7 @@ def run_complete(args: str) -> tuple[str | None, None]:
     return None, None
 
 
+shell_variables = {}
 completion_specs = {}
 history = HistoryState()
 job_state = JobState()
