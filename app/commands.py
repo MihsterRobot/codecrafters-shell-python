@@ -377,6 +377,10 @@ def run_type(args: str) -> tuple[str, None]:
     return f'{filename}: not found' + '\n', None
 
 
+def run_declare(args: list[str]) -> None:
+    return None
+
+
 def start_background_job(args: list[str]) -> subprocess.Popen:
     '''Start a command as a background job without waiting for it to finish.
 
@@ -731,7 +735,8 @@ COMMANDS = {
     'history': run_history,
     'cd': run_cd,
     'type': run_type,
+    'declare': run_declare,
     'jobs': run_jobs,
     'complete': run_complete,
-    'exit': run_exit
+    'exit': run_exit,
 }
