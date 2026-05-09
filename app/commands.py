@@ -695,7 +695,12 @@ def run_complete(args: str) -> tuple[str | None, None]:
         if spec is None:
             return f'complete: {cmd}: no completion specification' + '\n', None
         return f'complete -C \'{spec}\' {cmd}' + '\n', None
-    
+    elif '-r' in args:
+        spec = completion_specs.get(cmd)
+        if spec is None:
+            return f'complete: {cmd}: no completion specification' + '\n', None
+        del completion_specs[cmd]
+
     return None, None
 
 
