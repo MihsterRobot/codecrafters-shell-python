@@ -685,7 +685,22 @@ def get_script_completions(cmd_name: str, text: str, prev_word: str, comp_line: 
 
 
 def run_complete(args: str) -> tuple[str | None, None]:
-    '''Display or manage tab completion specifications for commands.'''
+    '''Display or manage tab completion specifications for commands.
+
+    Supports the following flags:
+        -C <script> <cmd> — register a completer script for a command
+        -p <cmd>          — display the completion specification for a command
+        -r <cmd>          — remove the completion specification for a command
+
+    Args:
+        args: The arguments string containing the flag, optional script path,
+              and command name.
+
+    Returns:
+        A tuple of the completion specification string and None for -p,
+        an error message and None if no specification exists for -p or -r,
+        or (None, None) for -C, -r on success, or no flag.
+    '''
     cmd = args.split()[-1]
     if '-C' in args:
         spec = args.split()[1]
