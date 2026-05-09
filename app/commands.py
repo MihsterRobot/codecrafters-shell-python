@@ -345,7 +345,7 @@ def run_cd(args: str) -> tuple[str | None, None]:
         os.chdir(dest_path)
         return None, None
 
-    return f'{dest_path}: No such file or directory' + '\n', None
+    return f'{dest_path}: No such file or directory\n', None
 
 
 def run_type(args: str) -> tuple[str, None]:
@@ -359,7 +359,7 @@ def run_type(args: str) -> tuple[str, None]:
         and None as the signal.
     '''
     if args in COMMANDS:
-        return f'{args} is a shell builtin' + '\n', None
+        return f'{args} is a shell builtin\n', None
 
     # os.environ['PATH'] and os.environ['HOME'] are used directly because
     # these variables are always expected to be set on a Unix system.
@@ -372,9 +372,9 @@ def run_type(args: str) -> tuple[str, None]:
         full_path = os.path.join(directory, filename)
 
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-            return f'{filename} is {full_path}' + '\n', None
+            return f'{filename} is {full_path}\n', None
 
-    return f'{filename}: not found' + '\n', None
+    return f'{filename}: not found\n', None
 
 
 def run_declare(args: str) -> tuple[str | None, None]:
@@ -384,12 +384,17 @@ def run_declare(args: str) -> tuple[str | None, None]:
         -p <var> — display the declaration and value of a shell variable
     '''
     if '-p' in args:
-        var = args.split()[1]  # Move this inside the flag check
+        var = args.split()[1]
         value = shell_variables.get(var)
         if value is None:
             return f'declare: {var}: not found\n', None
         return f'declare -- {var}="{value}"\n', None
     
+    args_parts = args.split('=')
+    var = args_parts[0]
+    value = args_parts[1]
+    shell_variables[var] = value
+
     return None, None
 
 
@@ -724,12 +729,12 @@ def run_complete(args: str) -> tuple[str | None, None]:
     elif '-p' in args:
         spec = completion_specs.get(cmd)
         if spec is None:
-            return f'complete: {cmd}: no completion specification' + '\n', None
-        return f'complete -C \'{spec}\' {cmd}' + '\n', None
+            return f'complete: {cmd}: no completion specification\n', None
+        return f'complete -C \'{spec}\' {cmd}\n', None
     elif '-r' in args:
         spec = completion_specs.get(cmd)
         if spec is None:
-            return f'complete: {cmd}: no completion specification' + '\n', None
+            return f'complete: {cmd}: no completion specification\n', None
         del completion_specs[cmd]
 
     return None, None
