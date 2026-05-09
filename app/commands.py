@@ -655,7 +655,7 @@ def get_path_completions(text: str, entry_type: Literal['file', 'dir']) -> list[
     return matches
 
 
-def get_script_completions(cmd_name: str, text: str, prev_word: str) -> list[str]:
+def get_script_completions(cmd_name: str, text: str, prev_word: str, comp_line: str, comp_point: int) -> list[str]:
     '''Run a registered completer script and return its output as completion candidates.
 
     If a completer script is registered for cmd_name, it is invoked with three
@@ -677,7 +677,8 @@ def get_script_completions(cmd_name: str, text: str, prev_word: str) -> list[str
         result = subprocess.run(
             [script, cmd_name, text, prev_word],
             capture_output=True,
-            text=True
+            text=True,
+            env={**os.environ, 'COMP_LINE': comp_line, 'COMP_POINT': str(comp_point)}
         )
         candidates = [line for line in result.stdout.splitlines() if line]
     return candidates

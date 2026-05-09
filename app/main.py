@@ -23,14 +23,16 @@ def completer(text: str, state: int) -> str | None:
     '''
     line_buffer = readline.get_line_buffer()
     tokens = line_buffer.split()
+
     cmd_name = ''
     prev_word = ''
-
     if tokens:
         cmd_name = tokens[0]
         prev_word = tokens[-2] if len(tokens) > 1 else cmd_name
 
-    script_matches = c.get_script_completions(cmd_name, text, prev_word)
+    comp_line = line_buffer
+    comp_point = len(line_buffer)
+    script_matches = c.get_script_completions(cmd_name, text, prev_word, comp_line, comp_point)
 
     if script_matches:
         if state < len(script_matches):
