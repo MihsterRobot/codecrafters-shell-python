@@ -429,7 +429,7 @@ def run_jobs(args: str) -> tuple[str | None, None]:
         elif i == num_of_jobs - 1:  # Second most recent job
             lines.append(f'[{job.num}]-  {job_status:<23} {job.cmd}{suffix}')
         else:  # All other jobs
-            lines.append(f'[{job.num}]  {job_status:<23} {job.cmd}{suffix}')
+            lines.append(f'[{job.num}]   {job_status:<23} {job.cmd}{suffix}')
 
     job_state.jobs = [job for job in job_state.jobs if job.proc.poll() is None]  # Remove finished jobs
 
@@ -655,10 +655,22 @@ def get_path_completions(text: str, entry_type: Literal['file', 'dir']) -> list[
     return matches
 
 
+def get_script_completions(cmd_name: str, text: str, prev_word: str) -> list[str]:
+    candidates = []
+    if completion_specs.get(cmd_name) is not None:
+        script = completion_specs[cmd_name]
+        result = subprocess.run(
+            [script, cmd_name, text, prev_word],
+            capture_output=True,
+            text=True
+        )
+        candidates = [line for line in result.stdout.splitlines() if line]
+    return candidates
+
+
 def run_complete(args: str) -> tuple[str | None, None]:
     '''Display or manage tab completion specifications for commands.'''
     cmd = args.split()[-1]
-
     if '-C' in args:
         spec = args.split()[1]
         completion_specs[cmd] = spec

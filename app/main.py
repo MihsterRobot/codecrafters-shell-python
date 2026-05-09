@@ -1,7 +1,6 @@
 '''Entry point and main loop for the shell, including tab completion and input handling.'''
 
 import readline
-import subprocess
 
 from . import commands as c
 
@@ -23,14 +22,19 @@ def completer(text: str, state: int) -> str | None:
         for directories, or None when no more matches are available.
     '''
     line_buffer = readline.get_line_buffer()
-    cmd_name = line_buffer.split()[0] if line_buffer.split() else ''
+    tokens = line_buffer.split()
+    cmd_name = ''
+    prev_word = ''
 
-    if c.completion_specs.get(cmd_name) is not None:
-        script = c.completion_specs[cmd_name]
-        result = subprocess.run(script, capture_output=True, text=True)
-        candidates = [line for line in result.stdout.splitlines() if line]
-        if state < len(candidates):
-            return candidates[state] + ' '
+    if tokens:
+        cmd_name = tokens[0]
+        prev_word = tokens[-2] if len(tokens) > 1 else cmd_name
+
+    script_matches = c.get_script_completions(cmd_name, text, prev_word)
+
+    if script_matches:
+        if state < len(script_matches):
+            return script_matches[state] + ' '
         return None
 
     # Skip builtin and executable completions when text is empty; returning all matches
