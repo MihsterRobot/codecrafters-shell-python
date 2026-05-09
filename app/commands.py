@@ -393,6 +393,8 @@ def run_declare(args: str) -> tuple[str | None, None]:
     args_parts = args.split('=')
     var = args_parts[0]
     value = args_parts[1]
+    if var[0].isdigit() or not var.isidentifier():
+        return f'declare: `{var}={value}\': not a valid identifier\n', None
     shell_variables[var] = value
 
     return None, None
