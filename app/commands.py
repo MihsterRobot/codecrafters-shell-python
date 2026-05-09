@@ -656,6 +656,21 @@ def get_path_completions(text: str, entry_type: Literal['file', 'dir']) -> list[
 
 
 def get_script_completions(cmd_name: str, text: str, prev_word: str) -> list[str]:
+    '''Run a registered completer script and return its output as completion candidates.
+
+    If a completer script is registered for cmd_name, it is invoked with three
+    arguments: the command name, the word being completed, and the preceding word.
+    Each non-empty line of the script's stdout is returned as a completion candidate.
+
+    Args:
+        cmd_name: The name of the command being completed.
+        text: The partial word at the cursor to complete.
+        prev_word: The word immediately before the word being completed.
+
+    Returns:
+        A list of completion candidates from the script's stdout,
+        or an empty list if no completer is registered for cmd_name.
+    '''
     candidates = []
     if completion_specs.get(cmd_name) is not None:
         script = completion_specs[cmd_name]
