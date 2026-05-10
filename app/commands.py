@@ -1,6 +1,7 @@
 '''Shell command implementations, utilities, and state management.'''
 
 import os
+import re
 import subprocess
 from typing import Literal
 from typing import NamedTuple
@@ -389,7 +390,7 @@ def run_declare(args: str) -> tuple[str | None, None]:
         if value is None:
             return f'declare: {var}: not found\n', None
         return f'declare -- {var}="{value}"\n', None
-    
+
     args_parts = args.split('=')
     var = args_parts[0]
     value = args_parts[1]
@@ -398,6 +399,22 @@ def run_declare(args: str) -> tuple[str | None, None]:
     shell_variables[var] = value
 
     return None, None
+
+
+def expand_variables(token: str) -> str:
+    '''Expand shell variable references within a token.
+
+    Replaces occurrences of $NAME with the corresponding value from
+    shell_variables. If the variable is not defined, replaces it with
+    an empty string.
+
+    Args:
+        token: The token to expand, optionally containing $NAME references.
+
+    Returns:
+        The token with all variable references replaced by their values.
+    '''
+    return re.sub(r'\$([A-Za-z_][A-Za-z0-9_]*)', lambda m: shell_variables.get(m.group(1), ''), token)
 
 
 def start_background_job(args: list[str]) -> subprocess.Popen:
