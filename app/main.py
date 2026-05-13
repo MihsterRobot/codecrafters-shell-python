@@ -85,13 +85,9 @@ def main() -> None:
         c.add_to_history(line)
         tokens = c.tokenize(line)
 
-        tokens = [
-            c.shell_variables.get(tok[1:], '') if tok.startswith('$') else tok
-            for tok in tokens
-        ]
         tokens = [c.expand_variables(tok) for tok in tokens]
 
-        if '&' in tokens: 
+        if '&' in tokens:
             proc = c.start_background_job(tokens[:-1])
             print(f'[{c.job_state.jobs[-1].num}] {proc.pid}')
             continue

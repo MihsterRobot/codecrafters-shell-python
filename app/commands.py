@@ -382,9 +382,9 @@ def run_declare(args: str) -> tuple[str | None, None]:
     '''Create or inspect shell variables.
 
     Supports the following flags:
-        -p <var> — display the declaration and value of a shell variable
+        -p <var> — display the declaration and value of a shell variable.
     '''
-    if '-p' in args:
+    if args.startswith('-p'):
         var = args.split()[1]
         value = shell_variables.get(var)
         if value is None:
@@ -414,7 +414,7 @@ def expand_variables(token: str) -> str:
     Returns:
         The token with all variable references replaced by their values.
     '''
-    return re.sub(r'\$([A-Za-z_][A-Za-z0-9_]*)', lambda m: shell_variables.get(m.group(1), ''), token)
+    return re.sub(r'\$\{([A-Za-z_][A-Za-z0-9_]*)\}|\$([A-Za-z_][A-Za-z0-9_]*)', lambda m: shell_variables.get(m.group(1) or m.group(2), ''), token)
 
 
 def start_background_job(args: list[str]) -> subprocess.Popen:
