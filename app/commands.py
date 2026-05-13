@@ -382,7 +382,12 @@ def run_declare(args: str) -> tuple[str | None, None]:
     '''Create or inspect shell variables.
 
     Supports the following flags:
-        -p <var> — display the declaration and value of a shell variable.
+        -p <var> — display the declaration and value of a shell variable
+
+    Without a flag, assigns a value to a shell variable:
+        declare <var>=<value> — store the variable in the shell environment
+
+    Returns an error if the variable name is not a valid identifier.
     '''
     if args.startswith('-p'):
         var = args.split()[1]

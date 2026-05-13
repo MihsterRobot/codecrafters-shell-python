@@ -85,7 +85,7 @@ def main() -> None:
         c.add_to_history(line)
         tokens = c.tokenize(line)
 
-        tokens = [c.expand_variables(tok) for tok in tokens]
+        tokens = [expanded for tok in tokens if (expanded := c.expand_variables(tok))]
 
         if '&' in tokens:
             proc = c.start_background_job(tokens[:-1])
